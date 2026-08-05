@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodata Diri</title>
+    <style>
+        /* Reset margin dan font dasar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Kartu Biodata */
+        .card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Header Kartu */
+        .card-header {
+            background-color: #4A90E2;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .card-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Isi Biodata */
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        .info-group {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .info-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .label {
+            font-weight: bold;
+            width: 35%;
+            color: #555;
+        }
+
+        .value {
+            width: 65%;
+            color: #222;
+        }
+
+        /* Bagian Hobi/Keahlian (List) */
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .skill-tag {
+            background-color: #eef5ff;
+            color: #4A90E2;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="card-header">
+            <img src="https://via.placeholder.com/150" alt="Foto Profil" class="profile-img">
+            <h2>Nama Lengkap</h2>
+            <p>Siswa / Pelajar</p>
+        </div>
+
+        <div class="card-body">
+            <div class="info-group">
+                <div class="label">Nama Panggilan</div>
+                <div class="value">: Raisya naufal Alif</div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">TTL</div>
+                <div class="value">: Kota bandung, 4 maret 2012</div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">Jenis Kelamin</div>
+                <div class="value">: Laki-laki </div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">Alamat</div>
+                <div class="value">: Jl. Contoh No. 123, Kota</div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">Email</div>
+                <div class="value">: raisyanaufal@mimha.sch.id</div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">Hobi</div>
+                <div class="value">
+                    <div class="skills">
+                        <span class="skill-tag">ikan</span>
+                        <span class="skill-tag">batminton</span>
+                        <span class="skill-tag">sepak Bola</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
