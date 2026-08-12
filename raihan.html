@@ -23,9 +23,8 @@
       perspective: 1500px;
     }
 
-    /* --- DEKORASI BACKGROUND MAKSIMAL (RAME) --- */
+    /* --- DEKORASI BACKGROUND MAKSIMAL --- */
     
-    /* Gerakan Grid di Lantai */
     .bg-grid {
       position: absolute;
       width: 200%;
@@ -45,7 +44,7 @@
       100% { transform: rotateX(65deg) translateZ(-100px) translateY(50px); }
     }
 
-    /* Partikel Digital Melayang (Salju Neon) */
+    /* Partikel Digital */
     .particles {
       position: absolute;
       top: 0;
@@ -70,7 +69,6 @@
       100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
     }
 
-    /* Menambahkan variasi partikel lewat script CSS generator sederhana */
     .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-duration: 5s; animation-delay: 0s; }
     .particle:nth-child(2) { width: 6px; height: 6px; left: 25%; animation-duration: 7s; animation-delay: 1s; }
     .particle:nth-child(3) { width: 3px; height: 3px; left: 40%; animation-duration: 4s; animation-delay: 2s; }
@@ -78,8 +76,7 @@
     .particle:nth-child(5) { width: 4px; height: 4px; left: 75%; animation-duration: 5s; animation-delay: 3s; }
     .particle:nth-child(6) { width: 7px; height: 7px; left: 90%; animation-duration: 8s; animation-delay: 0.5s; }
 
-
-    /* --- ANIMASI PINTU LOBBY (MASUK) --- */
+    /* --- ANIMASI PINTU LOBBY --- */
     .gate-left, .gate-right {
       position: fixed;
       top: 0;
@@ -114,22 +111,20 @@
 
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-
-    /* --- KARTU BIO DATA SUPER DEKORATIF --- */
+    /* --- KARTU BIO DATA --- */
     .bio-card {
       position: relative;
       z-index: 10;
       background: rgba(8, 10, 18, 0.9);
       border: 1px solid rgba(0, 255, 157, 0.2);
       backdrop-filter: blur(15px);
-      padding: 40px;
+      padding: 35px 30px;
       width: 380px;
       border-radius: 20px;
       text-align: center;
-      overflow: hidden; /* Penting untuk animasi flow */
+      overflow: hidden;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 255, 157, 0.1);
       
-      /* Animasi Spawn Card */
       opacity: 0;
       transform: scale(0.7) translateY(50px) rotateX(-20deg);
       animation: spawnCard 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.2s forwards;
@@ -137,7 +132,6 @@
       transition: transform 0.4s, box-shadow 0.4s;
     }
 
-    /* Efek Hover 3D Rame */
     .bio-card:hover {
       transform: scale(1.05) translateY(-10px) rotateX(5deg) rotateY(2deg);
       box-shadow: 0 30px 70px rgba(0, 0, 0, 1), 0 0 40px rgba(0, 255, 157, 0.4);
@@ -147,7 +141,7 @@
       to { opacity: 1; transform: scale(1) translateY(0) rotateX(0deg); }
     }
 
-    /* Animasi Cahaya Neon Mengalir (Border Flow) */
+    /* Animasi Cahaya Neon Border */
     .bio-card::before {
       content: '';
       position: absolute;
@@ -179,10 +173,21 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* --- DEKORASI LOGO XBOX --- */
+    .xbox-logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px auto;
+      filter: drop-shadow(0 0 12px #00ff9d);
+      animation: xboxGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes xboxGlow {
+      from { filter: drop-shadow(0 0 8px #00ff9d); transform: scale(1); }
+      to { filter: drop-shadow(0 0 20px #00ff9d); transform: scale(1.08); }
+    }
 
     /* --- ELEMEN HUD & TEKS --- */
-    
-    /* Garis HUD yang bergerak di atas dan bawah */
     .hud-line {
       position: absolute;
       left: 10%;
@@ -207,19 +212,19 @@
       background: rgba(0, 255, 157, 0.1);
       border: 1px solid #00ff9d;
       color: #00ff9d;
-      padding: 7px 20px;
+      padding: 6px 18px;
       font-size: 0.8rem;
       font-weight: 800;
       letter-spacing: 2px;
       border-radius: 30px;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
       text-transform: uppercase;
       box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
     }
 
     .dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background-color: #00ff9d;
       border-radius: 50%;
       box-shadow: 0 0 10px #00ff9d;
@@ -233,7 +238,7 @@
     }
 
     .bio-card h1 {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       font-weight: 900;
       letter-spacing: 4px;
       color: #ffffff;
@@ -251,7 +256,7 @@
     .info-box {
       background: rgba(255, 255, 255, 0.04);
       border-radius: 14px;
-      padding: 15px 20px;
+      padding: 12px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -265,17 +270,18 @@
     }
 
     .info-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #a1a1aa;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
+    /* Warna Teks Ditingkatkan ke Hijau Neon Terang agar Mudah Dibaca */
     .info-val {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: #0004ff;
+      color: #00ff9d;
       text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
     }
 
@@ -302,8 +308,14 @@
     <div class="hud-line hud-top"></div>
     <div class="hud-line hud-bottom"></div>
 
+    <div class="xbox-logo">
+      <svg viewBox="0 0 24 24" fill="#00ff9d" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.93 14.88c-.68.53-1.87 1.07-3.93 1.07-2.06 0-3.25-.54-3.93-1.07-.44-.34-.41-.7.09-1.08 1.48-1.12 3.01-2.22 3.84-2.83.21-.15.43-.22.66-.22s.45.07.66.22c.83.61 2.36 1.71 3.84 2.83.5.38.53.74.09 1.08zm2.66-9.15c.57.81.91 1.79.91 2.85 0 1.25-.48 2.39-1.27 3.25-1.16-.92-2.38-1.82-3.32-2.52.27-.37.52-.77.74-1.21 1.22-.92 2.37-1.8 2.94-2.37zm-13.18 0c.57.57 1.72 1.45 2.94 2.37.22.44.47.84.74 1.21-.94.7-2.16 1.6-3.32 2.52C4.48 12.97 4 11.83 4 10.58c0-1.06.34-2.04.91-2.85z"/>
+      </svg>
+    </div>
+
     <div class="status-badge">
-      <span class="dot"></span> Authorized Player
+      <span class="dot"></span> Xbox Player
     </div>
 
     <h1>RAIHAN</h1>
