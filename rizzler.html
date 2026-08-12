@@ -726,70 +726,217 @@
         font-size: 0.68rem;
       }
 
-      .sigil-wrap {
+      .cast-wrap {
         display: grid;
         place-items: center;
         text-align: center;
       }
 
-      .sigil {
+      .cast-panel {
+        width: min(860px, 100%);
+        background: rgba(27, 13, 56, 0.96);
+        border: 1px solid rgba(223, 231, 239, 0.18);
+        clip-path: polygon(26px 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%, 0 26px);
+        box-shadow: var(--shadow-glow);
+        padding: 26px;
+      }
+
+      .cast-topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.6rem 0.9rem;
+        background: rgba(13, 148, 136, 0.1);
+        border: 1px solid rgba(13, 148, 136, 0.35);
+        color: var(--teal-soft);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 0.68rem;
+      }
+
+      .status-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--teal-soft);
+        transform: rotate(45deg);
+        box-shadow: 0 0 10px var(--teal-soft);
+      }
+
+      .score-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.9rem;
+        background: rgba(255, 0, 127, 0.08);
+        border: 1px solid rgba(255, 0, 127, 0.3);
+        color: var(--magenta-soft);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 0.68rem;
+      }
+
+      .score-box strong {
+        color: var(--silver-bright);
+      }
+
+      .game-area {
         position: relative;
-        width: min(360px, 70vw);
-        aspect-ratio: 1;
-        display: grid;
-        place-items: center;
+        height: 220px;
+        background: linear-gradient(180deg, rgba(49, 89, 140, 0.28), rgba(16, 6, 36, 0.9));
+        border: 1px solid rgba(223, 231, 239, 0.12);
+        overflow: hidden;
       }
 
-      .sigil-core {
+      .game-area.hidden {
+        display: none;
+      }
+
+      .game-bar {
         position: absolute;
-        width: 110px;
-        height: 110px;
-        display: grid;
-        place-items: center;
-        z-index: 4;
+        left: 50%;
+        top: 50%;
+        width: min(520px, 80%);
+        height: 26px;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(223, 231, 239, 0.28);
+        background: rgba(16, 6, 36, 0.82);
+        box-shadow: inset 0 0 16px rgba(0, 240, 255, 0.08);
       }
 
-      .sigil svg {
+      .game-bar::before {
+        content: "";
         position: absolute;
         inset: 0;
+        background: linear-gradient(90deg, rgba(0, 240, 255, 0.12), rgba(255, 0, 127, 0.1));
       }
 
-      .sigil .ring-outer {
-        animation: spin 30s linear infinite;
+      .control-bar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 96px;
+        height: 16px;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(90deg, var(--cyan), var(--teal-soft));
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
       }
 
-      .sigil .ring-mid {
-        animation: spinReverse 24s linear infinite;
+      .fish-bar {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 54px;
+        height: 10px;
+        transform: translateY(-50%);
+        background: linear-gradient(180deg, var(--magenta-soft), var(--silver-bright));
+        box-shadow: 0 0 12px rgba(255, 0, 127, 0.25);
       }
 
-      .sigil .ring-inner {
-        animation: spin 18s linear infinite;
+      .progress-track {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        width: min(520px, 80%);
+        height: 12px;
+        transform: translateX(-50%);
+        border: 1px solid rgba(223, 231, 239, 0.18);
+        background: rgba(16, 6, 36, 0.9);
       }
 
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--magenta), var(--rb-yellow), var(--teal-soft), var(--cyan));
+        box-shadow: 0 0 16px rgba(255, 0, 127, 0.18);
+        transition: width 120ms linear;
       }
 
-      @keyframes spinReverse {
-        from { transform: rotate(360deg); }
-        to { transform: rotate(0deg); }
+      .cast-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 22px;
       }
 
-      .sigil-caption {
-        margin-top: 26px;
-        font-family: "Cormorant Garamond", serif;
-        font-size: 1.7rem;
-        font-style: italic;
-      }
-
-      .sigil-sub {
-        margin-top: 8px;
+      .cast-btn, .reel-btn {
+        border: 0;
+        cursor: pointer;
         font-family: "Rajdhani", sans-serif;
-        letter-spacing: 0.26em;
         text-transform: uppercase;
-        color: var(--magenta-soft);
+        letter-spacing: 0.18em;
+        padding: 0.86rem 1.5rem;
+        clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+        transition: transform 200ms ease, box-shadow 200ms ease;
+      }
+
+      .cast-btn {
+        background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-soft) 100%);
+        color: #12071f;
+        font-weight: 700;
+        box-shadow: 0 0 18px rgba(255, 0, 127, 0.2);
+      }
+
+      .reel-btn {
+        background: linear-gradient(135deg, var(--cyan) 0%, var(--teal-soft) 100%);
+        color: #12071f;
+        font-weight: 700;
+        box-shadow: 0 0 18px rgba(0, 240, 255, 0.2);
+      }
+
+      .cast-btn:hover, .reel-btn:hover {
+        transform: translateY(-2px) skewX(-2deg);
+      }
+
+      .cast-status {
+        margin-top: 16px;
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--silver-bright);
+        font-size: 0.7rem;
+      }
+
+      .catch-list {
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .catch-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.8rem;
+        border: 1px solid rgba(223, 231, 239, 0.15);
+        background: rgba(223, 231, 239, 0.04);
+        color: var(--silver-bright);
         font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .catch-tag::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--magenta);
+        transform: rotate(45deg);
       }
 
       footer {
@@ -924,7 +1071,6 @@
             <li><a href="#about">Identitas</a></li>
             <li><a href="#hobby">Hobi</a></li>
             <li><a href="#manifesto">Manifesto</a></li>
-            <li><a href="#sigil">Sigil</a></li>
           </ul>
         </nav>
       </div>
@@ -1008,7 +1154,6 @@
             </p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="#about">Lihat Profil</a>
-              <a class="btn btn-secondary" href="#sigil">Jelajahi Sigil</a>
             </div>
           </div>
         </div>
@@ -1166,46 +1311,32 @@
 
       <div class="chevron-strip" aria-hidden="true"></div>
 
-      <section id="sigil">
-        <div class="container sigil-wrap reveal">
-          <div class="sigil" aria-label="Sigil personal">
-            <svg class="ring-outer" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="180" cy="180" r="150" stroke="#dfe7ef" stroke-opacity="0.5" stroke-width="1.2" fill="none"/>
-              <circle cx="180" cy="180" r="126" stroke="#00f0ff" stroke-opacity="0.6" stroke-width="1" fill="none"/>
-              <path d="M180 30 L186 50 L180 70 L174 50 Z" fill="#00f0ff"/>
-              <path d="M180 330 L186 310 L180 290 L174 310 Z" fill="#ff007f"/>
-              <path d="M30 180 L50 186 L70 180 L50 174 Z" fill="#0d9488"/>
-              <path d="M330 180 L310 186 L290 180 L310 174 Z" fill="#00f0ff"/>
-            </svg>
+      <section id="cast">
+        <div class="container cast-wrap reveal">
+          <div class="cast-panel">
+            <div class="cast-topbar">
+              <div class="status-pill" id="gameState">Ready to cast</div>
+              <div class="score-box">Catch <strong id="scoreValue">0</strong></div>
+            </div>
 
-            <svg class="ring-mid" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="180,55 235,180 180,305 125,180" fill="none" stroke="#00f0ff" stroke-opacity="0.6" stroke-width="1.1"/>
-              <polygon points="180,80 210,180 180,280 150,180" fill="none" stroke="#ff007f" stroke-opacity="0.6" stroke-width="1"/>
-            </svg>
+            <div class="game-area hidden" aria-label="Mini game area" id="gameArea">
+              <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+              <div class="game-bar" id="gameBar">
+                <div class="fish-bar" id="fishBar"></div>
+                <div class="control-bar" id="controlBar"></div>
+              </div>
+            </div>
 
-            <svg class="ring-inner" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="180" cy="180" r="90" fill="none" stroke="#dfe7ef" stroke-opacity="0.4" stroke-width="0.9"/>
-              <path d="M180 100 L228 180 L180 260 L132 180 Z" fill="none" stroke="#0d9488" stroke-opacity="0.8" stroke-width="1.2"/>
-            </svg>
+            <div class="cast-actions">
+              <button type="button" class="cast-btn" id="castBtn">Cast</button>
+            </div>
 
-            <div class="sigil-core">
-              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="sigilBlade" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stop-color="#dfe7ef"/>
-                    <stop offset="40%" stop-color="#6be6ff"/>
-                    <stop offset="100%" stop-color="#4b2c8d"/>
-                  </linearGradient>
-                </defs>
-                <path d="M60 12 L68 42 L60 92 L52 42 Z" fill="url(#sigilBlade)"/>
-                <path d="M36 42 H84 L78 48 H42 Z" fill="#0d9488"/>
-                <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
-                <circle cx="60" cy="72" r="8" fill="#ff007f"/>
-              </svg>
+            <div class="cast-status" id="castStatus">Klik Cast untuk mulai memancing.</div>
+
+            <div class="catch-list" id="catchList" aria-live="polite">
+              <span class="catch-tag">Lure: Aquabloom</span>
             </div>
           </div>
-          <div class="sigil-caption">Sigil Pribadi</div>
-          <div class="sigil-sub">Ditempa di kelas 9B</div>
         </div>
       </section>
     </main>
@@ -1259,6 +1390,165 @@
       );
 
       revealItems.forEach((item) => observer.observe(item));
+
+      const gameArea = document.getElementById('gameArea');
+      const gameBar = document.getElementById('gameBar');
+      const controlBar = document.getElementById('controlBar');
+      const fishBar = document.getElementById('fishBar');
+      const progressFill = document.getElementById('progressFill');
+      const castBtn = document.getElementById('castBtn');
+      const gameState = document.getElementById('gameState');
+      const scoreValue = document.getElementById('scoreValue');
+      const castStatus = document.getElementById('castStatus');
+      const catchList = document.getElementById('catchList');
+
+      let score = 0;
+      let roundActive = false;
+      let controlX = 0;
+      let fishX = 0;
+      let fishVel = 1.3;
+      let progress = 0;
+      let isHolding = false;
+      let animationId = null;
+
+      const speciesPool = [
+        'Abyss Pike',
+        'Sky Koi',
+        'Nova Tuna',
+        'Prism Carp',
+        'Void Ray',
+        'Solar Mackerel'
+      ];
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      function updateScore() {
+        scoreValue.textContent = String(score);
+      }
+
+      function updateBarVisuals() {
+        const trackWidth = gameBar.clientWidth;
+        const controlWidth = controlBar.offsetWidth;
+        const fishWidth = fishBar.offsetWidth;
+
+        controlBar.style.left = `${controlX}px`;
+        fishBar.style.left = `${fishX}px`;
+        progressFill.style.width = `${progress}%`;
+
+        const maxControl = trackWidth - controlWidth;
+        const maxFish = trackWidth - fishWidth;
+        controlX = clamp(controlX, 0, maxControl);
+        fishX = clamp(fishX, 0, maxFish);
+      }
+
+      function addCatchTag(name) {
+        const tag = document.createElement('span');
+        tag.className = 'catch-tag';
+        tag.textContent = name;
+        catchList.prepend(tag);
+
+        while (catchList.children.length > 5) {
+          catchList.removeChild(catchList.lastChild);
+        }
+      }
+
+      function stopRound() {
+        roundActive = false;
+        if (animationId) cancelAnimationFrame(animationId);
+        animationId = null;
+        isHolding = false;
+        if (gameArea) gameArea.classList.add('hidden');
+        gameState.textContent = 'Ready to cast';
+        castStatus.textContent = 'Klik Cast untuk mulai memancing.';
+      }
+
+      function resetRound() {
+        const trackWidth = gameBar.clientWidth || 520;
+        const controlWidth = controlBar.offsetWidth || 96;
+        const fishWidth = fishBar.offsetWidth || 54;
+
+        controlX = (trackWidth - controlWidth) / 2;
+        fishX = Math.random() * Math.max(0, trackWidth - fishWidth);
+        fishVel = (Math.random() > 0.5 ? 1 : -1) * (1.2 + Math.random() * 2.0);
+        progress = 0;
+        gameState.textContent = 'Line in the water';
+        castStatus.textContent = 'Tahan klik kiri untuk mendorong kontrol ke kanan.';
+        updateBarVisuals();
+      }
+
+      function loopGame() {
+        if (!roundActive) return;
+
+        const trackWidth = gameBar.clientWidth || 520;
+        const controlWidth = controlBar.offsetWidth || 96;
+        const fishWidth = fishBar.offsetWidth || 54;
+
+        if (isHolding) {
+          controlX += 5.5;
+        } else {
+          controlX -= 3.2;
+        }
+
+        controlX = clamp(controlX, 0, trackWidth - controlWidth);
+
+        fishX += fishVel;
+        if (fishX <= 0 || fishX >= trackWidth - fishWidth) {
+          fishVel *= -1;
+          fishX = clamp(fishX, 0, trackWidth - fishWidth);
+        }
+
+        const controlLeft = controlX;
+        const controlRight = controlLeft + controlWidth;
+        const fishLeft = fishX;
+        const fishRight = fishLeft + fishWidth;
+        const overlap = Math.max(0, Math.min(controlRight, fishRight) - Math.max(controlLeft, fishLeft));
+
+        if (overlap > 0) {
+          const gain = (overlap / Math.max(controlWidth, 1)) * 0.45;
+          progress += gain;
+        } else {
+          progress -= 0.08;
+        }
+
+        progress = clamp(progress, 0, 100);
+        updateBarVisuals();
+
+        if (progress >= 100) {
+          const species = speciesPool[Math.floor(Math.random() * speciesPool.length)];
+          score += 1;
+          updateScore();
+          addCatchTag(species);
+          castStatus.textContent = `Berhasil! Kamu dapat ${species}.`;
+          gameState.textContent = 'Catch confirmed';
+          stopRound();
+          return;
+        }
+
+        animationId = requestAnimationFrame(loopGame);
+      }
+
+      function startRound() {
+        if (roundActive) return;
+        roundActive = true;
+        if (gameArea) gameArea.classList.remove('hidden');
+        resetRound();
+        animationId = requestAnimationFrame(loopGame);
+      }
+
+      gameBar.addEventListener('pointerdown', (event) => {
+        if (!roundActive || event.button !== 0) return;
+        isHolding = true;
+        castStatus.textContent = 'Control bergerak ke kanan. Lepaskan klik untuk turun.';
+      });
+
+      window.addEventListener('pointerup', () => {
+        isHolding = false;
+      });
+
+      castBtn.addEventListener('click', startRound);
+
+      updateScore();
+      stopRound();
     </script>
   </body>
 </html>
