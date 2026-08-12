@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvest Town — Biodata Petani Interaktif</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root{
+    --sky-1:#FFD89B; --sky-2:#FFAB76; --sky-3:#FF8C61;
+    --grass-1:#A8D877; --grass-2:#7BC04C; --grass-3:#5A9E3A;
+    --soil:#8B5A2B; --soil-dark:#5D3A1A;
+    --wood:#8B5A2B; --wood-light:#B8895C;
+    --sunset:#FF6B35; --water:#4ECDC4; --water-deep:#2A9D8F;
+    --accent:#F4D35E; --accent-2:#FF9F1C;
+    --pink:#FF9FB2; --leaf:#52B788;
+    --snow:#F0F4F8; --autumn:#D88C44;
+    --text-dark:#3D2817; --text-cream:#FFF8E7;
+  }
+  *{box-sizing:border-image;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--text-dark);
+    overflow-x:hidden; background:var(--sky-1);
+    margin:0; transition:background 1.5s ease;
+  }
+  body.night{ background:#1a2740; color:var(--text-cream); }
+  body.night .pixel-card{ background:rgba(20,30,55,0.92); border-color:rgba(244,211,94,0.4); }
+  body.night .pixel-card h3, body.night .pixel-card p{ color:var(--text-cream); }
+  .pixel-font{font-family:'Silkscreen',monospace; letter-spacing:1px;}
+  .retro-font{font-family:'VT323',monospace; font-size:1.3em;}
+  
+  /* SKY CANVAS */
+  #skyCanvas{ position:fixed; inset:0; z-index:0; pointer-events:none; transition:opacity 0.6s;}
+  
+  /* CLOUDS */
+  .cloud{
+    position:absolute; background:#fff; border-radius:50px;
+    opacity:0.85; pointer-events:none;
+    box-shadow: 30px 0 0 -5px #fff, -25px 5px 0 -8px #fff, 50px 8px 0 -10px #fff;
+  }
+  body.night .cloud{ opacity:0.2; background:#94a3b8;}
+  
+  /* MOUNTAINS */
+  .mountain{
+    position:absolute; bottom:18vh; pointer-events:none;
+    filter:drop-shadow(0 -2px 0 rgba(0,0,0,0.08));
+  }
+  
+  /* HERO GROUND */
+  .hero-ground{
+    position:relative; min-height:100vh;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 60%, var(--grass-1) 60%, var(--grass-2) 80%, var(--grass-3) 100%);
+  }
+  body.night .hero-ground{
+    background: linear-gradient(180deg, transparent 0%, transparent 60%, #2d3a4f 60%, #1f2937 80%, #131a26 100%);
+  }
+  
+  /* WALKING CHARACTER */
+  .walker{
+    position:absolute; bottom:18vh; left:0;
+    width:48px; height:64px; z-index:30;
+    transition:transform 0.2s;
+  }
+  .walker.flip{ transform:scaleX(-1);}
+  .walker .speech{
+    position:absolute; top:-50px; left:50%; transform:translateX(-50%);
+    background:#fff; padding:8px 14px; border-radius:14px;
+    border:3px solid var(--text-dark);
+    font-family:'Silkscreen',monospace; font-size:11px;
+    white-space:nowrap; box-shadow:4px 4px 0 var(--text-dark);
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+  }
+  .walker .speech::after{
+    content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border:6px solid transparent; border-top-color:#fff;
+    filter:drop-shadow(0 3px 0 var(--text-dark));
+  }
+  .walker .speech.show{ opacity:1; animation:bob 1.5s ease-in-out infinite;}
+  @keyframes bob{ 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-4px);} }
+  
+  .leg-left, .leg-right{
+    position:absolute; bottom:0; width:8px; height:18px;
+    background:#3D2817; border-radius:2px;
+    transform-origin: top center;
+  }
+  .leg-left{ left:14px; }
+  .leg-right{ left:26px; }
+  .walker.walking .leg-left{ animation: walkL 0.35s ease-in-out infinite; }
+  .walker.walking .leg-right{ animation: walkR 0.35s ease-in-out infinite; }
+  @keyframes walkL{ 0%,100%{transform:rotate(20deg);} 50%{transform:rotate(-20deg);} }
+  @keyframes walkR{ 0%,100%{transform:rotate(-20deg);} 50%{transform:rotate(20deg);} }
+  
+  .arm-left, .arm-right{
+    position:absolute; top:24px; width:6px; height:18px;
+    background:#FFD89B; border-radius:2px;
+    transform-origin: top center;
+  }
+  .arm-left{ left:6px; }
+  .arm-right{ right:6px; }
+  .walker.walking .arm-left{ animation: walkR 0.35s ease-in-out infinite; }
+  .walker.walking .arm-right{ animation: walkL 0.35s ease-in-out infinite; }
+  
+  /* Pixel card */
+  .pixel-card{
+    background:#FFF8E7; border:4px solid var(--text-dark);
+    border-radius:6px; box-shadow:6px 6px 0 var(--text-dark);
+    position:relative; transition:all 0.3s;
+  }
+  .pixel-card:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--text-dark);}
+  .pixel-card::before{
+    content:''; position:absolute; inset:4px;
+    border:2px dashed rgba(61,40,23,0.15); border-radius:3px;
+    pointer-events:none;
+  }
+  
+  /* HEADER NAV */
+  .top-bar{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(61,40,23,0.95); color:var(--text-cream);
+    padding:10px 20px; display:flex; justify-content:space-between; align-items:center;
+    border-bottom:4px solid var(--accent);
+    backdrop-filter:blur(6px);
+  }
+  .top-bar .logo{
+    font-family:'Silkscreen',monospace; font-size:18px; color:var(--accent);
+    text-shadow:2px 2px 0 #000;
+  }
+  .nav-btn{
+    background:transparent; color:var(--text-cream); border:2px solid transparent;
+    padding:6px 12px; font-family:'Silkscreen',monospace; font-size:11px;
+    cursor:pointer; transition:all 0.2s; border-radius:4px;
+  }
+  .nav-btn:hover{ background:var(--accent); color:var(--text-dark);}
+  
+  /* START button */
+  .start-btn{
+    background:var(--accent); color:var(--text-dark);
+    font-family:'Silkscreen',monospace; font-size:14px;
+    padding:14px 28px; border:4px solid var(--text-dark);
+    box-shadow:6px 6px 0 var(--text-dark);
+    cursor:pointer; transition:all 0.15s;
+    text-shadow:1px 1px 0 #fff;
+  }
+  .start-btn:hover{ transform:translate(2px,2px); box-shadow:4px 4px 0 var(--text-dark);}
+  .start-btn:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--text-dark);}
+  
+  /* SEASON TAB */
+  .season-tab{
+    flex:1; padding:14px 8px; cursor:pointer;
+    font-family:'Silkscreen',monospace; font-size:12px;
+    background:rgba(255,248,231,0.5); border:3px solid var(--text-dark);
+    transition:all 0.2s; text-align:center;
+  }
+  .season-tab.active{ background:var(--accent); transform:translateY(-4px); box-shadow:0 4px 0 var(--text-dark);}
+  .season-tab:not(.active):hover{ background:rgba(244,211,94,0.5);}
+  
+  /* GROWING PLANTS */
+  .plot{
+    aspect-ratio:1; background:var(--soil); border:3px solid var(--soil-dark);
+    border-radius:4px; cursor:pointer; position:relative;
+    box-shadow: inset 0 4px 0 rgba(0,0,0,0.2);
+    transition:transform 0.15s;
+  }
+  .plot:hover{ transform:scale(1.03);}
+  .plot::before{
+    content:''; position:absolute; inset:0;
+    background-image:
+      radial-gradient(circle at 30% 30%, rgba(0,0,0,0.15) 1px, transparent 2px),
+      radial-gradient(circle at 70% 60%, rgba(0,0,0,0.15) 1px, transparent 2px),
+      radial-gradient(circle at 50% 80%, rgba(0,0,0,0.15) 1px, transparent 2px);
+    background-size:20px 20px;
+  }
+  .crop{
+    position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
+    transition:all 0.5s; font-size:0;
+  }
+  .stage-0 .crop{ height:0;}
+  .stage-1 .crop{ height:8px;}
+  .stage-2 .crop{ height:18px;}
+  .stage-3 .crop{ height:28px; animation:sway 2s ease-in-out infinite;}
+  @keyframes sway{ 0%,100%{transform:translateX(-50%) rotate(-3deg);} 50%{transform:translateX(-50%) rotate(3deg);} }
+  
+  /* FIELDS BG */
+  .farm-row{
+    height:80px; background:
+      repeating-linear-gradient(90deg, var(--soil) 0 60px, var(--soil-dark) 60px 62px, var(--soil) 62px 120px);
+    border-top:4px solid var(--grass-3);
+    position:relative; overflow:hidden;
+  }
+  
+  /* Floating elements */
+  .float{ animation: floatY 3s ease-in-out infinite;}
+  @keyframes floatY{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+  
+  /* Particles */
+  .particle{ position:absolute; pointer-events:none; }
+  
+  /* Mini game */
+  #gameCanvas{
+    background: linear-gradient(180deg, #87CEEB 0%, #B5E48C 70%, #7BC04C 100%);
+    border:4px solid var(--text-dark); border-radius:6px;
+    box-shadow:6px 6px 0 var(--text-dark);
+    image-rendering:pixelated;
+    cursor:none;
+  }
+  
+  /* Tag chips */
+  .chip{
+    display:inline-block; padding:4px 10px; margin:3px;
+    background:var(--accent); border:2px solid var(--text-dark);
+    border-radius:20px; font-size:12px; font-weight:700;
+    box-shadow:2px 2px 0 var(--text-dark);
+    transition:all 0.2s;
+  }
+  .chip:hover{ transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--text-dark);}
+  
+  /* Skill bar */
+  .skill-bar{
+    height:18px; background:rgba(61,40,23,0.15); border:2px solid var(--text-dark);
+    border-radius:10px; overflow:hidden; position:relative;
+  }
+  .skill-fill{
+    height:100%; background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15);
+  }
+  
+  /* Avatars */
+  .avatar-frame{
+    width:140px; height:140px; background:var(--accent);
+    border:4px solid var(--text-dark); border-radius:8px;
+    box-shadow:6px 6px 0 var(--text-dark);
+    position:relative; overflow:hidden;
+  }
+  
+  /* Day night indicator */
+  .time-orb{
+    width:50px; height:50px; border-radius:50%;
+    border:3px solid var(--text-dark);
+    box-shadow:4px 4px 0 var(--text-dark);
+    transition:all 1s;
+  }
+  
+  /* Contact cards */
+  .contact-card{
+    display:flex; align-items:center; gap:14px; padding:14px;
+    background:#FFF8E7; border:3px solid var(--text-dark);
+    border-radius:8px; box-shadow:4px 4px 0 var(--text-dark);
+    transition:all 0.2s; cursor:pointer;
+  }
+  .contact-card:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--text-dark);}
+  
+  /* Tree decoration */
+  .tree-deco{
+    position:absolute; bottom:0; pointer-events:none;
+  }
+  
+  /* Animal */
+  .animal{
+    position:absolute; bottom:18vh; width:32px; height:24px;
+    z-index:25; transition:transform 0.2s;
+  }
+  
+  /* Bouncing arrow */
+  .bounce-arrow{ animation: bounce 1.5s ease-in-out infinite;}
+  @keyframes bounce{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(10px);} }
+  
+  /* Title with shadow */
+  .game-title{
+    font-family:'Silkscreen',monospace;
+    color:var(--accent);
+    text-shadow:
+      3px 3px 0 var(--text-dark),
+      6px 6px 0 var(--soil-dark),
+      9px 9px 20px rgba(0,0,0,0.3);
+    letter-spacing:3px;
+  }
+  
+  /* Marquee */
+  .marquee{
+    background:var(--text-dark); color:var(--accent);
+    padding:8px 0; font-family:'Silkscreen',monospace; font-size:13px;
+    overflow:hidden; white-space:nowrap; border-top:3px solid var(--accent); border-bottom:3px solid var(--accent);
+  }
+  .marquee-content{ display:inline-block; animation: scroll 25s linear infinite; padding-left:100%;}
+  @keyframes scroll{ 0%{transform:translateX(0);} 100%{transform:translateX(-100%);} }
+  
+  /* Hide scrollbar but keep functionality */
+  body{ scrollbar-width:thin; scrollbar-color:var(--accent) var(--text-dark);}
+  ::-webkit-scrollbar{width:12px;}
+  ::-webkit-scrollbar-track{background:var(--text-dark);}
+  ::-webkit-scrollbar-thumb{background:var(--accent); border:2px solid var(--text-dark);}
+  
+  /* Section title */
+  .section-title{
+    font-family:'Silkscreen',monospace; font-size:32px;
+    color:var(--text-dark); text-align:center;
+    text-shadow: 3px 3px 0 var(--accent);
+    margin-bottom:8px; letter-spacing:2px;
+  }
+  body.night .section-title{ color:var(--accent); text-shadow:3px 3px 0 #000;}
+  
+  /* Toast */
+  .toast{
+    position:fixed; top:80px; right:20px; z-index:200;
+    background:var(--accent); color:var(--text-dark);
+    padding:12px 18px; border:3px solid var(--text-dark);
+    border-radius:6px; box-shadow:4px 4px 0 var(--text-dark);
+    font-family:'Silkscreen',monospace; font-size:12px;
+    transform:translateX(120%); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    max-width:300px;
+  }
+  .toast.show{ transform:translateX(0);}
+  
+  /* Custom cursor */
+  .basket-cursor{
+    position:fixed; width:32px; height:32px; pointer-events:none;
+    z-index:1000; transition:transform 0.1s;
+  }
+  
+  /* Mood selector */
+  .mood-btn{
+    padding:10px 16px; background:#FFF8E7; border:3px solid var(--text-dark);
+    border-radius:8px; box-shadow:3px 3px 0 var(--text-dark);
+    cursor:pointer; font-weight:700; transition:all 0.15s;
+  }
+  .mood-btn:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--text-dark);}
+  .mood-btn.active{ background:var(--accent); transform:translate(2px,2px); box-shadow:1px 1px 0 var(--text-dark);}
+  
+  /* Tree SVG container */
+  .tree-svg{ display:block;}
+  
+  @media (max-width:768px){
+    .game-title{ font-size:36px !important;}
+    .section-title{ font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="logo"><i class="fas fa-seedling"></i> HARVEST TOWN</div>
+  <div class="flex gap-1 items-center">
+    <button class="nav-btn" onclick="scrollToSection('hero')">HOME</button>
+    <button class="nav-btn" onclick="scrollToSection('about')">BIODATA</button>
+    <button class="nav-btn" onclick="scrollToSection('seasons')">MUSIM</button>
+    <button class="nav-btn" onclick="scrollToSection='farm'">FARM</button>
+    <button class="nav-btn" onclick="scrollToSection('game')">GAME</button>
+    <button class="nav-btn" onclick="scrollToSection('contact')">KONTAK</button>
+    <div class="time-orb ml-3" id="timeOrb" style="background:radial-gradient(circle at 30% 30%, #FFE066, #FF9F1C);"></div>
+  </div>
+</div>
+
+<!-- SKY BACKGROUND -->
+<canvas id="skyCanvas"></canvas>
+
+<!-- HERO SECTION -->
+<section id="hero" class="hero-ground relative" style="z-index:1;">
+  <!-- Mountains -->
+  <svg class="mountain" style="left:5%; width:200px;" viewBox="0 0 200 100">
+    <polygon points="0,100 60,20 120,100" fill="#6B8E5A" stroke="#3D2817" stroke-width="3"/>
+    <polygon points="60,20 80,40 100,30 120,100 60,100" fill="#7FA068" stroke="#3D2817" stroke-width="3"/>
+    <polygon points="50,30 70,15 90,40" fill="#fff" opacity="0.8"/>
+  </svg>
+  <svg class="mountain" style="right:8%; width:240px;" viewBox="0 0 240 120">
+    <polygon points="0,120 80,30 160,120" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
+    <polygon points="80,30 110,50 140,40 160,120 80,120" fill="#6BB04A" stroke="#3D2817" stroke-width="3"/>
+    <polygon points="70,40 90,25 110,45" fill="#fff" opacity="0.8"/>
+  </svg>
+  
+  <!-- Clouds -->
+  <div class="cloud" style="top:15%; left:10%; width:80px; height:25px; animation: floatY 6s ease-in-out infinite;"></div>
+  <div class="cloud" style="top:8%; left:50%; width:100px; height:30px; animation: floatY 8s ease-in-out infinite reverse;"></div>
+  <div class="cloud" style="top:20%; right:15%; width:70px; height:22px; animation: floatY 5s ease-in-out infinite;"></div>
+  
+  <!-- Walking character -->
+  <div class="walker walking" id="walker">
+    <div class="speech" id="speech">Halo! Selamat datang!</div>
+    <!-- Body parts -->
+    <div style="position:absolute; top:8px; left:8px; width:32px; height:28px; background:#FFD89B; border:3px solid #3D2817; border-radius:6px;"></div>
+    <!-- Hat -->
+    <div style="position:absolute; top:-2px; left:4px; width:40px; height:8px; background:#D88C44; border:3px solid #3D2817; border-radius:3px;"></div>
+    <div style="position:absolute; top:-12px; left:14px; width:20px; height:14px; background:#D88C44; border:3px solid #3D2817; border-radius:4px 4px 0 0;"></div>
+    <!-- Overall -->
+    <div style="position:absolute; top:22px; left:8px; width:32px; height:24px; background:#3D8BD8; border:3px solid #3D2817; border-radius:4px;"></div>
+    <div style="position:absolute; top:22px; left:14px; width:4px; height:18px; background:#3D2817;"></div>
+    <div style="position:absolute; top:22px; left:30px; width:4px; height:18px; background:#3D2817;"></div>
+    <!-- Arms -->
+    <div class="arm-left"></div>
+    <div class="arm-right"></div>
+    <!-- Legs -->
+    <div class="leg-left"></div>
+    <div class="leg-right"></div>
+  </div>
+  
+  <!-- Animal (chicken) -->
+  <div class="animal" id="chicken" style="right:15%;">
+    <div style="position:absolute; bottom:0; left:0; width:24px; height:18px; background:#fff; border:3px solid #3D2817; border-radius:50%;"></div>
+    <div style="position:absolute; bottom:10px; left:18px; width:12px; height:12px; background:#fff; border:3px solid #3D2817; border-radius:50%;"></div>
+    <div style="position:absolute; bottom:14px; left:24px; width:6px; height:5px; background:#FF9F1C; border:2px solid #3D2817; border-radius:50%;"></div>
+    <div style="position:absolute; top:0; left:20px; width:4px; height:4px; background:#FF6B35; border-radius:50%;"></div>
+    <div style="position:absolute; bottom:-2px; left:6px; width:3px; height:6px; background:#FF9F1C;"></div>
+    <div style="position:absolute; bottom:-2px; left:18px; width:3px; height:6px; background:#FF9F1C;"></div>
+  </div>
+  
+  <!-- Hero content -->
+  <div class="relative z-20 pt-24 px-6 text-center" style="z-index:20;">
+    <div class="inline-block mb-4 px-4 py-2 bg-white border-4 border-[#3D2817] rounded-lg shadow-[4px_4px_0_#3D2817]">
+      <span class="pixel-font text-sm" style="color:var(--text-dark);"><i class="fas fa-leaf" style="color:var(--grass-3);"></i> PETANI BERMUSIM • EDISI 2024</span>
+    </div>
+    <h1 class="game-title text-5xl md:text-7xl mb-4">HARVEST TOWN</h1>
+    <p class="text-xl md:text-2xl mb-2 font-bold" style="color:var(--text-dark); text-shadow:2px 2px 0 #fff;">Biodata Diri Petani Digital</p>
+    <p class="retro-font mb-8 px-4" style="color:var(--text-dark); font-size:1.4em;">"Hidup itu seperti bercocok tanam — apa yang kamu tanam, itulah yang kamu panen."</p>
+    
+    <div class="flex flex-wrap gap-4 justify-center mb-12">
+      <button class="start-btn" onclick="scrollToSection('game')">
+        <i class="fas fa-play"></i> START GAME
+      </button>
+      <button class="start-btn" onclick="scrollToSection('about')" style="background:#FF9FB2;">
+        <i class="fas fa-id-card"></i> LIHAT BIODATA
+      </button>
+    </div>
+  </div>
+  
+  <!-- Decorative trees at hero bottom -->
+  <div class="absolute bottom-0 left-0 right-0 flex justify-around items-end pointer-events-none" style="z-index:5;">
+    <!-- Tree 1 -->
+    <svg width="100" height="130" viewBox="0 0 100 130" class="tree-svg">
+      <rect x="42" y="80" width="16" height="50" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="50" cy="50" r="35" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="30" cy="60" r="22" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="70" cy="60" r="22" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="20" cy="35" r="8" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+      <circle cx="60" cy="30" r="8" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+      <circle cx="80" cy="45" r="8" fill="#F4D35E" stroke="#3D2817" stroke-width="2"/>
+    </svg>
+    <!-- Sunflower -->
+    <svg width="80" height="120" viewBox="0 0 80 120" class="tree-svg">
+      <rect x="36" y="60" width="8" height="60" fill="#5A9E3A" stroke="#3D2817" stroke-width="2"/>
+      <ellipse cx="30" cy="80" rx="10" ry="5" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
+      <ellipse cx="50" cy="95" rx="10" ry="5" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
+      <circle cx="40" cy="35" r="22" fill="#F4D35E" stroke="#3D2817" stroke-width="3"/>
+      <g fill="#8B5A2B">
+        <circle cx="40" cy="15" r="4"/><circle cx="55" cy="20" r="4"/>
+        <circle cx="62" cy="35" r="4"/><circle cx="60" cy="50" r="4"/>
+        <circle cx="50" cy="58" r="4"/><circle cx="30" cy="58" r="4"/>
+        <circle cx="20" cy="50" r="4"/><circle cx="18" cy="35" r="4"/>
+        <circle cx="25" cy="20" r="4"/>
+      </g>
+      <circle cx="40" cy="35" r="10" fill="#5D3A1A" stroke="#3D2817" stroke-width="2"/>
+    </svg>
+    <!-- Tree 2 -->
+    <svg width="110" height="140" viewBox="0 0 110 140" class="tree-svg">
+      <rect x="47" y="85" width="16" height="55" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="55" cy="55" r="38" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="30" cy="65" r="24" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="80" cy="65" r="24" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="55" cy="30" r="22" fill="#A8D877" stroke="#3D2817" stroke-width="3"/>
+    </svg>
+    <!-- Bush -->
+    <svg width="90" height="60" viewBox="0 0 90 60" class="tree-svg">
+      <ellipse cx="20" cy="40" rx="20" ry="18" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
+      <ellipse cx="45" cy="35" rx="22" ry="22" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
+      <ellipse cx="70" cy="42" rx="18" ry="16" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
+      <circle cx="35" cy="28" r="4" fill="#FF6B35"/>
+      <circle cx="60" cy="30" r="4" fill="#F4D35E"/>
+      <circle cx="50" cy="45" r="4" fill="#FF6B35"/>
+    </svg>
+  </div>
+  
+  <!-- Bounce arrow -->
+  <div class="bounce-arrow absolute bottom-4 left-1/2 -translate-x-1/2 text-3xl" style="color:var(--text-dark); z-index:20;">
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee relative" style="z-index:5;">
+  <div class="marquee-content">
+    <i class="fas fa-carrot"></i> PANEN MUSIM SEMI SUDAH DIMULAI! &nbsp;&nbsp; 
+    <i class="fas fa-fish"></i> IKAN MAS BESAR DI DANAU! &nbsp;&nbsp; 
+    <i class="fas fa-snowflake"></i> PESTA ANGSAL DI MUSIM DINGIN! &nbsp;&nbsp; 
+    <i class="fas fa-sun"></i> JANGAN LUPA MENYIRAM TANAMAN! &nbsp;&nbsp; 
+    <i class="fas fa-leaf"></i> MUSIM GUGUR MEMBUAWAR RESULTS! &nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- ABOUT / BIODATA SECTION -->
+<section id="about" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, var(--grass-2) 0%, var(--grass-1) 100%);">
+  <h2 class="section-title">BIODATA PETANI</h2>
+  <p class="text-center retro-font mb-10" style="font-size:1.4em;">~ Kenali sang petani lebih dekat ~</p>
+  
+  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
+    <!-- Avatar card -->
+    <div class="pixel-card p-6 text-center">
+      <div class="avatar-frame mx-auto mb-4">
+        <!-- Pixel avatar SVG -->
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          <rect x="0" y="0" width="100" height="100" fill="#87CEEB"/>
+          <rect x="0" y="70" width="100" height="30" fill="#7BC04C"/>
+          <!-- Hat -->
+          <rect x="25" y="15" width="50" height="8" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+          <rect x="35" y="5" width="30" height="14" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+          <!-- Head -->
+          <rect x="32" y="20" width="36" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+          <!-- Eyes -->
+          <rect x="38" y="30" width="5" height="6" fill="#3D2817"/>
+          <rect x="57" y="30" width="5" height="6" fill="#3D2817"/>
+          <!-- Mouth -->
+          <rect x="42" y="42" width="16" height="3" fill="#3D2817"/>
+          <!-- Body -->
+          <rect x="28" y="50" width="44" height="30" fill="#3D8BD8" stroke="#3D2817" stroke-width="2"/>
+          <!-- Overall straps -->
+          <rect x="36" y="50" width="4" height="20" fill="#3D2817"/>
+          <rect x="60" y="50" width="4" height="20" fill="#3D2817"/>
+          <!-- Button -->
+          <circle cx="50" cy="62" r="2" fill="#F4D35E"/>
+          <!-- Arms -->
+          <rect x="20" y="55" width="10" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+          <rect x="70" y="55" width="10" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+          <!-- Pitchfork -->
+          <rect x="80" y="40" width="3" height="40" fill="#8B5A2B" stroke="#3D2817" stroke-width="1"/>
+          <rect x="76" y="36" width="11" height="3" fill="#888" stroke="#3D2817" stroke-width="1"/>
+          <rect x="76" y="36" width="2" height="8" fill="#888"/>
+          <rect x="80" y="36" width="2" height="8" fill="#888"/>
+          <rect x="85" y="36" width="2" height="8" fill="#888"/>
+        </svg>
+      </div>
+      <h3 class="pixel-font text-lg" style="color:var(--text-dark);">RIZKY FARMER</h3>
+      <p class="retro-font" style="font-size:1.2em;">Petani / Nelayan / Pencinta Alam</p>
+      <div class="mt-3 flex flex-wrap justify-center">
+        <span class="chip">Lv. 25</span>
+        <span class="chip">Petani Master</span>
+      </div>
+    </div>
+    
+    <!-- Info card -->
+    <div class="pixel-card p-6 md:col-span-2">
+      <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">
+        <i class="fas fa-book-open"></i> INFORMASI DIRI
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 retro-font" style="font-size:1.2em;">
+        <div><i class="fas fa-user" style="color:var(--sunset);"></i> <strong>Nama:</strong> Rizky Pratama</div>
+        <div><i class="fas fa-calendar" style="color:var(--sunset);"></i> <strong>Umur:</strong> 22 Tahun</div>
+        <div><i class="fas fa-map-marker-alt" style="color:var(--sunset);"></i> <strong>Lokasi:</strong> Lembang, Bandung</div>
+        <div><i class="fas fa-graduation-cap" style="color:var(--sunset);"></i> <strong>Pendidikan:</strong> S1 Informatika</div>
+        <div><i class="fas fa-briefcase" style="color:var(--sunset);"></i> <strong>Pekerjaan:</strong> Mahasiswa & Petani</div>
+        <div><i class="fas fa-heart" style="color:var(--sunset);"></i> <strong>Status:</strong> Single & Ready to Plant</div>
+        <div class="col-span-2"><i class="fas fa-envelope" style="color:var(--sunset);"></i> <strong>Email:</strong> rizky.farmer@harvesttown.id</div>
+        <div class="col-span-2"><i class="fas fa-phone" style="color:var(--sunset);"></i> <strong>Telepon:</strong> +62 812-3456-7890</div>
+      </div>
+      
+      <h3 class="pixel-font text-xl mt-6 mb-3" style="color:var(--text-dark);">
+        <i class="fas fa-quote-left"></i> TENTANG SAYA
+      </h3>
+      <p class="leading-relaxed" style="color:var(--text-dark);">
+        Halo teman-teman! Saya Rizky, seorang mahasiswa yang mencintai dunia pertanian dan teknologi. Saya tumbuh di desa yang dikelilingi sawah dan kebun. Hobi saya bercocok tanam, memancing, dan membuat proyek-proyek kreatif. Saya percaya bahwa gabungan alam dan teknologi bisa menciptakan keajaiban kecil setiap harinya!
+      </p>
+      
+      <!-- Mood selector -->
+      <div class="mt-5">
+        <p class="font-bold mb-2"><i class="fas fa-face-smile"></i> Mood hari ini:</p>
+        <div class="flex flex-wrap gap-2">
+          <button class="mood-btn" data-mood="happy" onclick="setMood('happy', this)">😊 Senang</button>
+          <button class="mood-btn" data-mood="tired" onclick="setMood('tired', this)">😴 Ngantuk</button>
+          <button class="mood-btn" data-mood="excited" onclick="setMood('excited', this)">🤩 Semangat</button>
+          <button class="mood-btn" data-mood="curious" onclick="setMood('curious', this)">🤔 Penasaran</button>
+        </div>
+        <p id="moodResponse" class="retro-font mt-2" style="font-size:1.2em; color:var(--soil-dark);">Pilih mood dulu yuk!</p>
+      </div>
+    </div>
+    
+    <!-- Skills -->
+    <div class="pixel-card p-6 md:col-span-3">
+      <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">
+        <i class="fas fa-star"></i> SKILL PETANI
+      </h3>
+      <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">🌱 Bertani</span><span class="retro-font">Lv. 8 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="80%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">🎣 Memancing</span><span class="retro-font">Lv. 7 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="70%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">🍳 Memasak</span><span class="retro-font">Lv. 6 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="60%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">⛏️ Menambang</span><span class="retro-font">Lv. 5 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="50%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">💻 Coding</span><span class="retro-font">Lv. 9 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="90%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-bold">🎨 Desain</span><span class="retro-font">Lv. 7 / 10</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-target="70%"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hobbies -->
+    <div class="pixel-card p-6 md:col-span-3">
+      <h3 class="pixel-font text-xl mb-3" style="color:var(--text-dark);">
+        <i class="fas fa-palette"></i> HOBI & MINAT
+      </h3>
+      <div class="flex flex-wrap">
+        <span class="chip">📸 Fotografi Alam</span>
+        <span class="chip">🎮 Game Indie</span>
+        <span class="chip">📚 Membaca Novel</span>
+        <span class="chip">🎸 Bermain Gitar</span>
+        <span class="chip">🏞️ Mendaki Gunung</span>
+        <span class="chip">🍳 Masak Masakan Rumah</span>
+        <span class="chip">🐟 Memancing</span>
+        <span class="chip">🌱 Berkebun</span>
+        <span class="chip">✏️ Menggambar Pixel Art</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEASONS SECTION -->
+<section id="seasons" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, var(--grass-1) 0%, var(--accent) 100%);">
+  <h2 class="section-title">EMPAT MUSIM DISEMESTER</h2>
+  <p class="text-center retro-font mb-8" style="font-size:1.4em;">~ Klik tab musim untuk melihat adegan ~</p>
+  
+  <div class="max-w-5xl mx-auto">
+    <!-- Season tabs -->
+    <div class="flex gap-2 mb-6 flex-wrap">
+      <button class="season-tab active" data-season="spring" onclick="changeSeason('spring')">
+        <i class="fas fa-seedling"></i> MUSIM SEMI
+      </button>
+      <button class="season-tab" data-season="summer" onclick="changeSeason('summer')">
+        <i class="fas fa-sun"></i> MUSIM PANAS
+      </button>
+      <button class="season-tab" data-season="autumn" onclick="changeSeason('autumn')">
+        <i class="fas fa-tree"></i> MUSIM GUGUR
+      </button>
+      <button class="season-tab" data-season="winter" onclick="changeSeason('winter')">
+        <i class="fas fa-snowflake"></i> MUSIM DINGIN
+      </button>
+    </div>
+    
+    <!-- Season scene -->
+    <div class="pixel-card p-2 overflow-hidden" style="height:380px;">
+      <div id="seasonScene" class="w-full h-full relative overflow-hidden rounded">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+    
+    <!-- Season info -->
+    <div class="pixel-card p-6 mt-6" id="seasonInfo">
+      <h3 class="pixel-font text-xl mb-2" style="color:var(--text-dark);" id="seasonTitle">MUSIM SEMI 🌱</h3>
+      <p class="retro-font" style="font-size:1.2em;" id="seasonDesc">
+        Musim bunga yang indah! Bunga-bunga mulai mekar, biji-bijian ditanam, dan udara terasa segar. Waktu terbaik untuk memulai kebun baru!
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 retro-font" style="font-size:1.1em;">
+        <div><i class="fas fa-temperature-half"></i> <strong>Suhu:</strong> <span id="seasonTemp">15-22°C</span></div>
+        <div><i class="fas fa-cloud-rain"></i> <strong>Cuaca:</strong> <span id="seasonWeather">Berawan</span></div>
+        <div><i class="fas fa-leaf"></i> <strong>Tanaman:</strong> <span id="seasonCrops">Bunga, Strawberry</span></div>
+        <div><i class="fas fa-trophy"></i> <span id="seasonFestival">Festival Bunga</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FARM INTERACTIVE -->
+<section id="farm" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, var(--accent) 0%, var(--grass-2) 100%);">
+  <h2 class="section-title">KEBUN INTERAKTIF</h2>
+  <p class="text-center retro-font mb-6" style="font-size:1.4em;">~ Klik petak tanah untuk menanam! ~</p>
+  
+  <div class="max-w-4xl mx-auto pixel-card p-6">
+    <div class="flex flex-wrap gap-4 mb-4 items-center justify-between">
+      <div class="retro-font" style="font-size:1.2em;">
+        <i class="fas fa-coins" style="color:var(--accent-2);"></i> Koin: <span id="coinCount">50</span>
+      </div>
+      <div class="retro-font" style="font-size:1.2em;">
+        <i class="fas fa-basket-shopping" style="color:var(--sunset);"></i> Panen: <span id="harvestCount">0</span>
+      </div>
+      <div class="flex gap-2">
+        <button class="start-btn" style="padding:8px 14px; font-size:11px;" onclick="plantSeed('carrot')">
+          <i class="fas fa-carrot"></i> Wortel (5🪙)
+        </button>
+        <button class="start-btn" style="padding:8px 14px; font-size:11px; background:#FF9FB2;" onclick="plantSeed('tomato')">
+          <i class="fas fa-apple-whole"></i> Tomat (8🪙)
+        </button>
+        <button class="start-btn" style="padding:8px 14px; font-size:11px; background:#A8D877;" onclick="plantSeed('pumpkin')">
+          <i class="fas fa-leaf"></i> Labu (12🪙)
+        </button>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-6 gap-2" id="farmGrid">
+      <!-- 6x3 = 18 plots -->
+    </div>
+    
+    <p class="text-center mt-4 retro-font" style="font-size:1.1em; color:var(--text-dark);">
+      💡 Klik biji di atas, lalu klik petak tanah. Tunggu beberapa detik untuk panen!
+    </p>
+  </div>
+</section>
+
+<!-- MINI GAME -->
+<section id="game" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, var(--grass-2) 0%, var(--grass-3) 100%);">
+  <h2 class="section-title">MINI GAME PANEN</h2>
+  <p class="text-center retro-font mb-6" style="font-size:1.4em;">~ Tangkap buah jatuh, hindari batu! ~</p>
+  
+  <div class="max-w-4xl mx-auto pixel-card p-4">
+    <div class="flex flex-wrap justify-between items-center mb-3 retro-font" style="font-size:1.3em;">
+      <div><i class="fas fa-star" style="color:var(--accent);"></i> Skor: <span id="gameScore">0</span></div>
+      <div><i class="fas fa-heart" style="color:#FF6B35;"></i> Nyawa: <span id="gameLives">3</span></div>
+      <div><i class="fas fa-clock" style="color:var(--text-dark);"></i> Waktu: <span id="gameTime">30</span>s</div>
+      <div><i class="fas fa-trophy" style="color:var(--accent-2);"></i> Best: <span id="gameBest">0</span></div>
+    </div>
+    
+    <div class="relative">
+      <canvas id="gameCanvas" width="800" height="450" class="w-full"></canvas>
+      <div id="gameOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded text-white">
+        <h3 class="pixel-font text-3xl mb-3" style="color:var(--accent);">GAME PANEN</h3>
+        <p class="retro-font mb-4 text-center px-4" style="font-size:1.3em;">
+          Tangkap buah dengan keranjang! <br/>
+          <span style="color:var(--accent);">Buah = +10 poin</span> • <span style="color:#FF6B35;">Batu = -1 nyawa</span>
+        </p>
+        <button class="start-btn" onclick="startGame()">
+          <i class="fas fa-play"></i> MULAI MAIN
+        </button>
+      </div>
+    </div>
+    
+    <p class="text-center mt-3 retro-font" style="font-size:1.1em;">
+      🖱️ Gerakkan mouse untuk mengontrol keranjang!
+    </p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, var(--grass-3) 0%, var(--soil) 100%);">
+  <h2 class="section-title" style="color:var(--accent); text-shadow:3px 3px 0 #000;">HUBUNGI SAYA</h2>
+  <p class="text-center retro-font mb-8" style="font-size:1.4em; color:var(--text-cream);">~ Mari berteman di media sosial ~</p>
+  
+  <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-4">
+    <div class="contact-card" onclick="showToast('📧 Email disalin!')">
+      <div style="width:50px; height:50px; background:#FF6B35; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div>
+        <div class="font-bold">Email</div>
+        <div class="retro-font" style="font-size:1.1em;">rizky.farmer@harvesttown.id</div>
+      </div>
+    </div>
+    
+    <div class="contact-card" onclick="showToast('📱 WhatsApp dibuka!')">
+      <div style="width:50px; height:50px; background:#25D366; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
+        <i class="fab fa-whatsapp"></i>
+      </div>
+      <div>
+        <div class="font-bold">WhatsApp</div>
+        <div class="retro-font" style="font-size:1.1em;">+62 812-3456-7890</div>
+      </div>
+    </div>
+    
+    <div class="contact-card" onclick="showToast('📷 Instagram dibuka!')">
+      <div style="width:50px; height:50px; background:linear-gradient(45deg, #F58529, #DD2A7B, #8134AF); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
+        <i class="fab fa-instagram"></i>
+      </div>
+      <div>
+        <div class="font-bold">Instagram</div>
+        <div class="retro-font" style="font-size:1.1em;">@rizky.harvesttown</div>
+      </div>
+    </div>
+    
+    <div class="contact-card" onclick="showToast('🐙 GitHub dibuka!')">
+      <div style="width:50px; height:50px; background:#1a1a1a; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
+        <i class="fab fa-github"></i>
+      </div>
+      <div>
+        <div class="font-bold">GitHub</div>
+        <div class="retro-font" style="font-size:1.1em;">github.com/rizkyfarmer</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Send message form -->
+  <div class="max-w-3xl mx-auto pixel-card p-6 mt-8">
+    <h3 class="pixel-font text-lg mb-4" style="color:var(--text-dark);">
+      <i class="fas fa-paper-plane"></i> KIRIM PESAN
+    </h3>
+    <div class="grid md:grid-cols-2 gap-4">
+      <input type="text" placeholder="Nama kamu" class="p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;">
+      <input type="email" placeholder="Email kamu" class="p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;">
+    </div>
+    <textarea placeholder="Tulis pesan untuk sang petani..." rows="4" class="w-full mt-4 p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;"></textarea>
+    <button class="start-btn mt-4 w-full" onclick="showToast('🌾 Pesan terkirim! Terima kasih sudah menyapa!')">
+      <i class="fas fa-paper-plane"></i> KIRIM PESAN
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative py-8 px-6 text-center" style="background:var(--text-dark); color:var(--text-cream); z-index:5;">
+  <div class="pixel-font text-lg mb-2" style="color:var(--accent);">HARVEST TOWN</div>
+  <p class="retro-font" style="font-size:1.2em;">Dibuat dengan 💛 oleh Rizky Pratama • 2024</p>
+  <p class="text-sm mt-2 opacity-70">"Bertani itu bukan soal hasil, tapi soal menikmati prosesnya."</p>
+  <div class="flex justify-center gap-4 mt-4 text-2xl">
+    <i class="fas fa-seedling" style="color:var(--grass-2);"></i>
+    <i class="fas fa-sun" style="color:var(--accent);"></i>
+    <i class="fas fa-tree" style="color:var(--grass-3);"></i>
+    <i class="fas fa-snowflake" style="color:#A8D8FF;"></i>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Basket cursor for game -->
+<div class="basket-cursor" id="basketCursor" style="display:none;">
+  <svg viewBox="0 0 32 32" width="32" height="32">
+    <path d="M4 14 L28 14 L26 28 L6 28 Z" fill="#8B5A2B" stroke="#3D2817" stroke-width="2"/>
+    <path d="M4 14 L28 14" stroke="#3D2817" stroke-width="2"/>
+    <path d="M10 14 L12 28 M16 14 L16 28 M22 14 L20 28" stroke="#5D3A1A" stroke-width="1.5"/>
+  </svg>
+</div>
+
+<script>
+/* ============== UTILITIES ============== */
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+/* ============== SKY CANVAS ============== */
+const skyCanvas = document.getElementById('skyCanvas');
+const skyCtx = skyCanvas.getContext('2d');
+let skyW, skyH;
+let stars = [];
+let particles = [];
+
+function resizeSky(){
+  skyW = skyCanvas.width = window.innerWidth;
+  skyH = skyCanvas.height = window.innerHeight;
+}
+resizeSky();
+window.addEventListener('resize', resizeSky);
+
+// Create stars
+for(let i=0; i<80; i++){
+  stars.push({
+    x: Math.random()*skyW,
+    y: Math.random()*skyH*0.6,
+    r: Math.random()*1.5+0.5,
+    twinkle: Math.random()*Math.PI*2
+  });
+}
+
+// Particle types based on theme
+function spawnParticle(type){
+  const colors = {
+    petal: ['#FF9FB2', '#FFC8DD', '#FFD89B'],
+    sun: ['#FFE066', '#FFD35E', '#FF9F1C'],
+    leaf: ['#D88C44', '#E8A857', '#A0522D'],
+    snow: ['#fff', '#F0F4F8', '#E0E7FF']
+  };
+  const c = colors[type] || colors.petal;
+  return {
+    x: Math.random()*skyW,
+    y: -10,
+    vx: (Math.random()-0.5)*1.5,
+    vy: Math.random()*1.5 + 0.5,
+    size: Math.random()*8 + 4,
+    color: c[Math.floor(Math.random()*c.length)],
+    type: type,
+    rot: Math.random()*Math.PI*2,
+    vr: (Math.random()-0.5)*0.1
+  };
+}
+
+let currentParticleType = 'petal';
+
+function drawSky(){
+  skyCtx.clearRect(0,0,skyW,skyH);
+  
+  const isNight = document.body.classList.contains('night');
+  
+  // Stars at night
+  if(isNight){
+    stars.forEach(s=>{
+      s.twinkle += 0.05;
+      const alpha = 0.4 + Math.sin(s.twinkle)*0.3;
+      skyCtx.fillStyle = `rgba(255,255,255,${alpha})`;
+      skyCtx.beginPath();
+      skyCtx.arc(s.x, s.y, Math.max(0.1, s.r), 0, Math.PI*2);
+      skyCtx.fill();
+    });
+    
+    // Moon
+    skyCtx.fillStyle = '#FFF8E7';
+    skyCtx.beginPath();
+    skyCtx.arc(skyW-100, 100, 40, 0, Math.PI*2);
+    skyCtx.fill();
+    skyCtx.fillStyle = 'rgba(0,0,0,0.1)';
+    skyCtx.beginPath();
+    skyCtx.arc(skyW-90, 95, 35, 0, Math.PI*2);
+    skyCtx.fill();
+  }
+  
+  // Particles
+  particles.forEach((p,i)=>{
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rot += p.vr;
+    
+    if(p.y > skyH) particles.splice(i,1);
+    
+    skyCtx.save();
+    skyCtx.translate(p.x, p.y);
+    skyCtx.rotate(p.rot);
+    skyCtx.fillStyle = p.color;
+    
+    if(p.type === 'snow'){
+      skyCtx.beginPath();
+      skyCtx.arc(0,0, Math.max(0.5, p.size/3), 0, Math.PI*2);
+      skyCtx.fill();
+    } else if(p.type === 'leaf'){
+      skyCtx.beginPath();
+      skyCtx.ellipse(0,0, Math.max(0.5,p.size/2), Math.max(0.5,p.size), 0, 0, Math.PI*2);
+      skyCtx.fill();
+    } else if(p.type === 'sun'){
+      skyCtx.globalAlpha = 0.6;
+      skyCtx.beginPath();
+      skyCtx.arc(0,0, Math.max(0.5,p.size/2), 0, Math.PI*2);
+      skyCtx.fill();
+    } else { // petal
+      skyCtx.beginPath();
+      skyCtx.ellipse(0,0, Math.max(0.5,p.size), Math.max(0.5,p.size/2), 0, 0, Math.PI*2);
+      skyCtx.fill();
+    }
+    skyCtx.restore();
+  });
+  
+  // Spawn new particles
+  if(Math.random() < 0.3 && particles.length < 50){
+    particles.push(spawnParticle(currentParticleType));
+  }
+  
+  requestAnimationFrame(drawSky);
+}
+drawSky();
+
+/* ============== DAY/NIGHT CYCLE ============== */
+let timePhase = 0; // 0=morning, 1=noon, 2=evening, 3=night
+const timeOrb = document.getElementById('timeOrb');
+const phases = [
+  { bg:'var(--sky-1)', orb:'radial-gradient(circle at 30% 30%, #FFE066, #FF9F1C)', night:false, name:'Pagi' },
+  { bg:'#87CEEB', orb:'radial-gradient(circle at 30% 30%, #FFFF00, #FFD700)', night:false, name:'Siang' },
+  { bg:'#FF8C61', orb:'radial-gradient(circle at 30% 30%, #FF6B35, #C73E1D)', night:false, name:'Sore' },
+  { bg:'#1a2740', orb:'radial-gradient(circle at 30% 30%, #F0F4F8, #94A3B8)', night:true, name:'Malam' }
+];
+
+function setTimePhase(p){
+  timePhase = p;
+  const phase = phases[p];
+  document.body.style.background = phase.bg;
+  document.body.classList.toggle('night', phase.night);
+  timeOrb.style.background = phase.orb;
+  showToast(`🌤️ Sekarang waktu: ${phase.name}`);
+}
+
+// Click time orb to change time
+timeOrb.addEventListener('click', ()=>{
+  setTimePhase((timePhase+1)%4);
+});
+
+// Auto cycle every 30 seconds
+setInterval(()=>{
+  setTimePhase((timePhase+1)%4);
+}, 30000);
+
+/* ============== WALKING CHARACTER ============== */
+const walker = document.getElementById('walker');
+const speech = document.getElementById('speech');
+let walkDir = 1; // 1=right, -1=left
+let walkPos = 0;
+let walkSpeed = 1.5;
+
+const greetings = [
+  "Halo! Selamat datang!",
+  "Coba klik aku ya!",
+  "Hari yang indah untuk bertani!",
+  "Lihat kebun di bawah!",
+  "Main game-nya yuk!",
+  "Jangan lupa siram tanaman!",
+  "Klik matahari di pojok atas!",
+  "Aku suka musim semi!",
+  "Panen sudah siap!",
+  "Pesan-pesan indah hari ini!"
+];
+
+function greet(){
+  speech.textContent = greetings[Math.floor(Math.random()*greetings.length)];
+  speech.classList.add('show');
+  setTimeout(()=>speech.classList.remove('show'), 3000);
+}
+
+// Walker auto walk
+function walk(){
+  walkPos += walkSpeed * walkDir;
+  const maxPos = window.innerWidth - 60;
+  if(walkPos > maxPos){ walkDir = -1; walker.classList.add('flip'); greet(); }
+  if(walkPos < 0){ walkDir = 1; walker.classList.remove('flip'); greet(); }
+  walker.style.left = walkPos + 'px';
+  requestAnimationFrame(walk);
+}
+walk();
+
+// Click walker
+walker.addEventListener('click', greet);
+// Random greet every 8-15 sec
+function randomGreet(){
+  greet();
+  setTimeout(randomGreet, 8000 + Math.random()*7000);
+}
+setTimeout(randomGreet, 3000);
+
+/* ============== CHICKEN WALK ============== */
+const chicken = document.getElementById('chicken');
+let chickenPos = window.innerWidth * 0.85;
+let chickenDir = -1;
+function chickenWalk(){
+  chickenPos += 0.5 * chickenDir;
+  if(chickenPos < window.innerWidth*0.5){ chickenDir = 1; chicken.style.transform='scaleX(-1)'; }
+  if(chickenPos > window.innerWidth*0.95){ chickenDir = -1; chicken.style.transform='scaleX(1)'; }
+  chicken.style.right = (window.innerWidth - chickenPos) + 'px';
+  requestAnimationFrame(chickenWalk);
+}
+chickenWalk();
+
+/* ============== SKILL BARS ANIMATION ============== */
+const skillObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.skill-fill').forEach(f=>{
+        f.style.width = f.dataset.target;
+      });
+    }
+  });
+}, {threshold:0.3});
+skillObserver.observe(document.getElementById('about'));
+
+/* ============== MOOD SELECTOR ============== */
+const moodResponses = {
+  happy: "Yeay! Aku lagi senang banget hari ini! 🌻",
+  tired: "Hmm... kemarin panen sampai malam, ngantuk banget! 😴",
+  excited: "Wuuu! Ada festival panen besok! Semangat! 🎉",
+  curious: "Aku penasaran, tanaman apakah yang akan tumbuh baik musim ini? 🤔"
+};
+function setMood(m, el){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('moodResponse').textContent = moodResponses[m];
+}
+
+/* ============== SEASONS ============== */
+const seasonData = {
+  spring: {
+    title: 'MUSIM SEMI 🌱',
+    desc: 'Musim bunga yang indah! Bunga-bunga mulai mekar, biji-bijian ditanam, dan udara terasa segar. Waktu terbaik untuk memulai kebun baru!',
+    temp: '15-22°C',
+    weather: 'Berawan',
+    crops: 'Bunga, Strawberry',
+    festival: 'Festival Bunga',
+    particle: 'petal',
+    bg: 'linear-gradient(180deg, #FFD89B 0%, #FFAB76 50%, #A8D877 100%)'
+  },
+  summer: {
+    title: 'MUSIM PANAS ☀️',
+    desc: 'Matahari bersinar terang! Waktu terbaik untuk memanen tomat, semangka, dan jagung. Jangan lupa siram tanaman secara teratur!',
+    temp: '25-35°C',
+    weather: 'Cerah',
+    crops: 'Tomat, Semangka, Jagung',
+    festival: 'Festival Pantai',
+    particle: 'sun',
+    bg: 'linear-gradient(180deg, #FFE066 0%, #FF9F1C 50%, #FFD89B 100%)'
+  },
+  autumn: {
+    title: 'MUSIM GUGUR 🍂',
+    desc: 'Daun-daun mulai berubah warna menjadi oranye dan coklat. Waktu panen utama! Labu, apel, dan anggur siap dipanen.',
+    temp: '10-18°C',
+    weather: 'Sejuk',
+    crops: 'Labu, Apel, Anggur',
+    festival: 'Festival Panen',
+    particle: 'leaf',
+    bg: 'linear-gradient(180deg, #D88C44 0%, #A0522D 50%, #8B5A2B 100%)'
+  },
+  winter: {
+    title: 'MUSIM DINGIN ❄️',
+    desc: 'Salju turun dan menutupi tanah. Waktu untuk istirahat dan menikmati hangatnya kakao. Beberapa tanaman seperti wortel musim dingin masih bisa dipanen.',
+    temp: '-5 to 5°C',
+    weather: 'Bersalju',
+    crops: 'Wortel Salju, Kale',
+    festival: 'Festival Anjangsalju',
+    particle: 'snow',
+    bg: 'linear-gradient(180deg, #B8D4E3 0%, #E0E7FF 50%, #F0F4F8 100%)'
+  }
+};
+
+function drawSeasonScene(season){
+  const scene = document.getElementById('seasonScene');
+  scene.style.background = seasonData[season].bg;
+  
+  let html = '';
+  
+  // Trees/elements based on season
+  if(season === 'spring'){
+    html += `
+      <!-- Sun -->
+      <div style="position:absolute; top:20px; right:20px; width:60px; height:60px; background:radial-gradient(circle, #FFE066, #FF9F1C); border-radius:50%; box-shadow:0 0 40px #FFE066;"></div>
+      <!-- Clouds -->
+      <div style="position:absolute; top:40px; left:15%; width:80px; height:25px; background:#fff; border-radius:30px; opacity:0.9;"></div>
+      <div style="position:absolute; top:60px; left:40%; width:100px; height:30px; background:#fff; border-radius:30px; opacity:0.9;"></div>
+      <!-- Cherry blossom tree -->
+      <svg style="position:absolute; bottom:20px; left:10%;" width="140" height="180" viewBox="0 0 140 180">
+        <rect x="60" y="100" width="20" height="80" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="70" cy="70" r="40" fill="#FF9FB2" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="40" cy="80" r="28" fill="#FFC8DD" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="100" cy="80" r="28" fill="#FFC8DD" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="70" cy="40" r="25" fill="#FFD1E8" stroke="#3D2817" stroke-width="3"/>
+      </svg>
+      <!-- Flowers row -->
+      <div style="position:absolute; bottom:20px; left:35%; display:flex; gap:8px;">
+        ${[0,1,2,3,4,5].map(i=>`
+          <svg width="30" height="50" viewBox="0 0 30 50">
+            <rect x="14" y="20" width="2" height="30" fill="#5A9E3A"/>
+            <circle cx="15" cy="15" r="6" fill="#FFE066" stroke="#3D2817" stroke-width="1.5"/>
+            <circle cx="15" cy="15" r="2" fill="#8B5A2B"/>
+          </svg>
+        `).join('')}
+      </div>
+      <!-- Character planting -->
+      <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
+        <rect x="35" y="50" width="10" height="50" fill="#3D8BD8" stroke="#3D2817" stroke-width="2"/>
+        <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="22" y="10" width="36" height="6" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+        <rect x="32" y="2" width="16" height="12" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
+        <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <!-- Sunflower in hand -->
+        <circle cx="56" cy="50" r="6" fill="#FFE066" stroke="#3D2817" stroke-width="2"/>
+      </svg>
+      <!-- Grass ground -->
+      <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#7BC04C; border-top:3px solid #5A9E3A;"></div>
+    `;
+  } else if(season === 'summer'){
+    html += `
+      <!-- Big sun -->
+      <div style="position:absolute; top:20px; right:30px; width:80px; height:80px; background:radial-gradient(circle, #FFFF00, #FF9F1C); border-radius:50%; box-shadow:0 0 60px #FFE066; animation: floatY 3s ease-in-out infinite;"></div>
+      <!-- Palm tree -->
+      <svg style="position:absolute; bottom:20px; left:10%;" width="120" height="180" viewBox="0 0 120 180">
+        <path d="M55 180 Q50 100 60 30 L65 30 Q60 100 65 180 Z" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
+        <ellipse cx="40" cy="30" rx="25" ry="8" fill="#5A9E3A" stroke="#3D2817" stroke-width="2" transform="rotate(-30 40 30)"/>
+        <ellipse cx="80" cy="30" rx="25" ry="8" fill="#5A9E3A" stroke="#3D2817" stroke-width="2" transform="rotate(30 80 30)"/>
+        <ellipse cx="60" cy="20" rx="25" ry="8" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
+        <ellipse cx="60" cy="40" rx="25" ry="8" fill="#5A9E3A" stroke="#3D2817" stroke-width="2" transform="rotate(90 60 40)"/>
+      </svg>
+      <!-- Watermelon row -->
+      <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:15px;">
+        ${[0,1,2,3].map(i=>`
+          <svg width="50" height="40" viewBox="0 0 50 40">
+            <ellipse cx="25" cy="30" rx="20" ry="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="2"/>
+            <ellipse cx="25" cy="28" rx="18" ry="8" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
+            <path d="M10 28 Q15 25 20 28 M30 28 Q35 25 40 28" stroke="#3D2817" stroke-width="1.5" fill="none"/>
+          </svg>
+        `).join('')}
+      </div>
+      <!-- Character with watering can -->
+      <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
+        <rect x="35" y="50" width="10" height="50" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+        <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="22" y="10" width="36" height="6" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
+        <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <!-- Watering can -->
+        <rect x="55" y="45" width="14" height="12" fill="#4ECDC4" stroke="#3D2817" stroke-width="2"/>
+        <path d="M69 50 L80 45" stroke="#3D2817" stroke-width="3" fill="none"/>
+        <circle cx="80" cy="45" r="2" fill="#4ECDC4"/>
+      </svg>
+      <!-- Sand ground -->
+      <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#FFD89B; border-top:3px solid #D88C44;"></div>
+    `;
+  } else if(season === 'autumn'){
+    html += `
+      <!-- Setting sun -->
+      <div style="position:absolute; top:30px; right:30px; width:70px; height:70px; background:radial-gradient(circle, #FF6B35, #C73E1D); border-radius:50%; box-shadow:0 0 40px #FF6B35;"></div>
+      <!-- Orange tree -->
+      <svg style="position:absolute; bottom:20px; left:10%;" width="140" height="180" viewBox="0 0 140 180">
+        <rect x="60" y="100" width="20" height="80" fill="#5D3A1A" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="70" cy="70" r="40" fill="#D88C44" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="40" cy="80" r="28" fill="#A0522D" stroke="#3D2817" stroke-width="3"/>
+        <circle cx="100" cy="80" r="28" fill="#A0522D" stroke="#3D2817" stroke-width="3"/>
+        <!-- Falling leaves -->
+        <circle cx="50" cy="50" r="4" fill="#FF6B35"/>
+        <circle cx="90" cy="60" r="4" fill="#D88C44"/>
+        <circle cx="65" cy="100" r="4" fill="#A0522D"/>
+      </svg>
+      <!-- Pumpkins -->
+      <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:15px;">
+        ${[0,1,2,3].map(i=>`
+          <svg width="60" height="50" viewBox="0 0 60 50">
+            <ellipse cx="30" cy="40" rx="25" ry="10" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+            <ellipse cx="20" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
+            <ellipse cx="30" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
+            <ellipse cx="40" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
+            <rect x="28" y="25" width="4" height="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="1.5"/>
+          </svg>
+        `).join('')}
+      </div>
+      <!-- Character -->
+      <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
+        <rect x="35" y="50" width="10" height="50" fill="#8B5A2B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="22" y="10" width="36" height="6" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+        <rect x="32" y="2" width="16" height="12" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
+        <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <!-- Pumpkin in hand -->
+        <ellipse cx="58" cy="55" rx="6" ry="5" fill="#FF6B35" stroke="#3D2817" stroke-width="1.5"/>
+      </svg>
+      <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#8B5A2B; border-top:3px solid #5D3A1A;"></div>
+    `;
+  } else if(season === 'winter'){
+    html += `
+      <!-- Moon -->
+      <div style="position:absolute; top:30px; right:30px; width:70px; height:70px; background:radial-gradient(circle at 30% 30%, #fff, #C8D8E8); border-radius:50%; box-shadow:0 0 40px #fff;"></div>
+      <!-- Snow-covered pine tree -->
+      <svg style="position:absolute; bottom:20px; left:10%;" width="120" height="180" viewBox="0 0 120 180">
+        <rect x="55" y="140" width="14" height="40" fill="#5D3A1A" stroke="#3D2817" stroke-width="2"/>
+        <polygon points="62,20 30,80 94,80" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
+        <polygon points="62,50 25,110 99,110" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
+        <polygon points="62,90 20,150 104,150" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
+        <!-- Snow on tree -->
+        <polygon points="62,20 35,75 89,75" fill="#fff" opacity="0.85"/>
+        <polygon points="62,50 30,105 94,105" fill="#fff" opacity="0.7"/>
+        <polygon points="62,90 25,145 99,145" fill="#fff" opacity="0.6"/>
+      </svg>
+      <!-- Snowmen row -->
+      <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:30px;">
+        ${[0,1,2].map(i=>`
+          <svg width="50" height="80" viewBox="0 0 50 80">
+            <circle cx="25" cy="60" r="15" fill="#fff" stroke="#3D2817" stroke-width="2"/>
+            <circle cx="25" cy="35" r="10" fill="#fff" stroke="#3D2817" stroke-width="2"/>
+            <circle cx="22" cy="33" r="1.5" fill="#3D2817"/>
+            <circle cx="28" cy="33" r="1.5" fill="#3D2817"/>
+            <polygon points="23,37 30,38 23,40" fill="#FF9F1C"/>
+            <rect x="15" y="28" width="20" height="3" fill="#3D2817"/>
+            <rect x="18" y="25" width="14" height="3" fill="#3D2817"/>
+            <!-- Buttons -->
+            <circle cx="25" cy="55" r="1.5" fill="#3D2817"/>
+            <circle cx="25" cy="62" r="1.5" fill="#3D2817"/>
+          </svg>
+        `).join('')}
+      </div>
+      <!-- Character with coat -->
+      <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
+        <rect x="35" y="50" width="10" height="50" fill="#3D2817" stroke="#3D2817" stroke-width="2"/>
+        <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
+        <!-- Winter hat -->
+        <rect x="22" y="12" width="36" height="10" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+        <circle cx="40" cy="8" r="5" fill="#fff" stroke="#3D2817" stroke-width="2"/>
+        <!-- Scarf -->
+        <rect x="25" y="40" width="30" height="6" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+        <rect x="32" y="45" width="6" height="12" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="20" y="55" width="8" height="20" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+        <rect x="52" y="55" width="8" height="20" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
+      </svg>
+      <!-- Snow ground -->
+      <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#fff; border-top:3px solid #C8D8E8;"></div>
+    `;
+  }
+  
+  scene.innerHTML = html;
+}
+
+function changeSeason(s){
+  document.querySelectorAll('.season-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`[data-season="${s}"]`).classList.add('active');
+  const d = seasonData[s];
+  document.getElementById('seasonTitle').textContent = d.title;
+  document.getElementById('seasonDesc').textContent = d.desc;
+  document.getElementById('seasonTemp').textContent = d.temp;
+  document.getElementById('seasonWeather').textContent = d.weather;
+  document.getElementById('seasonCrops').textContent = d.crops;
+  document.getElementById('seasonFestival').textContent = d.festival;
+  currentParticleType = d.particle;
+  drawSeasonScene(s);
+  showToast(`🍂 Musim berubah ke: ${d.title}`);
+}
+// Init
+drawSeasonScene('spring');
+
+/* ============== FARM GRID ============== */
+const farmGrid = document.getElementById('farmGrid');
+const crops = {
+  carrot: { cost:5, emoji:'🥕', stages:['🌱','🌿','🥕'], growTime:4000, sell:8 },
+  tomato: { cost:8, emoji:'🍅', stages:['🌱','🌿','🍅'], growTime:6000, sell:12 },
+  pumpkin: { cost:12, emoji:'🎃', stages:['🌱','🌿','🎃'], growTime:8000, sell:20 }
+};
+let coins = 50;
+let harvestCount = 0;
+let selectedCrop = null;
+
+// Create 18 plots
+for(let i=0; i<18; i++){
+  const plot = document.createElement('div');
+  plot.className = 'plot';
+  plot.dataset.idx = i;
+  plot.dataset.stage = 'empty';
+  plot.innerHTML = `<div class="crop"></div>`;
+  plot.addEventListener('click', ()=>plantOnPlot(plot, i));
+  farmGrid.appendChild(plot);
+}
+
+function plantSeed(type){
+  if(coins < crops[type].cost){
+    showToast('🪙 Koin tidak cukup!');
+    return;
+  }
+  selectedCrop = type;
+  showToast(`🌱 Pilih petak untuk menanam ${crops[type].emoji}!`);
+}
+
+function plantOnPlot(plot, idx){
+  if(plot.dataset.stage !== 'empty'){
+    if(plot.dataset.stage === '3'){
+      // Harvest!
+      const cropType = plot.dataset.crop;
+      const sellPrice = crops[cropType].sell;
+      coins += sellPrice;
+      harvestCount++;
+      document.getElementById('coinCount').textContent = coins;
+      document.getElementById('harvestCount').textContent = harvestCount;
+      plot.dataset.stage = 'empty';
+      plot.className = 'plot';
+      plot.dataset.crop = '';
+      plot.querySelector('.crop').innerHTML = '';
+      showToast(`🎉 Panen! +${sellPrice} koin!`);
+    } else {
+      showToast('⏳ Tanaman belum tumbuh sempurna!');
+    }
+    return;
+  }
+  
+  if(!selectedCrop){
+    showToast('🌱 Pilih biji dulu di tombol atas!');
+    return;
+  }
+  
+  const crop = crops[selectedCrop];
+  if(coins < crop.cost){
+    showToast('🪙 Koin tidak cukup!');
+    return;
+  }
+  
+  coins -= crop.cost;
+  document.getElementById('coinCount').textContent = coins;
+  
+  plot.dataset.stage = '1';
+  plot.dataset.crop = selectedCrop;
+  plot.className = 'plot stage-1';
+  plot.querySelector('.crop').innerHTML = `<span style="font-size:14px;">${crop.stages[0]}</span>`;
+  
+  setTimeout(()=>{
+    if(plot.dataset.stage === '1'){
+      plot.dataset.stage = '2';
+      plot.className = 'plot stage-2';
+      plot.querySelector('.crop').innerHTML = `<span style="font-size:18px;">${crop.stages[1]}</span>`;
+    }
+  }, crop.growTime/2);
+  
+  setTimeout(()=>{
+    if(plot.dataset.stage === '2'){
+      plot.dataset.stage = '3';
+      plot.className = 'plot stage-3';
+      plot.querySelector('.crop').innerHTML = `<span style="font-size:28px;">${crop.stages[2]}</span>`;
+      showToast(`✨ ${crop.emoji} Siap dipanen! Klik petaknya!`);
+    }
+  }, crop.growTime);
+  
+  selectedCrop = null;
+}
+
+/* ============== MINI GAME ============== */
+const gameCanvas = document.getElementById('gameCanvas');
+const gameCtx = gameCanvas.getContext('2d');
+const gameOverlay = document.getElementById('gameOverlay');
+const basketCursor = document.getElementById('basketCursor');
+
+let game = {
+  running: false,
+  score: 0,
+  lives: 3,
+  time: 30,
+  basketX: 400,
+  basketY: 400,
+  items: [],
+  best: 0
+};
+
+// Resize canvas
+function fitCanvas(){
+  const ratio = gameCanvas.width / gameCanvas.height;
+  const w = gameCanvas.parentElement.clientWidth - 8;
+  gameCanvas.style.width = w + 'px';
+  gameCanvas.style.height = (w/ratio) + 'px';
+}
+fitCanvas();
+window.addEventListener('resize', fitCanvas);
+
+gameCanvas.addEventListener('mousemove', (e)=>{
+  const rect = gameCanvas.getBoundingClientRect();
+  game.basketX = (e.clientX - rect.left) * (gameCanvas.width / rect.width);
+  game.basketY = (e.clientY - rect.top) * (gameCanvas.height / rect.height);
+});
+
+gameCanvas.addEventListener('mouseenter', ()=>{
+  if(game.running) basketCursor.style.display = 'block';
+});
+gameCanvas.addEventListener('mouseleave', ()=>{
+  basketCursor.style.display = 'none';
+});
+
+document.addEventListener('mousemove', (e)=>{
+  basketCursor.style.left = (e.clientX - 16) + 'px';
+  basketCursor.style.top = (e.clientY - 16) + 'px';
+});
+
+function startGame(){
+  game.running = true;
+  game.score = 0;
+  game.lives = 3;
+  game.time = 30;
+  game.items = [];
+  gameOverlay.style.display = 'none';
+  basketCursor.style.display = 'block';
+  
+  document.getElementById('gameScore').textContent = '0';
+  document.getElementById('gameLives').textContent = '3';
+  document.getElementById('gameTime').textContent = '30';
+  
+  // Countdown
+  const timer = setInterval(()=>{
+    if(!game.running){ clearInterval(timer); return; }
+    game.time--;
+    document.getElementById('gameTime').textContent = game.time;
+    if(game.time <= 0){
+      endGame();
+      clearInterval(timer);
+    }
+  }, 1000);
+  
+  // Spawn items
+  const spawner = setInterval(()=>{
+    if(!game.running){ clearInterval(spawner); return; }
+    spawnItem();
+  }, 600);
+  
+  gameLoop();
+}
+
+function spawnItem(){
+  const types = [
+    { type:'apple', emoji:'🍎', points:10, bad:false },
+    { type:'carrot', emoji:'🥕', points:10, bad:false },
+    { type:'tomato', emoji:'🍅', points:10, bad:false },
+    { type:'pumpkin', emoji:'🎃', points:15, bad:false },
+    { type:'corn', emoji:'🌽', points:10, bad:false },
+    { type:'rock', emoji:'🪨', points:0, bad:true },
+    { type:'bomb', emoji:'💣', points:0, bad:true }
+  ];
+  const t = types[Math.floor(Math.random()*types.length)];
+  game.items.push({
+    x: Math.random()*(gameCanvas.width-40) + 20,
+    y: -30,
+    vy: 2 + Math.random()*2,
+    rot: 0,
+    vr: (Math.random()-0.5)*0.1,
+    ...t
+  });
+}
+
+function gameLoop(){
+  if(!game.running) return;
+  
+  // Clear
+  gameCtx.clearRect(0,0,gameCanvas.width, gameCanvas.height);
+  
+  // Background pattern (clouds)
+  gameCtx.fillStyle = 'rgba(255,255,255,0.4)';
+  gameCtx.beginPath();
+  gameCtx.arc(100, 60, 25, 0, Math.PI*2);
+  gameCtx.arc(140, 60, 30, 0, Math.PI*2);
+  gameCtx.arc(180, 60, 25, 0, Math.PI*2);
+  gameCtx.fill();
+  gameCtx.beginPath();
+  gameCtx.arc(600, 80, 30, 0, Math.PI*2);
+  gameCtx.arc(640, 80, 35, 0, Math.PI*2);
+  gameCtx.arc(680, 80, 25, 0, Math.PI*2);
+  gameCtx.fill();
+  
+  // Grass
+  gameCtx.fillStyle = '#5A9E3A';
+  gameCtx.fillRect(0, gameCanvas.height-20, gameCanvas.width, 20);
+  gameCtx.fillStyle = '#7BC04C';
+  for(let i=0; i<gameCanvas.width; i+=15){
+    gameCtx.fillRect(i, gameCanvas.height-25, 3, 8);
+  }
+  
+  // Update and draw items
+  for(let i=game.items.length-1; i>=0; i--){
+    const it = game.items[i];
+    it.y += it.vy;
+    it.rot += it.vr;
+    
+    // Check basket collision
+    const dx = it.x - game.basketX;
+    const dy = it.y - game.basketY;
+    if(Math.abs(dx) < 35 && Math.abs(dy) < 25 && it.y > game.basketY-20){
+      if(it.bad){
+        game.lives--;
+        document.getElementById('gameLives').textContent = game.lives;
+        showToast(`💥 Oh tidak! -1 nyawa`);
+        if(game.lives <= 0){
+          endGame();
+          return;
+        }
+      } else {
+        game.score += it.points;
+        document.getElementById('gameScore').textContent = game.score;
+      }
+      game.items.splice(i,1);
+      continue;
+    }
+    
+    // Remove if off screen
+    if(it.y > gameCanvas.height+30){
+      game.items.splice(i,1);
+      continue;
+    }
+    
+    // Draw item
+    gameCtx.save();
+    gameCtx.translate(it.x, it.y);
+    gameCtx.rotate(it.rot);
+    gameCtx.font = '32px sans-serif';
+    gameCtx.textAlign = 'center';
+    gameCtx.textBaseline = 'middle';
+    gameCtx.fillText(it.emoji, 0, 0);
+    gameCtx.restore();
+  }
+  
+  // Draw basket
+  gameCtx.save();
+  gameCtx.translate(game.basketX, game.basketY);
+  // Basket body
+  gameCtx.fillStyle = '#8B5A2B';
+  gameCtx.strokeStyle = '#3D2817';
+  gameCtx.lineWidth = 3;
+  gameCtx.beginPath();
+  gameCtx.moveTo(-35, -15);
+  gameCtx.lineTo(35, -15);
+  gameCtx.lineTo(28, 20);
+  gameCtx.lineTo(-28, 20);
+  gameCtx.closePath();
+  gameCtx.fill();
+  gameCtx.stroke();
+  // Top edge
+  gameCtx.fillStyle = '#A0522D';
+  gameCtx.fillRect(-38, -18, 76, 6);
+  gameCtx.strokeRect(-38, -18, 76, 6);
+  // Weave pattern
+  gameCtx.strokeStyle = '#5D3A1A';
+  gameCtx.lineWidth = 1.5;
+  for(let x=-25; x<=25; x+=8){
+    gameCtx.beginPath();
+    gameCtx.moveTo(x, -10);
+    gameCtx.lineTo(x-3, 18);
+    gameCtx.stroke();
+  }
+  for(let y=-5; y<=15; y+=6){
+    gameCtx.beginPath();
+    gameCtx.moveTo(-30, y);
+    gameCtx.lineTo(30, y);
+    gameCtx.stroke();
+  }
+  gameCtx.restore();
+  
+  requestAnimationFrame(gameLoop);
+}
+
+function endGame(){
+  game.running = false;
+  basketCursor.style.display = 'none';
+  if(game.score > game.best){
+    game.best = game.score;
+    document.getElementById('gameBest').textContent = game.best;
+  }
+  gameOverlay.style.display = 'flex';
+  gameOverlay.innerHTML = `
+    <h3 class="pixel-font text-3xl mb-3" style="color:var(--accent);">GAME OVER!</h3>
+    <p class="retro-font mb-2 text-center" style="font-size:1.5em;">Skor akhir: <strong style="color:var(--accent);">${game.score}</strong></p>
+    <p class="retro-font mb-4 text-center" style="font-size:1.2em;">Total panen: ${harvestCount} • Best: ${game.best}</p>
+    <button class="start-btn" onclick="startGame()">
+      <i class="fas fa-redo"></i> MAIN LAGI
+    </button>
+  `;
+}
+
+/* ============== INIT ============== */
+// Set initial time
+setTimePhase(0);
+// Greet on load
+setTimeout(()=>{
+  greet();
+  showToast('🌾 Selamat datang di Harvest Town!');
+}, 1000);
+
+// Smooth scroll for nav
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  if(btn.onclick === null){
+    btn.addEventListener('click', ()=>{
+      const text = btn.textContent.trim().toLowerCase();
+      const map = { 'home':'hero', 'biodata':'about', 'musim':'seasons', 'farm':'farm', 'game':'game', 'kontak':'contact' };
+      if(map[text]) scrollToSection(map[text]);
+    });
+  }
+});
+</script>
+</body>
+</html>
