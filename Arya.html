@@ -544,7 +544,7 @@
         }
 
         /* ==========================================================================
-           9. KARTU USIA OTOMATIS
+           9. KARTU USIA OTOMATIS & MOTIVASI
            ========================================================================== */
         .extra-card {
             grid-column: span 2;
@@ -617,6 +617,40 @@
             transition: var(--transition-normal);
         }
 
+        /* Kartu Motivasi Olahraga */
+        .motivation-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(45, 212, 191, 0.04) 100%);
+            border: 1px solid var(--color-border-hover);
+            border-radius: var(--border-radius-lg);
+            padding: 24px 32px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(16px);
+            animation: cardSlideIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.8s both;
+            transition: var(--transition-slow);
+        }
+
+        .motivation-card:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .motivation-card .quote-icon {
+            font-size: 1.6rem;
+            color: var(--color-primary-light);
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .motivation-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            font-style: italic;
+            line-height: 1.6;
+            letter-spacing: 0.2px;
+        }
+
         /* ==========================================================================
            10. INTERACTIVE ACTION BUTTONS
            ========================================================================== */
@@ -624,7 +658,7 @@
             display: flex;
             gap: 16px;
             justify-content: center;
-            animation: cardSlideIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.8s both;
+            animation: cardSlideIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.85s both;
         }
 
         .btn {
@@ -672,7 +706,7 @@
             gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
-            animation: cardSlideIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.85s both;
+            animation: cardSlideIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.9s both;
         }
 
         .status-chip {
@@ -825,6 +859,13 @@
 
         </main>
 
+        <div class="motivation-card">
+            <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+            <p class="motivation-text">
+                "Olahraga bukan hanya tentang menyehatkan tubuh fisik, tetapi juga tentang melatih kedisiplinan, mengasah ketangguhan mental, dan membentuk karakter pantang menyerah dalam menghadapi setiap tantangan."
+            </p>
+        </div>
+
         <div class="action-buttons">
             <button class="btn btn-primary" onclick="sapaUser()">
                 <i class="fa-solid fa-hand-wave"></i> Sapa Arya
@@ -909,26 +950,28 @@
                     
                     // Animasi acak
                     particle.style.setProperty('--dur', `${3 + Math.random() * 4}s`);
-                    particle.style.setProperty('--delay', `${Math.random() * 5}s`);
+                    particle.style.setProperty('--delay', `${Math.random() * 2}s`);
                     particle.style.setProperty('--max-opacity', `${0.3 + Math.random() * 0.5}`);
-                    
+
                     particlesContainer.appendChild(particle);
                 }
             }
         });
 
-        // 4. INTERAKSI TOMBOL
+        // 4. FUNGSI TOMBOL INTERAKTIF
         function sapaUser() {
-            alert("Halo! Terima kasih sudah mengunjungi biodata Arya Lesmana 👋");
+            alert("Halo! 👋 Terima kasih sudah berkunjung ke halaman biodata Arya Lesmana!");
         }
 
         function copyBiodata() {
-            const bioText = "Nama: Arya Lesmana\nKelas: 9B\nHobi: Olahraga\nTanggal Lahir: 11 Januari 2012";
-            navigator.clipboard.writeText(bioText).then(() => {
-                alert("Biodata berhasil disalin ke clipboard!");
-            }).catch(err => {
-                console.error("Gagal menyalin text: ", err);
-            });
+            const biodataText = "Nama: Arya Lesmana\nKelas: 9B\nHobi: Olahraga\nTanggal Lahir: 11 Januari 2012";
+            navigator.clipboard.writeText(biodataText)
+                .then(() => {
+                    alert("📋 Biodata berhasil disalin ke clipboard!");
+                })
+                .catch(() => {
+                    alert("Gagal menyalin biodata.");
+                });
         }
     </script>
 </body>
