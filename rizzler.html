@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muhammad Fariz Al-Hakim | Biodata</title>
+    <meta
+      name="description"
+      content="Biodata pribadi Muhammad Fariz Al-Hakim dengan desain futuristik cyberpunk dan aesthetic low-poly."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-void: #100624;
+        --bg-deep: #1a0d35;
+        --bg-mid: #220f46;
+        --bg-soft: #2d1b5d;
+
+        --cyan: #00f0ff;
+        --cyan-soft: #7cecff;
+        --cyan-dim: rgba(0, 240, 255, 0.25);
+
+        --teal: #0d9488;
+        --teal-soft: #34d399;
+        --teal-dim: rgba(13, 148, 136, 0.25);
+
+        --magenta: #ff007f;
+        --magenta-soft: #ff5ebc;
+        --magenta-dim: rgba(255, 0, 127, 0.25);
+
+        --silver: #dfe7ef;
+        --silver-bright: #f4f7ff;
+        --silver-dim: rgba(223, 231, 239, 0.3);
+
+        --rb-red: #ff3b30;
+        --rb-yellow: #ffd166;
+        --rb-green: #2dd4bf;
+        --rb-blue: #4cc9f0;
+
+        --shadow-glow: 0 0 20px rgba(0, 240, 255, 0.2), 0 0 40px rgba(255, 0, 127, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08), transparent 28%),
+          radial-gradient(circle at 80% 70%, rgba(255, 0, 127, 0.08), transparent 26%),
+          linear-gradient(180deg, var(--bg-void) 0%, #170b30 100%);
+        color: var(--silver-bright);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+        background-size: 26px 26px;
+        mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
+      }
+
+      ::selection {
+        background: var(--magenta);
+        color: #fff;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        backdrop-filter: blur(12px);
+        background: rgba(16, 6, 36, 0.7);
+        border-bottom: 1px solid rgba(223, 231, 239, 0.12);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 78px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-family: "Rajdhani", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 0.76rem;
+        color: var(--silver-bright);
+      }
+
+      .brand-mark {
+        width: 12px;
+        height: 12px;
+        background: var(--cyan);
+        transform: rotate(45deg);
+        box-shadow: 0 0 12px var(--cyan);
+      }
+
+      .brand span {
+        color: var(--cyan);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        position: relative;
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        color: var(--silver);
+        transition: 220ms ease;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+        width: 0;
+        height: 2px;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, var(--cyan), var(--magenta));
+        transition: width 200ms ease;
+        box-shadow: 0 0 12px var(--magenta);
+      }
+
+      .nav-links a:hover {
+        color: var(--cyan);
+        text-shadow: 0 0 12px var(--cyan-dim);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .hero {
+        position: relative;
+        padding: 84px 0 48px;
+      }
+
+      .hero-inner {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 80vh;
+        text-align: center;
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 28px;
+        color: var(--teal-soft);
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        font-family: "Rajdhani", sans-serif;
+        font-size: 0.72rem;
+      }
+
+      .eyebrow::before,
+      .eyebrow::after {
+        content: "";
+        width: 54px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--teal-soft), transparent);
+      }
+
+      .eyebrow .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--teal-soft);
+        transform: rotate(45deg);
+        box-shadow: 0 0 12px var(--teal-soft);
+      }
+
+      h1 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3.2rem, 9vw, 8rem);
+        line-height: 0.9;
+        letter-spacing: -0.05em;
+        text-transform: none;
+        font-weight: 600;
+      }
+
+      .gradient-text {
+        display: block;
+        background: linear-gradient(135deg, var(--cyan) 0%, #7a7bf8 25%, #b14aff 55%, var(--magenta) 100%);
+        background-size: 180% 180%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.28)) drop-shadow(0 0 30px rgba(255, 0, 127, 0.18));
+        animation: gradientShift 7s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      .hero-sub {
+        max-width: 760px;
+        margin: 26px auto 0;
+        color: rgba(223, 231, 239, 0.84);
+        font-size: 0.96rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        line-height: 1.9;
+      }
+
+      .hero-sub strong {
+        color: var(--cyan);
+        text-shadow: 0 0 10px var(--cyan-dim);
+      }
+
+      .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 34px;
+      }
+
+      .btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-width: 180px;
+        padding: 1rem 1.6rem;
+        color: #12071f;
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+        transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-soft) 100%);
+        box-shadow: 0 0 18px rgba(255, 0, 127, 0.22), 0 0 42px rgba(255, 0, 127, 0.12);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, var(--cyan) 0%, var(--teal-soft) 100%);
+        box-shadow: 0 0 18px rgba(0, 240, 255, 0.18), 0 0 42px rgba(13, 148, 136, 0.1);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px) skewX(-2deg);
+        filter: brightness(1.08);
+        box-shadow: 0 0 26px rgba(255, 0, 127, 0.22), 0 0 50px rgba(0, 240, 255, 0.18);
+      }
+
+      .sword-scene {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .sword {
+        position: absolute;
+        width: 140px;
+        opacity: 0.45;
+        transform: rotate(var(--rot));
+        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.22)) drop-shadow(0 0 20px rgba(255, 0, 127, 0.12));
+      }
+
+      .sword svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .sword.s-one { top: 12%; left: 6%; --rot: -18deg; }
+      .sword.s-two { top: 16%; right: 10%; --rot: 19deg; }
+      .sword.s-three { bottom: 7%; left: 12%; --rot: -26deg; }
+      .sword.s-four { bottom: 8%; right: 10%; --rot: 22deg; }
+
+      .chevron-strip {
+        height: 18px;
+        background:
+          repeating-linear-gradient(135deg, transparent 0 16px, rgba(223, 231, 239, 0.12) 16px 18px, transparent 18px 34px),
+          repeating-linear-gradient(45deg, transparent 0 16px, rgba(0, 240, 255, 0.12) 16px 18px, transparent 18px 34px);
+        opacity: 0.8;
+      }
+
+      section {
+        position: relative;
+        padding: 88px 0;
+      }
+
+      .section-head {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .section-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--cyan);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+
+      .section-kicker::before,
+      .section-kicker::after {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      }
+
+      .section-title {
+        margin-top: 18px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2.3rem, 5vw, 4rem);
+        line-height: 1.05;
+        color: var(--silver-bright);
+      }
+
+      .section-title em {
+        font-style: italic;
+        color: var(--cyan);
+        text-shadow: 0 0 18px var(--cyan-dim);
+      }
+
+      .profile-grid {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 42px;
+        align-items: stretch;
+      }
+
+      .avatar-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .diamond-avatar {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        display: grid;
+        place-items: center;
+        transform: rotate(45deg);
+      }
+
+      .diamond-avatar::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        background: linear-gradient(135deg, var(--cyan), var(--magenta), var(--teal));
+        box-shadow: 0 0 28px rgba(0, 240, 255, 0.2), 0 0 48px rgba(255, 0, 127, 0.17);
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      }
+
+      .diamond-avatar::after {
+        content: "";
+        position: absolute;
+        inset: 26px;
+        background: linear-gradient(160deg, rgba(21, 12, 38, 1), rgba(16, 6, 36, 1));
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      }
+
+      .avatar-inner {
+        position: relative;
+        z-index: 2;
+        transform: rotate(-45deg);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 3.1rem;
+        color: var(--cyan);
+        text-shadow: 0 0 22px rgba(0, 240, 255, 0.4);
+      }
+
+      .avatar-meta {
+        text-align: center;
+      }
+
+      .avatar-label {
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--teal-soft);
+        font-size: 0.7rem;
+      }
+
+      .avatar-sub {
+        margin-top: 8px;
+        color: var(--silver);
+        font-size: 0.82rem;
+      }
+
+      .info-panel {
+        position: relative;
+        background: rgba(27, 13, 56, 0.95);
+        border: 1px solid rgba(223, 231, 239, 0.28);
+        clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .info-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(223,231,239,.75), rgba(140,152,167,.2), rgba(223,231,239,.5));
+        clip-path: inherit;
+        z-index: 0;
+        opacity: 0.95;
+      }
+
+      .info-panel::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        background: linear-gradient(160deg, rgba(27, 13, 56, 0.96), rgba(16, 6, 36, 1));
+        clip-path: inherit;
+        z-index: 1;
+      }
+
+      .info-content {
+        position: relative;
+        z-index: 2;
+        padding: 40px 28px 30px;
+      }
+
+      .panel-corner {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--teal-soft);
+        transform: rotate(45deg);
+        box-shadow: 0 0 10px var(--teal-soft);
+        z-index: 3;
+      }
+
+      .panel-corner.tl { top: 14px; left: 14px; }
+      .panel-corner.tr { top: 14px; right: 14px; }
+      .panel-corner.bl { bottom: 14px; left: 14px; }
+      .panel-corner.br { bottom: 14px; right: 14px; }
+
+      .panel-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 20px;
+        color: var(--cyan);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+
+      .panel-label::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--cyan);
+        transform: rotate(45deg);
+        box-shadow: 0 0 10px var(--cyan);
+      }
+
+      .panel-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2.1rem, 4vw, 3.2rem);
+        line-height: 1.1;
+        margin-bottom: 26px;
+      }
+
+      .panel-title em {
+        font-style: italic;
+        color: var(--cyan);
+      }
+
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 26px;
+      }
+
+      .fact {
+        position: relative;
+        padding-left: 18px;
+        border-left: 1px solid rgba(13, 148, 136, 0.4);
+      }
+
+      .fact::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 8px;
+        width: 8px;
+        height: 8px;
+        background: var(--teal-soft);
+        transform: rotate(45deg);
+        box-shadow: 0 0 8px var(--teal-soft);
+      }
+
+      .fact-label {
+        font-family: "Rajdhani", sans-serif;
+        color: var(--teal-soft);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+      }
+
+      .fact-value {
+        margin-top: 6px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.4rem;
+        color: var(--silver-bright);
+      }
+
+      .fact-value em {
+        font-style: italic;
+        color: var(--cyan);
+      }
+
+      .fact-note {
+        margin-top: 8px;
+        color: rgba(223, 231, 239, 0.72);
+        font-size: 0.8rem;
+      }
+
+      .hobbies {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .card {
+        position: relative;
+        background: rgba(27, 13, 56, 0.9);
+        border: 1px solid rgba(223, 231, 239, 0.16);
+        clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+        overflow: hidden;
+        transition: transform 220ms ease, box-shadow 220ms ease;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(223,231,239,0.1), rgba(13,148,136,0.08));
+        opacity: 0.9;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 24px rgba(255, 0, 127, 0.15), 0 0 48px rgba(0, 240, 255, 0.12);
+      }
+
+      .card-glow {
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--rb-red), var(--rb-yellow), var(--rb-green), var(--rb-blue));
+        filter: blur(16px);
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .card:hover .card-glow {
+        opacity: 0.26;
+      }
+
+      .card-inner {
+        position: relative;
+        z-index: 2;
+        padding: 28px 22px 24px;
+      }
+
+      .card-no {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 3rem;
+        line-height: 1;
+        color: var(--magenta);
+        text-shadow: 0 0 8px rgba(255, 0, 127, 0.22);
+      }
+
+      .card-icon {
+        width: 46px;
+        height: 46px;
+        margin: 18px 0 12px;
+        color: var(--cyan);
+      }
+
+      .card h3 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+
+      .card h3 em {
+        font-style: italic;
+        color: var(--cyan);
+      }
+
+      .card p {
+        color: rgba(223, 231, 239, 0.7);
+        line-height: 1.8;
+        font-size: 0.86rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 16px;
+        padding: 0.55rem 0.9rem;
+        border: 1px solid rgba(255, 0, 127, 0.25);
+        background: rgba(255, 0, 127, 0.06);
+        color: var(--magenta-soft);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 0.62rem;
+      }
+
+      .badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--magenta);
+        transform: rotate(45deg);
+        box-shadow: 0 0 8px var(--magenta);
+      }
+
+      .quote-box {
+        position: relative;
+        background: rgba(27, 13, 56, 0.95);
+        border: 1px solid rgba(223, 231, 239, 0.18);
+        clip-path: polygon(30px 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+        box-shadow: var(--shadow-glow);
+      }
+
+      .quote-box::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(223,231,239,0.24), rgba(0,240,255,0.06), rgba(255,0,127,0.08));
+        z-index: 0;
+      }
+
+      .quote-box-inner {
+        position: relative;
+        z-index: 1;
+        padding: 50px 36px 42px;
+        text-align: center;
+      }
+
+      .quote-box-inner p {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        line-height: 1.5;
+        color: var(--silver-bright);
+      }
+
+      .quote-box-inner p em {
+        font-style: italic;
+        color: var(--cyan);
+        text-shadow: 0 0 18px var(--cyan-dim);
+      }
+
+      .quote-credit {
+        margin-top: 18px;
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--teal-soft);
+        font-size: 0.68rem;
+      }
+
+      .sigil-wrap {
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+
+      .sigil {
+        position: relative;
+        width: min(360px, 70vw);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+      }
+
+      .sigil-core {
+        position: absolute;
+        width: 110px;
+        height: 110px;
+        display: grid;
+        place-items: center;
+        z-index: 4;
+      }
+
+      .sigil svg {
+        position: absolute;
+        inset: 0;
+      }
+
+      .sigil .ring-outer {
+        animation: spin 30s linear infinite;
+      }
+
+      .sigil .ring-mid {
+        animation: spinReverse 24s linear infinite;
+      }
+
+      .sigil .ring-inner {
+        animation: spin 18s linear infinite;
+      }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes spinReverse {
+        from { transform: rotate(360deg); }
+        to { transform: rotate(0deg); }
+      }
+
+      .sigil-caption {
+        margin-top: 26px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.7rem;
+        font-style: italic;
+      }
+
+      .sigil-sub {
+        margin-top: 8px;
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--magenta-soft);
+        font-size: 0.68rem;
+      }
+
+      footer {
+        padding: 36px 0 42px;
+        border-top: 1px solid rgba(223, 231, 239, 0.1);
+      }
+
+      .footer-inner {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr 1fr;
+        gap: 30px;
+        align-items: start;
+      }
+
+      .brand-large {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.2rem;
+        line-height: 1.2;
+      }
+
+      .brand-large em {
+        font-style: italic;
+        color: var(--cyan);
+      }
+
+      .footer-copy {
+        color: rgba(223, 231, 239, 0.7);
+        margin-top: 16px;
+        line-height: 1.8;
+        max-width: 440px;
+      }
+
+      .footer-col h4 {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: var(--cyan);
+        font-size: 0.68rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-family: "Rajdhani", sans-serif;
+        margin-bottom: 16px;
+      }
+
+      .footer-col h4::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        background: var(--cyan);
+        transform: rotate(45deg);
+        box-shadow: 0 0 8px var(--cyan);
+      }
+
+      .footer-col p {
+        color: var(--silver-bright);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+      }
+
+      .footer-note {
+        color: rgba(223, 231, 239, 0.7);
+        font-size: 0.78rem;
+      }
+
+      .bottomline {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(223, 231, 239, 0.09);
+        color: rgba(223, 231, 239, 0.92);
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 0.64rem;
+      }
+
+      .bottomline strong {
+        color: var(--magenta-soft);
+        font-weight: 600;
+        letter-spacing: 0.06em;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(32px);
+        transition: opacity 700ms ease, transform 700ms ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 920px) {
+        .nav-links {
+          display: none;
+        }
+
+        .profile-grid,
+        .hobbies,
+        .footer-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 60px;
+        }
+
+        .hero-sub {
+          letter-spacing: 0.08em;
+        }
+
+        .facts {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          MFA <span>// Grimoire</span>
+        </div>
+        <nav aria-label="Main navigation">
+          <ul class="nav-links">
+            <li><a href="#about">Identitas</a></li>
+            <li><a href="#hobby">Hobi</a></li>
+            <li><a href="#manifesto">Manifesto</a></li>
+            <li><a href="#sigil">Sigil</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="sword-scene" aria-hidden="true">
+          <div class="sword s-one">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bladeA" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#c4ecff"/>
+                  <stop offset="35%" stop-color="#8be6ff"/>
+                  <stop offset="100%" stop-color="#5b39a2"/>
+                </linearGradient>
+              </defs>
+              <path d="M60 8 L68 42 L60 88 L52 42 Z" fill="url(#bladeA)" opacity="0.9"/>
+              <path d="M34 40 H86 L79 48 H41 Z" fill="#0d9488"/>
+              <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
+              <circle cx="60" cy="72" r="6" fill="#ff007f"/>
+            </svg>
+          </div>
+          <div class="sword s-two">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bladeB" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#ffd6f4"/>
+                  <stop offset="35%" stop-color="#ff7ecb"/>
+                  <stop offset="100%" stop-color="#4c2e8d"/>
+                </linearGradient>
+              </defs>
+              <path d="M60 8 L68 42 L60 88 L52 42 Z" fill="url(#bladeB)" opacity="0.9"/>
+              <path d="M34 40 H86 L79 48 H41 Z" fill="#0d9488"/>
+              <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
+              <circle cx="60" cy="72" r="6" fill="#00f0ff"/>
+            </svg>
+          </div>
+          <div class="sword s-three">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bladeC" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#d9fef3"/>
+                  <stop offset="35%" stop-color="#63e7cd"/>
+                  <stop offset="100%" stop-color="#403e95"/>
+                </linearGradient>
+              </defs>
+              <path d="M60 8 L68 42 L60 88 L52 42 Z" fill="url(#bladeC)" opacity="0.9"/>
+              <path d="M34 40 H86 L79 48 H41 Z" fill="#0d9488"/>
+              <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
+              <circle cx="60" cy="72" r="6" fill="#ff007f"/>
+            </svg>
+          </div>
+          <div class="sword s-four">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bladeD" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#dfe7ef"/>
+                  <stop offset="35%" stop-color="#a7d9ff"/>
+                  <stop offset="100%" stop-color="#4d2d83"/>
+                </linearGradient>
+              </defs>
+              <path d="M60 8 L68 42 L60 88 L52 42 Z" fill="url(#bladeD)" opacity="0.9"/>
+              <path d="M34 40 H86 L79 48 H41 Z" fill="#0d9488"/>
+              <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
+              <circle cx="60" cy="72" r="6" fill="#00f0ff"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="container hero-inner">
+          <div class="hero-copy reveal">
+            <div class="eyebrow"><span>Biodata</span><span class="dot"></span><span>Edisi 9B</span></div>
+            <h1>
+              <span class="gradient-text">Muhammad Fariz</span>
+              <span class="gradient-text">Al-Hakim</span>
+            </h1>
+            <p class="hero-sub">
+              Seorang pelajar yang berani <strong>berproses</strong>, menikmati <strong>menulis</strong>,
+              dan tetap konsisten membangun diri walau masih dalam tahap belajar.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#about">Lihat Profil</a>
+              <a class="btn btn-secondary" href="#sigil">Jelajahi Sigil</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="chevron-strip" aria-hidden="true"></div>
+
+      <section id="about">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-kicker">Identitas</div>
+            <h2 class="section-title">Sebuah nama, sebuah <em>bilah</em> — ditempa dengan sabar.</h2>
+          </div>
+
+          <div class="profile-grid reveal">
+            <div class="avatar-wrap">
+              <div class="diamond-avatar" aria-label="Avatar Muhammad Fariz Al-Hakim">
+                <div class="avatar-inner">MFA</div>
+              </div>
+              <div class="avatar-meta">
+                <div class="avatar-label">Sigil Pemilik</div>
+                <div class="avatar-sub">Kelas 9B · At-Ta'awun</div>
+              </div>
+            </div>
+
+            <div class="info-panel">
+              <span class="panel-corner tl"></span>
+              <span class="panel-corner tr"></span>
+              <span class="panel-corner bl"></span>
+              <span class="panel-corner br"></span>
+
+              <div class="info-content">
+                <div class="panel-label">Profil</div>
+                <h3 class="panel-title">Muhammad Fariz <em>Al-Hakim</em></h3>
+
+                <div class="facts">
+                  <div class="fact">
+                    <div class="fact-label">Nama lengkap</div>
+                    <div class="fact-value">Muhammad Fariz <em>Al-Hakim</em></div>
+                    <div class="fact-note">Panggilan: Fariz</div>
+                  </div>
+
+                  <div class="fact">
+                    <div class="fact-label">Kelas</div>
+                    <div class="fact-value">9B</div>
+                    <div class="fact-note">Tingkat akhir SMP</div>
+                  </div>
+
+                  <div class="fact">
+                    <div class="fact-label">Sekolah</div>
+                    <div class="fact-value">At-Ta'awun</div>
+                    <div class="fact-note">Tempat belajar dan tumbuh</div>
+                  </div>
+
+                  <div class="fact">
+                    <div class="fact-label">Status</div>
+                    <div class="fact-value"><em>Belajar</em></div>
+                    <div class="fact-note">Selalu dalam proses</div>
+                  </div>
+
+                  <div class="fact">
+                    <div class="fact-label">Filosofi</div>
+                    <div class="fact-value">"Tetap menulis, walau yang keluar cuma ide acak."</div>
+                  </div>
+
+                  <div class="fact">
+                    <div class="fact-label">Catatan</div>
+                    <div class="fact-value">Bukan yang paling pintar, tapi yang <em>terus mencoba</em>.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="chevron-strip" aria-hidden="true"></div>
+
+      <section id="hobby">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-kicker">Hobi</div>
+            <h2 class="section-title">Hal-hal yang <em>menyita</em> waktu saya.</h2>
+          </div>
+
+          <div class="hobbies reveal">
+            <article class="card">
+              <div class="card-glow"></div>
+              <div class="card-inner">
+                <div class="card-no">01</div>
+                <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 34V28L26 10L34 18L16 36H8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M24 12L34 22" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="33" cy="9" r="3" fill="#ff007f"/>
+                </svg>
+                <h3>Menulis <em>cerpen</em></h3>
+                <p>Mulai dari ide random di kelas hingga catatan ponsel yang penuh konsep. 80% berakhir tak selesai, tapi saya tetap menulis karena itu bagian dari proses.</p>
+                <div class="badge">80% gagal</div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-glow"></div>
+              <div class="card-inner">
+                <div class="card-no">02</div>
+                <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="12" width="32" height="22" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M15 12V8H33V12" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="18" cy="23" r="2.5" fill="#0d9488"/>
+                  <circle cx="24" cy="23" r="2.5" fill="#0d9488"/>
+                  <circle cx="30" cy="23" r="2.5" fill="#0d9488"/>
+                </svg>
+                <h3>Main <em>game</em></h3>
+                <p>Bukan pro, tapi konsisten. Saya suka game yang punya cerita, bukan hanya aksi. Kadang jadi reset otak, kadang jadi media melarikan diri dari rutinitas.</p>
+                <div class="badge">Story-driven</div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-glow"></div>
+              <div class="card-inner">
+                <div class="card-no">03</div>
+                <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 8V28" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                  <path d="M24 8V28" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                  <path d="M30 8V28" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                  <path d="M12 28H36V34H12V28Z" fill="#0d9488" opacity="0.3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <h3>Berlatih <em>gitar</em></h3>
+                <p>Masih pemula, jari masih kaku, chord F mayor masih musuh besar. Tapi saya tetap latihan, sedikit demi sedikit, karena proses itu lebih penting daripada hasil instan.</p>
+                <div class="badge">Pemula konsisten</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="chevron-strip" aria-hidden="true"></div>
+
+      <section id="manifesto">
+        <div class="container">
+          <div class="quote-box reveal">
+            <div class="quote-box-inner">
+              <p>
+                Saya bukan yang paling <em>pintar</em> di kelas,<br />
+                bukan yang paling cepat paham,<br />
+                tapi saya terus <em>menulis</em>, <em>belajar</em>, dan <em>berusaha</em>.<br />
+                Karena proses itu adalah pedang yang menajamkan diri.
+              </p>
+              <div class="quote-credit">— Fariz, 9B At-Ta'awun</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="chevron-strip" aria-hidden="true"></div>
+
+      <section id="sigil">
+        <div class="container sigil-wrap reveal">
+          <div class="sigil" aria-label="Sigil personal">
+            <svg class="ring-outer" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="180" cy="180" r="150" stroke="#dfe7ef" stroke-opacity="0.5" stroke-width="1.2" fill="none"/>
+              <circle cx="180" cy="180" r="126" stroke="#00f0ff" stroke-opacity="0.6" stroke-width="1" fill="none"/>
+              <path d="M180 30 L186 50 L180 70 L174 50 Z" fill="#00f0ff"/>
+              <path d="M180 330 L186 310 L180 290 L174 310 Z" fill="#ff007f"/>
+              <path d="M30 180 L50 186 L70 180 L50 174 Z" fill="#0d9488"/>
+              <path d="M330 180 L310 186 L290 180 L310 174 Z" fill="#00f0ff"/>
+            </svg>
+
+            <svg class="ring-mid" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="180,55 235,180 180,305 125,180" fill="none" stroke="#00f0ff" stroke-opacity="0.6" stroke-width="1.1"/>
+              <polygon points="180,80 210,180 180,280 150,180" fill="none" stroke="#ff007f" stroke-opacity="0.6" stroke-width="1"/>
+            </svg>
+
+            <svg class="ring-inner" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="180" cy="180" r="90" fill="none" stroke="#dfe7ef" stroke-opacity="0.4" stroke-width="0.9"/>
+              <path d="M180 100 L228 180 L180 260 L132 180 Z" fill="none" stroke="#0d9488" stroke-opacity="0.8" stroke-width="1.2"/>
+            </svg>
+
+            <div class="sigil-core">
+              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="sigilBlade" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#dfe7ef"/>
+                    <stop offset="40%" stop-color="#6be6ff"/>
+                    <stop offset="100%" stop-color="#4b2c8d"/>
+                  </linearGradient>
+                </defs>
+                <path d="M60 12 L68 42 L60 92 L52 42 Z" fill="url(#sigilBlade)"/>
+                <path d="M36 42 H84 L78 48 H42 Z" fill="#0d9488"/>
+                <rect x="54" y="48" width="12" height="24" fill="#12071f" stroke="#00f0ff"/>
+                <circle cx="60" cy="72" r="8" fill="#ff007f"/>
+              </svg>
+            </div>
+          </div>
+          <div class="sigil-caption">Sigil Pribadi</div>
+          <div class="sigil-sub">Ditempa di kelas 9B</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-inner">
+          <div>
+            <div class="brand-large">Muhammad Fariz <em>Al-Hakim</em></div>
+            <p class="footer-copy">
+              Penulis cerpen yang kadang gagal, gamer yang suka cerita, dan pemula gitar yang tetap latihan. Saya percaya proses lebih berharga daripada hasil instan.
+            </p>
+            <a class="btn btn-primary" href="#top" style="margin-top: 18px;">Kembali ke atas</a>
+          </div>
+
+          <div class="footer-col">
+            <h4>Identitas</h4>
+            <p>9B At-Ta'awun</p>
+            <div class="footer-note">Tingkat akhir SMP</div>
+          </div>
+
+          <div class="footer-col">
+            <h4>Hobi</h4>
+            <p>Menulis · Game · Gitar</p>
+            <div class="footer-note">Tiga bidang, satu semangat</div>
+          </div>
+        </div>
+
+        <div class="bottomline">
+          <span>© <span id="year"></span> · Grimoire Pribadi</span>
+          <span><strong>Ditempa</strong> dengan sabar</span>
+          <span>Edisi 9B</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const yearNode = document.getElementById('year');
+      if (yearNode) yearNode.textContent = new Date().getFullYear();
+
+      const revealItems = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        },
+        { threshold: 0.18 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+    </script>
+  </body>
+</html>
