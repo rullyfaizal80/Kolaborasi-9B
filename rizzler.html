@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astra Holo-HUD - Interactive Biodata</title>
+  <style>
+    :root {
+      --bg-dark: #030208;
+      --card-bg: rgba(10, 6, 22, 0.85);
+      --gold-main: #ffcc00;
+      --gold-glow: rgba(255, 204, 0, 0.4);
+      --violet-neon: #b55fe6;
+      --violet-glow: rgba(181, 95, 230, 0.4);
+      --cyan-accent: #00f0ff;
+      --text-bright: #ffffff;
+      --text-dim: #9d8ec4;
+      --border-glow: rgba(255, 204, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-bright);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* Interactive Background Canvas */
+    #space-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Holographic Main Container */
+    .holo-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 850px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      box-shadow: 
+        0 0 60px rgba(0, 0, 0, 0.9),
+        0 0 30px var(--violet-glow),
+        inset 0 0 20px rgba(255, 204, 0, 0.1);
+      padding: 40px;
+      transform-style: preserve-3d;
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+
+    .holo-card:hover {
+      border-color: var(--gold-main);
+      box-shadow: 
+        0 0 80px rgba(0, 0, 0, 0.95),
+        0 0 45px var(--gold-glow),
+        inset 0 0 25px rgba(181, 95, 230, 0.2);
+    }
+
+    /* Corner Sci-Fi Accents */
+    .corner-accent {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gold-main);
+      pointer-events: none;
+    }
+    .top-left { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+    .top-right { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+    .bottom-left { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+    .bottom-right { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
+    /* Header Profile */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px auto;
+      cursor: pointer;
+    }
+
+    .avatar-core {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #4a154b, #090314);
+      border: 2px solid var(--gold-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      box-shadow: 0 0 30px var(--violet-neon), inset 0 0 20px var(--gold-main);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .avatar-wrapper:hover .avatar-core {
+      transform: scale(1.08) rotate(5deg);
+      box-shadow: 0 0 45px var(--gold-main), inset 0 0 25px var(--cyan-accent);
+    }
+
+    .avatar-ring {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 2px dashed var(--cyan-accent);
+      animation: spinClockwise 15s linear infinite;
+      pointer-events: none;
+    }
+
+    .avatar-ring-outer {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 1px solid var(--violet-neon);
+      border-left-color: transparent;
+      border-right-color: transparent;
+      animation: spinCounter 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spinClockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes spinCounter { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gold-main) 50%, var(--violet-neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+      margin-bottom: 8px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: rgba(181, 95, 230, 0.15);
+      border: 1px solid var(--violet-neon);
+      border-radius: 30px;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cyan-accent);
+      box-shadow: 0 0 12px var(--violet-glow);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--gold-main);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gold-main);
+      animation: pulseDot 1.5s infinite alternate;
+    }
+
+    @keyframes pulseDot {
+      0% { transform: scale(0.8); opacity: 0.5; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Interactive Power Engine Gauge (Replicating Slider Theme) */
+    .engine-panel {
+      background: rgba(5, 2, 12, 0.8);
+      border: 1px solid rgba(255, 204, 0, 0.25);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .engine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slider-btn {
+      background: transparent;
+      border: 1px solid var(--gold-main);
+      color: var(--gold-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .slider-btn:hover {
+      background: var(--gold-main);
+      color: #000;
+      box-shadow: 0 0 12px var(--gold-main);
+    }
+
+    input[type=range].custom-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+      outline: none;
+    }
+
+    input[type=range].custom-slider::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, var(--violet-neon), var(--gold-main), var(--cyan-accent));
+      border-radius: 5px;
+      box-shadow: 0 0 10px var(--violet-glow);
+    }
+
+    input[type=range].custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 24px;
+      width: 14px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 2px solid var(--gold-main);
+      box-shadow: 0 0 15px var(--gold-main);
+      margin-top: -7px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    input[type=range].custom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    /* Navigation Bar */
+    nav.tab-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-item {
+      background: rgba(181, 95, 230, 0.08);
+      border: 1px solid rgba(181, 95, 230, 0.25);
+      padding: 12px 10px;
+      text-align: center;
+      border-radius: 10px;
+      color: var(--text-dim);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--gold-main);
+      border-color: var(--gold-main);
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(181, 95, 230, 0.4), rgba(255, 204, 0, 0.3));
+      border-color: var(--gold-main);
+      box-shadow: 0 0 20px var(--gold-glow);
+      text-shadow: 0 0 8px #ffffff;
+    }
+
+    /* Tab Content Area */
+    .tab-content {
+      display: none;
+      animation: tabSlideIn 0.4s ease forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes tabSlideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Components */
+    .bio-text {
+      line-height: 1.8;
+      font-size: 1rem;
+      color: var(--text-bright);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--violet-neon);
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-box {
+      background: rgba(12, 6, 26, 0.7);
+      border: 1px solid rgba(181, 95, 230, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      border-color: var(--cyan-accent);
+    }
+
+    .stat-box label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stat-box .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-main);
+    }
+
+    /* Skill Bars */
+    .skill-card {
+      margin-bottom: 18px;
+    }
+
+    .skill-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .track {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(181, 95, 230, 0.2);
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--violet-neon), var(--gold-main));
+      box-shadow: 0 0 10px var(--gold-main);
+      transition: width 1s ease-in-out;
+    }
+
+    /* Interactive Interactive Artifact Cards */
+    .artifact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 15px;
+    }
+
+    .artifact-card {
+      background: rgba(8, 4, 18, 0.8);
+      border: 1px solid rgba(255, 204, 0, 0.2);
+      border-radius: 12px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .artifact-card:hover {
+      border-color: var(--cyan-accent);
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    }
+
+    .artifact-card h3 {
+      font-size: 1.05rem;
+      color: var(--gold-main);
+      margin-bottom: 8px;
+    }
+
+    .artifact-card p {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(5, 2, 12, 0.8);
+      border: 1px solid rgba(181, 95, 230, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: var(--gold-main);
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--violet-neon), var(--gold-main));
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--violet-glow);
+      transition: all 0.3s;
+    }
+
+    .send-btn:hover {
+      box-shadow: 0 0 30px var(--gold-main);
+      transform: translateY(-2px);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 600px) {
+      nav.tab-nav { grid-template-columns: repeat(2, 1fr); }
+      .holo-card { padding: 25px 18px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle Stars Field -->
+  <canvas id="space-bg"></canvas>
+
+  <!-- Main Card -->
+  <div class="holo-card">
+    <div class="corner-accent top-left"></div>
+    <div class="corner-accent top-right"></div>
+    <div class="corner-accent bottom-left"></div>
+    <div class="corner-accent bottom-right"></div>
+
+    <header>
+      <div class="avatar-wrapper" onclick="triggerSynthNote(880)">
+        <div class="avatar-ring-outer"></div>
+        <div class="avatar-ring"></div>
+        <div class="avatar-core">🎸</div>
+      </div>
+      <h1>ASTRA RESONANCE</h1>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>Astra Synth Developer & Sound Mage</span>
+      </div>
+    </header>
+
+    <!-- Resonance Gauge Slider -->
+    <div class="engine-panel">
+      <div class="engine-header">
+        <span>⚡ Cosmic Resonance Power ⚡</span>
+        <span id="powerReadout">75% HARMONICS</span>
+      </div>
+      <div class="slider-container">
+        <button class="slider-btn" onclick="stepSlider(-10)">&lt;</button>
+        <input type="range" min="10" max="200" value="75" class="custom-slider" id="resonanceSlider" oninput="adjustEngine(this.value)">
+        <button class="slider-btn" onclick="stepSlider(10)">&gt;</button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-nav">
+      <div class="nav-item active" onclick="showTab(event, 'tab-profile')">PROFILE</div>
+      <div class="nav-item" onclick="showTab(event, 'tab-skills')">SKILLS</div>
+      <div class="nav-item" onclick="showTab(event, 'tab-artifacts')">PROJECTS</div>
+      <div class="nav-item" onclick="showTab(event, 'tab-contact')">TRANSMIT</div>
+    </nav>
+
+    <!-- Tab 1: Profile -->
+    <div id="tab-profile" class="tab-content active">
+      <div class="bio-text">
+        Menggabungkan keahlian pemrograman antarmuka web modern dengan estetika musik kosmik dan efek visual interaktif berbasis WebGL & Web Audio API.
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <label>Astra Class</label>
+          <div class="value">Level 99 Web Mage</div>
+        </div>
+        <div class="stat-box">
+          <label>Primary Element</label>
+          <div class="value">Violet & Gold Glow</div>
+        </div>
+        <div class="stat-box">
+          <label>Core Specialty</label>
+          <div class="value">Interactive Canvas & Audio</div>
+        </div>
+        <div class="stat-box">
+          <label>Location</label>
+          <div class="value">Astra Network / ID</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Skills -->
+    <div id="tab-skills" class="tab-content">
+      <div class="skill-card">
+        <div class="skill-meta">
+          <span>JavaScript / Web Audio Synthesizer</span>
+          <span>95%</span>
+        </div>
+        <div class="track"><div class="fill" data-progress="95%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-meta">
+          <span>Frontend UI/UX (CSS Neon / Dark Aesthetics)</span>
+          <span>90%</span>
+        </div>
+        <div class="track"><div class="fill" data-progress="90%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-meta">
+          <span>HTML5 Canvas & Particle Physics</span>
+          <span>85%</span>
+        </div>
+        <div class="track"><div class="fill" data-progress="85%"></div></div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Artifacts -->
+    <div id="tab-artifacts" class="tab-content">
+      <div class="artifact-grid">
+        <div class="artifact-card" onclick="triggerSynthNote(520)">
+          <h3>Cosmic Guitar HUD</h3>
+          <p>Antarmuka visualizer gitar interaktif dengan pencahayaan neon emas-ungu dan gelombang audio.</p>
+        </div>
+        <div class="artifact-card" onclick="triggerSynthNote(640)">
+          <h3>Astra Particle Engine</h3>
+          <p>Simulasi partikel fisika interaktif di browser yang merespons pergerakan mouse dan frekuensi audio.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Contact -->
+    <div id="tab-contact" class="tab-content">
+      <form onsubmit="sendMessage(event)">
+        <div class="form-group">
+          <label>Signal Origin Name</label>
+          <input type="text" class="form-input" placeholder="Masukkan nama..." required>
+        </div>
+        <div class="form-group">
+          <label>Frequency Address (Email)</label>
+          <input type="email" class="form-input" placeholder="email@domain.com" required>
+        </div>
+        <div class="form-group">
+          <label>Encrypted Transmission</label>
+          <textarea class="form-input" rows="3" placeholder="Tuliskan pesan..." required></textarea>
+        </div>
+        <button type="submit" class="send-btn">TRANSMIT SIGNAL 🚀</button>
+      </form>
+    </div>
+
+    <footer>Astra Holo-HUD System v3.0 • Powered by Cosmic Audio & HTML5 Canvas</footer>
+  </div>
+
+  <script>
+    /* Web Audio API Synthesizer */
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function triggerSynthNote(freq) {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.6, audioCtx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    }
+
+    /* Tab Switching */
+    function showTab(evt, tabId) {
+      triggerSynthNote(450);
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      evt.currentTarget.classList.add('active');
+
+      if (tabId === 'tab-skills') {
+        setTimeout(() => {
+          document.querySelectorAll('.fill').forEach(f => f.style.width = f.getAttribute('data-progress'));
+        }, 50);
+      }
+    }
+
+    /* Engine Slider Control */
+    let speedMult = 1;
+    function adjustEngine(val) {
+      speedMult = val / 75;
+      document.getElementById('powerReadout').innerText = `${val}% HARMONICS`;
+      triggerSynthNote(300 + val * 2.5);
+    }
+
+    function stepSlider(delta) {
+      const slider = document.getElementById('resonanceSlider');
+      let v = parseInt(slider.value) + delta;
+      v = Math.max(10, Math.min(200, v));
+      slider.value = v;
+      adjustEngine(v);
+    }
+
+    /* Interactive Particle Canvas Background */
+    const canvas = document.getElementById('space-bg');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Star {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 2 + 0.5;
+        this.vy = -(Math.random() * 0.6 + 0.2);
+        this.vx = (Math.random() - 0.5) * 0.4;
+        const palette = ['#ffcc00', '#b55fe6', '#00f0ff', '#ffffff'];
+        this.color = palette[Math.floor(Math.random() * palette.length)];
+        this.alpha = Math.random() * 0.8 + 0.2;
+      }
+      update() {
+        this.y += this.vy * speedMult;
+        this.x += this.vx * speedMult;
+        if (this.y < 0 || this.x < 0 || this.x > w) {
+          this.y = h;
+          this.x = Math.random() * w;
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    const stars = Array.from({ length: 80 }, () => new Star());
+    function loop() {
+      ctx.clearRect(0, 0, w, h);
+      stars.forEach(s => { s.update(); s.draw(); });
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    function sendMessage(e) {
+      e.preventDefault();
+      triggerSynthNote(900);
+      alert('⚡ Transmisi Sinyal Berhasil Dikirim!');
+    }
+  </script>
+</body>
+</html>
