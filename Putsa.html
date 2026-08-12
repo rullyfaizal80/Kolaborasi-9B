@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biodata Radela & Raissa ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffe5ec 0%, #f0e6ff 50%, #e8f5e9 100%);
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+      color: #5a4b5c;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Header Judul */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .header h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.5rem;
+      color: #ff6b8b;
+      text-shadow: 3px 3px 0px #ffffff;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      background: #ffffff90;
+      padding: 6px 18px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Badge Sekolah & Kelas */
+    .school-info {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      background: #ffffff;
+      padding: 8px 16px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 5px 15px rgba(255, 182, 193, 0.4);
+      border: 2px solid #ffd1dc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Container Kartu Biodata */
+    .container {
+      display: flex;
+      gap: 25px;
+      max-width: 900px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Style Kartu Individu */
+    .card {
+      background: #ffffffd6;
+      backdrop-filter: blur(8px);
+      border-radius: 25px;
+      padding: 25px;
+      width: 380px;
+      box-shadow: 0 10px 25px rgba(186, 153, 255, 0.2);
+      border: 3px solid #fff;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(255, 107, 139, 0.3);
+    }
+
+    /* Avatar Imut */
+    .avatar-wrapper {
+      position: relative;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #ffe3e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin: 0 auto;
+      border: 4px solid #ffb6c1;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .ribbon {
+      position: absolute;
+      top: -10px;
+      right: 110px;
+      font-size: 1.8rem;
+    }
+
+    .card h2 {
+      font-family: 'Fredoka', sans-serif;
+      text-align: center;
+      color: #ff6b8b;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    /* Detail Isi Biodata */
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-item {
+      background: #fff;
+      padding: 10px 15px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1.5px dashed #ffccd5;
+    }
+
+    .info-item .icon {
+      font-size: 1.4rem;
+      background: #fff0f3;
+      padding: 6px;
+      border-radius: 10px;
+    }
+
+    .info-item .label {
+      font-size: 0.8rem;
+      color: #888;
+      display: block;
+    }
+
+    .info-item .value {
+      font-weight: 700;
+      color: #4a3e4d;
+      font-size: 1rem;
+    }
+
+    /* Hobi Tags */
+    .hobby-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      background: #e2f0d9;
+      color: #4a7c59;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .tag.cook {
+      background: #fff0db;
+      color: #d97706;
+    }
+
+    /* Footer Imut */
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #88728a;
+    }
+
+    .heart-btn {
+      background: #ff6b8b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(255, 107, 139, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .heart-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Animasi Melayang */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>✨ Biodata Radela & Raissa ✨</h1>
+    <p>Putsa Jaya Jaya Jaya🌸</p>
+  </div>
+
+  <div class="school-info">
+    <div class="badge">🏫 MTsS INFORMATIKA MIMHa</div>
+    <div class="badge">🎒 Kelas 9B</div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <div class="avatar-wrapper">
+        <span class="ribbon">🎀</span>
+        <div class="avatar">👧🏻</div>
+      </div>
+      <h2>Radela Putri Permana</h2>
+
+      <div class="info-group">
+        <div class="info-item">
+          <span class="icon">🎂</span>
+          <div>
+            <span class="label">Umur</span>
+            <span class="value">14 Tahun</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🎨</span>
+          <div>
+            <span class="label">Hobi Favorit</span>
+            <div class="hobby-tags">
+              <span class="tag cook">🍳 Memasak</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🌟</span>
+          <div>
+            <span class="label">Status</span>
+            <span class="value">Siswa Hits 9B MIMHa ✨</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="avatar-wrapper">
+        <span class="ribbon">🎀</span>
+        <div class="avatar">👧🏻</div>
+      </div>
+      <h2>Raissa Khansa Hamidah</h2>
+
+      <div class="info-group">
+        <div class="info-item">
+          <span class="icon">🎂</span>
+          <div>
+            <span class="label">Umur</span>
+            <span class="value">14 Tahun</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🎨</span>
+          <div>
+            <span class="label">Hobi Favorit</span>
+            <div class="hobby-tags">
+              <span class="tag">📚 Membaca Buku</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🌟</span>
+          <div>
+            <span class="label">Status</span>
+            <span class="value">Siswa Hits 9B MIMHa ✨</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <button class="heart-btn" onclick="sendLove()">Kirim Cinta 💖 (<span id="loveCount">0</span>)</button>
+    <p style="margin-top: 15px;">Dibuat khusus untuk Radela & Raissa! 💌</p>
+  </div>
+
+  <script>
+    let count = 0;
+    function sendLove() {
+      count++;
+      document.getElementById('loveCount').innerText = count;
+      alert('Terima kasih sudah memberikan cinta untuk Radela & Raissa! 💕✨');
+    }
+  </script>
+
+</body>
+</html>
