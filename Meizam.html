@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodata Interaktif & Game Hub 5-in-1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 15px;
+            color: #f8fafc;
+        }
+
+        /* Container Card Utama */
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Header / Avatar Section */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 12px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .status-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: #22c55e;
+            border: 3px solid #1e1b4b;
+            border-radius: 50%;
+        }
+
+        .title-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .subtitle-role {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Navigasi Tab */
+        .tab-menu {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Sections */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Informasi Utama Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .info-box.full-width {
+            grid-column: span 2;
+        }
+
+        .info-box label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-box label i {
+            color: #a855f7;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        /* Skill Section */
+        .skill-section {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 90%;
+            background: linear-gradient(90deg, #6366f1, #a855f7);
+            border-radius: 10px;
+        }
+
+        /* Action Button General */
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            opacity: 0.95;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        /* Base Game Container */
+        .game-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #38f9d7;
+        }
+
+        .game-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 10px;
+            color: #a0aec0;
+            text-transform: uppercase;
+        }
+
+        .stat-item strong {
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        /* Game 1 Specifics */
+        .click-target {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
+            transition: transform 0.1s ease;
+        }
+
+        .click-target:active {
+            transform: scale(0.88);
+        }
+
+        /* Game 2 Specifics */
+        .guess-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .guess-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+        }
+
+        .guess-hint {
+            font-size: 13px;
+            font-weight: 600;
+            color: #facc15;
+            min-height: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Game 3 Specifics */
+        .reflex-box {
+            width: 100%;
+            height: 120px;
+            border-radius: 14px;
+            background: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 16px;
+            transition: background 0.2s ease;
+        }
+
+        /* Game 4 Specifics (Memory Game) */
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 16px;
+        }
+
+        .simon-btn {
+            border-radius: 12px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .simon-btn.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        #simon-0 { background: #ef4444; color: #ef4444; }
+        #simon-1 { background: #3b82f6; color: #3b82f6; }
+        #simon-2 { background: #eab308; color: #eab308; }
+        #simon-3 { background: #22c55e; color: #22c55e; }
+
+        /* Game 5 Specifics (Math Quiz) */
+        .math-question {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f43f5e;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="profile-header">
+            <div class="avatar-wrapper">
+                <div class="avatar">🎮</div>
+                <div class="status-badge" title="Status: Online"></div>
+            </div>
+            <div class="title-name">Meizam Ahmad Fariz</div>
+            <div class="subtitle-role">Gamer & Pelajar</div>
+        </div>
+
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchTab('biodata', this)">
+                <i class="fa-solid fa-user"></i> Bio
+            </button>
+            <button class="tab-btn" onclick="switchTab('game1', this)">
+                <i class="fa-solid fa-hand-pointer"></i> Clicker
+            </button>
+            <button class="tab-btn" onclick="switchTab('game2', this)">
+                <i class="fa-solid fa-hashtag"></i> Tebak
+            </button>
+            <button class="tab-btn" onclick="switchTab('game3', this)">
+                <i class="fa-solid fa-bolt"></i> Refleks
+            </button>
+            <button class="tab-btn" onclick="switchTab('game4', this)">
+                <i class="fa-solid fa-brain"></i> Memori
+            </button>
+            <button class="tab-btn" onclick="switchTab('game5', this)">
+                <i class="fa-solid fa-calculator"></i> Kuis
+            </button>
+        </div>
+
+        <div id="tab-biodata" class="tab-content active">
+            <div class="info-grid">
+                <div class="info-box">
+                    <label><i class="fa-solid fa-calendar-days"></i> Tgl Lahir</label>
+                    <p>17 Mei 2012</p>
+                </div>
+                <div class="info-box">
+                    <label><i class="fa-solid fa-heart"></i> Hobi</label>
+                    <p>Main Game</p>
+                </div>
+                <div class="info-box full-width">
+                    <label><i class="fa-solid fa-location-dot"></i> Alamat</label>
+                    <p>Jalan Jatisari 1 G98</p>
+                </div>
+                <div class="info-box full-width">
+                    <label><i class="fa-solid fa-envelope"></i> Email</label>
+                    <p>meizam.fariz@example.com</p>
+                </div>
+                <div class="info-box full-width">
+                    <label><i class="fa-solid fa-bullseye"></i> Cita-Cita</label>
+                    <p>Game Developer & Pro Player</p>
+                </div>
+            </div>
+
+            <div class="skill-section">
+                <div class="skill-header">
+                    <span>Gaming Skill Level</span>
+                    <span>90%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-game1" class="tab-content">
+            <div class="game-container">
+                <div class="game-title">⚡ Speed Clicker (15 Detik)</div>
+                <div class="game-desc">Klik tombol target sebanyak mungkin sebelum waktu habis!</div>
+
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span>Waktu</span>
+                        <strong id="g1-timer">15s</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Skor</span>
+                        <strong id="g1-score">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Best</span>
+                        <strong id="g1-high">0</strong>
+                    </div>
+                </div>
+
+                <div class="click-target" id="g1-target" onclick="g1Click()">🎯</div>
+
+                <button class="btn-action" id="g1-btn" onclick="g1Start()">
+                    <i class="fa-solid fa-play"></i> Mulai Game
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-game2" class="tab-content">
+            <div class="game-container">
+                <div class="game-title">🎲 Tebak Angka (1-100)</div>
+                <div class="game-desc">Tebak angka rahasia! Batas maksimal: 7 kali percobaan.</div>
+
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span>Sisa Kesempatan</span>
+                        <strong id="g2-attempts">7</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Rekor Terbaik</span>
+                        <strong id="g2-best">-</strong>
+                    </div>
+                </div>
+
+                <div class="guess-hint" id="g2-hint">Tekan "Mulai" untuk mengacak angka!</div>
+
+                <div class="guess-input-group">
+                    <input type="number" id="g2-input" class="guess-input" placeholder="1-100" disabled min="1" max="100">
+                    <button class="btn-action" id="g2-submit-btn" style="width: auto; padding: 0 16px;" onclick="g2Guess()" disabled>Tebak</button>
+                </div>
+
+                <button class="btn-action" id="g2-start-btn" onclick="g2Start()">
+                    <i class="fa-solid fa-play"></i> Mulai Game
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-game3" class="tab-content">
+            <div class="game-container">
+                <div class="game-title">⚡ Tes Refleks (3 Ronde)</div>
+                <div class="game-desc">Klik kotak saat warnanya berubah HIJAU! Selesaikan 3 ronde untuk skor rata-rata.</div>
+
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span>Ronde</span>
+                        <strong id="g3-round">0/3</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Rata-rata</span>
+                        <strong id="g3-time">- ms</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Tercepat</span>
+                        <strong id="g3-best">- ms</strong>
+                    </div>
+                </div>
+
+                <div class="reflex-box" id="g3-box" onclick="g3Click()">
+                    Siap? Klik Mulai!
+                </div>
+
+                <button class="btn-action" id="g3-start-btn" onclick="g3Start()">
+                    <i class="fa-solid fa-play"></i> Mulai Tes
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-game4" class="tab-content">
+            <div class="game-container">
+                <div class="game-title">🧠 Memori Pola Warna</div>
+                <div class="game-desc">Ingat dan ikuti urutan warna yang menyala!</div>
+
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span>Level</span>
+                        <strong id="g4-level">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>High Score</span>
+                        <strong id="g4-high">0</strong>
+                    </div>
+                </div>
+
+                <div class="simon-grid">
+                    <div class="simon-btn" id="simon-0" onclick="g4Click(0)"></div>
+                    <div class="simon-btn" id="simon-1" onclick="g4Click(1)"></div>
+                    <div class="simon-btn" id="simon-2" onclick="g4Click(2)"></div>
+                    <div class="simon-btn" id="simon-3" onclick="g4Click(3)"></div>
+                </div>
+
+                <button class="btn-action" id="g4-start-btn" onclick="g4Start()">
+                    <i class="fa-solid fa-play"></i> Mulai Tantangan
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-game5" class="tab-content">
+            <div class="game-container">
+                <div class="game-title">🧮 Kuis Otak Cepat</div>
+                <div class="game-desc">Jawab soal matematika sederhana sebanyak-banyaknya dalam 20 detik!</div>
+
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span>Waktu</span>
+                        <strong id="g5-timer">20s</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Skor</span>
+                        <strong id="g5-score">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Best</span>
+                        <strong id="g5-high">0</strong>
+                    </div>
+                </div>
+
+                <div class="math-question" id="g5-question">? + ?</div>
+
+                <div class="guess-input-group">
+                    <input type="number" id="g5-input" class="guess-input" placeholder="Jawaban..." disabled>
+                    <button class="btn-action" id="g5-submit-btn" style="width: auto; padding: 0 16px;" onclick="g5Check()" disabled>Jawab</button>
+                </div>
+
+                <button class="btn-action" id="g5-start-btn" onclick="g5Start()">
+                    <i class="fa-solid fa-play"></i> Mulai Kuis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIKA UTAMA TAB ---
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            element.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // --- GAME 1: SPEED CLICKER ---
+        let g1Score = 0, g1High = 0, g1TimeLeft = 15, g1Interval = null, g1Active = false;
+
+        function g1Start() {
+            g1Score = 0;
+            g1TimeLeft = 15;
+            g1Active = true;
+            document.getElementById('g1-score').innerText = '0';
+            document.getElementById('g1-timer').innerText = '15s';
+            document.getElementById('g1-btn').style.display = 'none';
+            document.getElementById('g1-target').innerText = '🔥';
+
+            g1Interval = setInterval(() => {
+                g1TimeLeft--;
+                document.getElementById('g1-timer').innerText = g1TimeLeft + 's';
+                if (g1TimeLeft <= 0) {
+                    clearInterval(g1Interval);
+                    g1End();
+                }
+            }, 1000);
+        }
+
+        function g1Click() {
+            if (!g1Active) return;
+            g1Score++;
+            document.getElementById('g1-score').innerText = g1Score;
+        }
+
+        function g1End() {
+            g1Active = false;
+            document.getElementById('g1-target').innerText = '🏆';
+            document.getElementById('g1-btn').style.display = 'flex';
+            document.getElementById('g1-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Main Lagi';
+
+            if (g1Score > g1High) {
+                g1High = g1Score;
+                document.getElementById('g1-high').innerText = g1High;
+                alert(`Luar Biasa! Rekor Baru: ${g1Score} Klik! 🎉`);
+            } else {
+                alert(`Waktu habis! Skor kamu: ${g1Score}`);
+            }
+        }
+
+        // --- GAME 2: TEBAK ANGKA (1-100) ---
+        let g2Target = 0, g2AttemptsLeft = 7, g2Best = null, g2Active = false, g2UsedAttempts = 0;
+
+        function g2Start() {
+            g2Target = Math.floor(Math.random() * 100) + 1;
+            g2AttemptsLeft = 7;
+            g2UsedAttempts = 0;
+            g2Active = true;
+
+            document.getElementById('g2-attempts').innerText = g2AttemptsLeft;
+            document.getElementById('g2-hint').innerText = 'Masukkan angka 1-100 lalu klik Tebak!';
+            document.getElementById('g2-input').disabled = false;
+            document.getElementById('g2-submit-btn').disabled = false;
+            document.getElementById('g2-input').value = '';
+            document.getElementById('g2-start-btn').style.display = 'none';
+        }
+
+        function g2Guess() {
+            if (!g2Active) return;
+            const inputEl = document.getElementById('g2-input');
+            const guess = parseInt(inputEl.value);
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                document.getElementById('g2-hint').innerText = 'Masukkan angka valid antara 1-100!';
+                return;
+            }
+
+            g2AttemptsLeft--;
+            g2UsedAttempts++;
+            document.getElementById('g2-attempts').innerText = g2AttemptsLeft;
+
+            if (guess === g2Target) {
+                document.getElementById('g2-hint').innerText = `🎉 Tepat sekali! Angkanya adalah ${g2Target}.`;
+                g2EndGame(true);
+            } else if (g2AttemptsLeft <= 0) {
+                document.getElementById('g2-hint').innerText = `💥 Kesempatan habis! Angkanya adalah ${g2Target}.`;
+                g2EndGame(false);
+            } else if (guess < g2Target) {
+                document.getElementById('g2-hint').innerText = '📉 Terlalu KECIL! Coba lagi.';
+            } else {
+                document.getElementById('g2-hint').innerText = '📈 Terlalu BESAR! Coba lagi.';
+            }
+            inputEl.value = '';
+        }
+
+        function g2EndGame(win) {
+            g2Active = false;
+            document.getElementById('g2-input').disabled = true;
+            document.getElementById('g2-submit-btn').disabled = true;
+            document.getElementById('g2-start-btn').style.display = 'flex';
+            document.getElementById('g2-start-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Main Lagi';
+
+            if (win) {
+                if (g2Best === null || g2UsedAttempts < g2Best) {
+                    g2Best = g2UsedAttempts;
+                    document.getElementById('g2-best').innerText = g2Best + 'x';
+                }
+            }
+        }
+
+        // --- GAME 3: UJI REFLEKS (3 RONDE) ---
+        let g3StartTime = 0, g3Timeout = null, g3State = 'idle', g3Best = null;
+        let g3CurrentRound = 0, g3TotalTime = 0;
+
+        function g3Start() {
+            g3CurrentRound = 0;
+            g3TotalTime = 0;
+            document.getElementById('g3-time').innerText = '- ms';
+            g3NextRound();
+        }
+
+        function g3NextRound() {
+            g3CurrentRound++;
+            document.getElementById('g3-round').innerText = `${g3CurrentRound}/3`;
+            const box = document.getElementById('g3-box');
+            box.style.background = '#ef4444';
+            box.innerText = 'Tunggu warna Hijau...';
+            document.getElementById('g3-start-btn').style.display = 'none';
+            g3State = 'waiting';
+
+            const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+            g3Timeout = setTimeout(() => {
+                box.style.background = '#22c55e';
+                box.innerText = 'KLIK SEKARANG!';
+                g3StartTime = Date.now();
+                g3State = 'ready';
+            }, randomDelay);
+        }
+
+        function g3Click() {
+            const box = document.getElementById('g3-box');
+
+            if (g3State === 'waiting') {
+                clearTimeout(g3Timeout);
+                box.style.background = '#f59e0b';
+                box.innerText = 'Terlalu Cepat! Klik Mulai untuk mengulang.';
+                g3State = 'idle';
+                document.getElementById('g3-start-btn').style.display = 'flex';
+            } else if (g3State === 'ready') {
+                const reactionTime = Date.now() - g3StartTime;
+                g3TotalTime += reactionTime;
+                box.innerText = `${reactionTime} ms!`;
+                g3State = 'idle';
+
+                if (g3CurrentRound < 3) {
+                    setTimeout(g3NextRound, 1000);
+                } else {
+                    const avgTime = Math.round(g3TotalTime / 3);
+                    document.getElementById('g3-time').innerText = avgTime + ' ms';
+                    box.innerText = `Selesai! Rata-rata: ${avgTime} ms`;
+                    
+                    if (g3Best === null || avgTime < g3Best) {
+                        g3Best = avgTime;
+                        document.getElementById('g3-best').innerText = g3Best + ' ms';
+                    }
+
+                    document.getElementById('g3-start-btn').style.display = 'flex';
+                    document.getElementById('g3-start-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Tes Lagi';
+                }
+            }
+        }
+
+        // --- GAME 4: MEMORI POLA (SIMON SAYS) ---
+        let g4Sequence = [], g4UserStep = 0, g4Level = 0, g4High = 0, g4Playing = false;
+
+        function g4Start() {
+            g4Sequence = [];
+            g4Level = 0;
+            g4Playing = true;
+            document.getElementById('g4-level').innerText = '0';
+            document.getElementById('g4-start-btn').style.display = 'none';
+            g4NextLevel();
+        }
+
+        function g4NextLevel() {
+            g4UserStep = 0;
+            g4Level++;
+            document.getElementById('g4-level').innerText = g4Level;
+            g4Sequence.push(Math.floor(Math.random() * 4));
+            g4PlaySequence();
+        }
+
+        function g4PlaySequence() {
+            g4Playing = false;
+            let i = 0;
+            const interval = setInterval(() => {
+                g4FlashBtn(g4Sequence[i]);
+                i++;
+                if (i >= g4Sequence.length) {
+                    clearInterval(interval);
+                    g4Playing = true;
+                }
+            }, 600);
+        }
+
+        function g4FlashBtn(index) {
+            const btn = document.getElementById(`simon-${index}`);
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), 300);
+        }
+
+        function g4Click(index) {
+            if (!g4Playing) return;
+            g4FlashBtn(index);
+
+            if (index === g4Sequence[g4UserStep]) {
+                g4UserStep++;
+                if (g4UserStep === g4Sequence.length) {
+                    g4Playing = false;
+                    setTimeout(g4NextLevel, 1000);
+                }
+            } else {
+                alert(`Gagal! Pola salah. Level Anda: ${g4Level}`);
+                g4Playing = false;
+                if (g4Level - 1 > g4High) {
+                    g4High = g4Level - 1;
+                    document.getElementById('g4-high').innerText = g4High;
+                }
+                document.getElementById('g4-start-btn').style.display = 'flex';
+                document.getElementById('g4-start-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Coba Lagi';
+            }
+        }
+
+        // --- GAME 5: KUIS MATEMATIKA CEPEAT ---
+        let g5Score = 0, g5High = 0, g5TimeLeft = 20, g5Interval = null, g5Answer = 0, g5Active = false;
+
+        function g5Start() {
+            g5Score = 0;
+            g5TimeLeft = 20;
+            g5Active = true;
+            document.getElementById('g5-score').innerText = '0';
+            document.getElementById('g5-timer').innerText = '20s';
+            document.getElementById('g5-input').disabled = false;
+            document.getElementById('g5-submit-btn').disabled = false;
+            document.getElementById('g5-start-btn').style.display = 'none';
+
+            g5GenerateQuestion();
+
+            g5Interval = setInterval(() => {
+                g5TimeLeft--;
+                document.getElementById('g5-timer').innerText = g5TimeLeft + 's';
+                if (g5TimeLeft <= 0) {
+                    clearInterval(g5Interval);
+                    g5End();
+                }
+            }, 1000);
+        }
+
+        function g5GenerateQuestion() {
+            const n1 = Math.floor(Math.random() * 20) + 1;
+            const n2 = Math.floor(Math.random() * 20) + 1;
+            const op = Math.random() > 0.5 ? '+' : '-';
+
+            if (op === '+') {
+                g5Answer = n1 + n2;
+                document.getElementById('g5-question').innerText = `${n1} + ${n2}`;
+            } else {
+                // Pastikan hasil positif
+                const max = Math.max(n1, n2);
+                const min = Math.min(n1, n2);
+                g5Answer = max - min;
+                document.getElementById('g5-question').innerText = `${max} - ${min}`;
+            }
+            document.getElementById('g5-input').value = '';
+            document.getElementById('g5-input').focus();
+        }
+
+        function g5Check() {
+            if (!g5Active) return;
+            const inputVal = parseInt(document.getElementById('g5-input').value);
+
+            if (inputVal === g5Answer) {
+                g5Score++;
+                document.getElementById('g5-score').innerText = g5Score;
+                g5GenerateQuestion();
+            } else {
+                document.getElementById('g5-input').value = '';
+            }
+        }
+
+        // Memungkinkan submit via tombol Enter
+        document.getElementById('g5-input').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') g5Check();
+        });
+
+        function g5End() {
+            g5Active = false;
+            document.getElementById('g5-question').innerText = 'Waktu Habis!';
+            document.getElementById('g5-input').disabled = true;
+            document.getElementById('g5-submit-btn').disabled = true;
+            document.getElementById('g5-start-btn').style.display = 'flex';
+            document.getElementById('g5-start-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Main Lagi';
+
+            if (g5Score > g5High) {
+                g5High = g5Score;
+                document.getElementById('g5-high').innerText = g5High;
+                alert(`Luar Biasa! Skor Kuis Baru: ${g5Score}! 🎉`);
+            } else {
+                alert(`Kuis selesai! Skor Anda: ${g5Score}`);
+            }
+        }
+    </script>
+</body>
+</html>
