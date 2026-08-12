@@ -19,7 +19,7 @@
     --snow:#F0F4F8; --autumn:#D88C44;
     --text-dark:#3D2817; --text-cream:#FFF8E7;
   }
-  *{box-sizing:border-image;}
+  *{box-sizing:border-box;}
   body{
     font-family:'Nunito',sans-serif; color:var(--text-dark);
     overflow-x:hidden; background:var(--sky-1);
@@ -216,6 +216,8 @@
     transition:all 0.2s;
   }
   .chip:hover{ transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--text-dark);}
+  .chip.removable{ cursor:pointer; }
+  .chip.removable:hover{ background:#FF6B35; color:#fff; }
   
   /* Skill bar */
   .skill-bar{
@@ -332,10 +334,149 @@
   
   /* Tree SVG container */
   .tree-svg{ display:block;}
+
+  /* ===== EDIT MODAL ===== */
+  .edit-modal-overlay{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);
+    display:none; align-items:flex-start; justify-content:center;
+    padding:60px 20px; overflow-y:auto;
+  }
+  .edit-modal-overlay.show{ display:flex; animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .edit-modal{
+    background:#FFF8E7; border:5px solid var(--text-dark);
+    border-radius:10px; box-shadow:8px 8px 0 var(--text-dark);
+    max-width:700px; width:100%; padding:30px;
+    position:relative; animation:slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes slideUp{ from{transform:translateY(40px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+  .edit-modal h2{
+    font-family:'Silkscreen',monospace; font-size:22px; color:var(--text-dark);
+    text-shadow:2px 2px 0 var(--accent); margin-bottom:20px; text-align:center;
+  }
+  .edit-modal .close-btn{
+    position:absolute; top:12px; right:12px;
+    width:36px; height:36px; border-radius:50%;
+    background:#FF6B35; color:#fff; border:3px solid var(--text-dark);
+    font-size:18px; cursor:pointer; box-shadow:3px 3px 0 var(--text-dark);
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.15s;
+  }
+  .edit-modal .close-btn:hover{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--text-dark);}
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full{ grid-column:1/3; }
+  .form-group label{
+    display:block; font-family:'Silkscreen',monospace; font-size:11px;
+    color:var(--text-dark); margin-bottom:4px;
+  }
+  .form-group input, .form-group textarea, .form-group select{
+    width:100%; padding:8px 12px; border:3px solid var(--text-dark);
+    border-radius:6px; background:#fff; font-family:'Nunito',sans-serif;
+    font-size:14px; box-shadow:2px 2px 0 var(--text-dark);
+    transition:all 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus{
+    outline:none; border-color:var(--accent-2); box-shadow:2px 2px 0 var(--accent-2);
+  }
+  .form-group textarea{ resize:vertical; min-height:80px; }
+  .skill-edit-row{
+    display:flex; align-items:center; gap:8px; margin-bottom:6px;
+  }
+  .skill-edit-row input[type="range"]{
+    flex:1; accent-color:var(--accent-2);
+  }
+  .skill-edit-row .skill-val{
+    width:40px; text-align:center; font-family:'Silkscreen',monospace; font-size:12px;
+  }
+  .hobby-input-row{
+    display:flex; gap:8px; margin-top:8px;
+  }
+  .hobby-input-row input{ flex:1; }
+  .modal-actions{
+    display:flex; gap:12px; justify-content:center; margin-top:24px;
+  }
+  .edit-btn-floating{
+    position:absolute; top:12px; right:12px;
+    background:var(--accent); color:var(--text-dark);
+    border:3px solid var(--text-dark); border-radius:6px;
+    padding:6px 12px; font-family:'Silkscreen',monospace; font-size:11px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--text-dark);
+    transition:all 0.15s; z-index:10;
+  }
+  .edit-btn-floating:hover{ transform:translate(1px,1px); box-shadow:2px 2px 0 var(--text-dark);}
+
+  .profile-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; z-index:1; }
+  .avatar-frame svg{ position:relative; z-index:0; }
+  .avatar-preview{ width:120px; height:120px; border:3px solid var(--text-dark); border-radius:16px; background:#F4D35E; display:flex; align-items:center; justify-content:center; color:#3D2817; font-size:32px; box-shadow:4px 4px 0 var(--text-dark); }
+  .avatar-options{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .avatar-preset-btn{ padding:8px 12px; border:3px solid var(--text-dark); border-radius:8px; background:#FFF8E7; cursor:pointer; transition:all 0.15s; font-family:'Silkscreen',monospace; font-size:12px; }
+  .avatar-preset-btn.active{ background:var(--accent); color:var(--text-dark);}
+  .friend-card{ background:#FFF8E7; border:3px solid var(--text-dark); border-radius:12px; box-shadow:4px 4px 0 var(--text-dark); padding:18px; display:flex; flex-direction:column; gap:12px; }
+  .friend-card .friend-header{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .friend-card .friend-pill{ display:inline-flex; gap:6px; padding:4px 10px; border-radius:999px; background:var(--accent); border:2px solid var(--text-dark); font-size:12px; }
+  .friend-search-input{ width:100%; padding:12px 14px; border:3px solid var(--text-dark); border-radius:10px; background:#fff; font-family:'Nunito',sans-serif; font-size:14px; box-shadow:2px 2px 0 var(--text-dark); }
+  .auto-save-badge{ padding:6px 12px; border:3px solid var(--text-dark); border-radius:10px; background:#E7F5FF; font-family:'Silkscreen',monospace; font-size:12px; color:#0F3C6E; box-shadow:3px 3px 0 var(--text-dark);}
+  .friend-photo{ width:40px; height:40px; border-radius:999px; object-fit:cover; border:3px solid var(--text-dark); }
+
+  /* ===== GAME ENHANCEMENTS ===== */
+  .game-shake{ animation: shake 0.3s ease-in-out; }
+  @keyframes shake{
+    0%,100%{transform:translate(0,0);}
+    20%{transform:translate(-4px,2px);}
+    40%{transform:translate(4px,-2px);}
+    60%{transform:translate(-3px,1px);}
+    80%{transform:translate(3px,-1px);}
+  }
+  .combo-display{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    font-family:'Silkscreen',monospace; font-size:18px;
+    color:var(--accent); text-shadow:2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    opacity:0; transition:opacity 0.3s; pointer-events:none;
+    z-index:50;
+  }
+  .combo-display.show{ opacity:1; animation:comboPulse 0.4s ease;}
+  @keyframes comboPulse{ 0%{transform:translateX(-50%) scale(0.5);} 50%{transform:translateX(-50%) scale(1.3);} 100%{transform:translateX(-50%) scale(1);} }
+  .powerup-indicator{
+    position:absolute; top:50px; left:10px;
+    display:flex; flex-direction:column; gap:6px; z-index:50;
+  }
+  .powerup-badge{
+    background:rgba(0,0,0,0.7); color:#fff; padding:4px 10px;
+    border-radius:6px; font-family:'Silkscreen',monospace; font-size:10px;
+    border:2px solid var(--accent); display:flex; align-items:center; gap:6px;
+    animation:badgePulse 1s ease-in-out infinite;
+  }
+  @keyframes badgePulse{ 0%,100%{box-shadow:0 0 0 0 rgba(244,211,94,0.5);} 50%{box-shadow:0 0 0 6px rgba(244,211,94,0);} }
+  .game-flash{
+    position:absolute; inset:0; pointer-events:none; z-index:40;
+    opacity:0; transition:opacity 0.1s;
+  }
+  .game-flash.flash{ animation:flashAnim 0.3s ease;}
+  @keyframes flashAnim{ 0%{opacity:0;} 30%{opacity:0.5;} 100%{opacity:0;} }
+  .difficulty-bar{
+    height:6px; background:rgba(0,0,0,0.2); border-radius:3px; overflow:hidden;
+    margin-top:4px;
+  }
+  .difficulty-fill{
+    height:100%; background:linear-gradient(90deg,#52B788,#F4D35E,#FF6B35,#C73E1D);
+    transition:width 0.5s; width:10%;
+  }
+  .music-card .music-controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+  .music-button{ padding:10px 14px; border:3px solid var(--text-dark); border-radius:10px; background:#FFF8E7; cursor:pointer; transition:all 0.15s; font-family:'Silkscreen',monospace;}
+  .music-button.active{ background:var(--accent); color:var(--text-dark);}
+  .music-visual{ position:relative; min-height:150px; overflow:hidden; background:rgba(255,255,255,0.2); border:3px dashed rgba(255,255,255,0.3); border-radius:16px; }
+  .music-note{ position:absolute; font-size:24px; opacity:0.95; pointer-events:none; animation:riseNote 2s ease-out forwards; }
+  .rhythm-button{ padding:12px 16px; border:3px solid var(--text-dark); border-radius:10px; background:#FFF8E7; cursor:pointer; transition:all 0.15s; font-size:18px;}
+  .rhythm-button:hover{ transform:translateY(-2px); background:#FFFAE5; }
+  .rhythm-button.active{ background:var(--accent); color:var(--text-dark);}
+  @keyframes riseNote{ 0%{transform:translateY(0); opacity:1;} 100%{transform:translateY(-120px); opacity:0;} }
   
   @media (max-width:768px){
     .game-title{ font-size:36px !important;}
     .section-title{ font-size:24px;}
+    .form-grid{ grid-template-columns:1fr; }
+    .form-grid .full{ grid-column:1; }
   }
 </style>
 </head>
@@ -348,8 +489,9 @@
     <button class="nav-btn" onclick="scrollToSection('hero')">HOME</button>
     <button class="nav-btn" onclick="scrollToSection('about')">BIODATA</button>
     <button class="nav-btn" onclick="scrollToSection('seasons')">MUSIM</button>
-    <button class="nav-btn" onclick="scrollToSection='farm'">FARM</button>
+    <button class="nav-btn" onclick="scrollToSection('farm')">FARM</button>
     <button class="nav-btn" onclick="scrollToSection('game')">GAME</button>
+    <button class="nav-btn" onclick="scrollToSection('music')">MUSIC</button>
     <button class="nav-btn" onclick="scrollToSection('contact')">KONTAK</button>
     <div class="time-orb ml-3" id="timeOrb" style="background:radial-gradient(circle at 30% 30%, #FFE066, #FF9F1C);"></div>
   </div>
@@ -380,19 +522,14 @@
   <!-- Walking character -->
   <div class="walker walking" id="walker">
     <div class="speech" id="speech">Halo! Selamat datang!</div>
-    <!-- Body parts -->
     <div style="position:absolute; top:8px; left:8px; width:32px; height:28px; background:#FFD89B; border:3px solid #3D2817; border-radius:6px;"></div>
-    <!-- Hat -->
     <div style="position:absolute; top:-2px; left:4px; width:40px; height:8px; background:#D88C44; border:3px solid #3D2817; border-radius:3px;"></div>
     <div style="position:absolute; top:-12px; left:14px; width:20px; height:14px; background:#D88C44; border:3px solid #3D2817; border-radius:4px 4px 0 0;"></div>
-    <!-- Overall -->
     <div style="position:absolute; top:22px; left:8px; width:32px; height:24px; background:#3D8BD8; border:3px solid #3D2817; border-radius:4px;"></div>
     <div style="position:absolute; top:22px; left:14px; width:4px; height:18px; background:#3D2817;"></div>
     <div style="position:absolute; top:22px; left:30px; width:4px; height:18px; background:#3D2817;"></div>
-    <!-- Arms -->
     <div class="arm-left"></div>
     <div class="arm-right"></div>
-    <!-- Legs -->
     <div class="leg-left"></div>
     <div class="leg-right"></div>
   </div>
@@ -428,7 +565,6 @@
   
   <!-- Decorative trees at hero bottom -->
   <div class="absolute bottom-0 left-0 right-0 flex justify-around items-end pointer-events-none" style="z-index:5;">
-    <!-- Tree 1 -->
     <svg width="100" height="130" viewBox="0 0 100 130" class="tree-svg">
       <rect x="42" y="80" width="16" height="50" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
       <circle cx="50" cy="50" r="35" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
@@ -438,7 +574,6 @@
       <circle cx="60" cy="30" r="8" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
       <circle cx="80" cy="45" r="8" fill="#F4D35E" stroke="#3D2817" stroke-width="2"/>
     </svg>
-    <!-- Sunflower -->
     <svg width="80" height="120" viewBox="0 0 80 120" class="tree-svg">
       <rect x="36" y="60" width="8" height="60" fill="#5A9E3A" stroke="#3D2817" stroke-width="2"/>
       <ellipse cx="30" cy="80" rx="10" ry="5" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
@@ -453,7 +588,6 @@
       </g>
       <circle cx="40" cy="35" r="10" fill="#5D3A1A" stroke="#3D2817" stroke-width="2"/>
     </svg>
-    <!-- Tree 2 -->
     <svg width="110" height="140" viewBox="0 0 110 140" class="tree-svg">
       <rect x="47" y="85" width="16" height="55" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
       <circle cx="55" cy="55" r="38" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
@@ -461,7 +595,6 @@
       <circle cx="80" cy="65" r="24" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
       <circle cx="55" cy="30" r="22" fill="#A8D877" stroke="#3D2817" stroke-width="3"/>
     </svg>
-    <!-- Bush -->
     <svg width="90" height="60" viewBox="0 0 90 60" class="tree-svg">
       <ellipse cx="20" cy="40" rx="20" ry="18" fill="#5A9E3A" stroke="#3D2817" stroke-width="3"/>
       <ellipse cx="45" cy="35" rx="22" ry="22" fill="#7BC04C" stroke="#3D2817" stroke-width="3"/>
@@ -472,7 +605,6 @@
     </svg>
   </div>
   
-  <!-- Bounce arrow -->
   <div class="bounce-arrow absolute bottom-4 left-1/2 -translate-x-1/2 text-3xl" style="color:var(--text-dark); z-index:20;">
     <i class="fas fa-chevron-down"></i>
   </div>
@@ -485,7 +617,7 @@
     <i class="fas fa-fish"></i> IKAN MAS BESAR DI DANAU! &nbsp;&nbsp; 
     <i class="fas fa-snowflake"></i> PESTA ANGSAL DI MUSIM DINGIN! &nbsp;&nbsp; 
     <i class="fas fa-sun"></i> JANGAN LUPA MENYIRAM TANAMAN! &nbsp;&nbsp; 
-    <i class="fas fa-leaf"></i> MUSIM GUGUR MEMBUAWAR RESULTS! &nbsp;&nbsp;
+    <i class="fas fa-leaf"></i> MUSIM GUGUR MEMBAWA HASIL MELIMPAH! &nbsp;&nbsp;
   </div>
 </div>
 
@@ -496,72 +628,72 @@
   
   <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
     <!-- Avatar card -->
-    <div class="pixel-card p-6 text-center">
+    <div class="pixel-card p-6 text-center relative">
+      <button class="edit-btn-floating" onclick="openEditModal()">
+        <i class="fas fa-pen"></i> EDIT
+      </button>
       <div class="avatar-frame mx-auto mb-4">
-        <!-- Pixel avatar SVG -->
-        <svg viewBox="0 0 100 100" width="100%" height="100%">
+        <img id="profilePhoto" class="profile-photo" alt="Profile photo" />
+        <svg viewBox="0 0 100 100" width="100%" height="100%" id="avatarSvg">
           <rect x="0" y="0" width="100" height="100" fill="#87CEEB"/>
           <rect x="0" y="70" width="100" height="30" fill="#7BC04C"/>
-          <!-- Hat -->
           <rect x="25" y="15" width="50" height="8" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
           <rect x="35" y="5" width="30" height="14" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
-          <!-- Head -->
           <rect x="32" y="20" width="36" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-          <!-- Eyes -->
           <rect x="38" y="30" width="5" height="6" fill="#3D2817"/>
           <rect x="57" y="30" width="5" height="6" fill="#3D2817"/>
-          <!-- Mouth -->
           <rect x="42" y="42" width="16" height="3" fill="#3D2817"/>
-          <!-- Body -->
           <rect x="28" y="50" width="44" height="30" fill="#3D8BD8" stroke="#3D2817" stroke-width="2"/>
-          <!-- Overall straps -->
           <rect x="36" y="50" width="4" height="20" fill="#3D2817"/>
           <rect x="60" y="50" width="4" height="20" fill="#3D2817"/>
-          <!-- Button -->
           <circle cx="50" cy="62" r="2" fill="#F4D35E"/>
-          <!-- Arms -->
           <rect x="20" y="55" width="10" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
           <rect x="70" y="55" width="10" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-          <!-- Pitchfork -->
-          <rect x="80" y="40" width="3" height="40" fill="#8B5A2B" stroke="#3D2817" stroke-width="1"/>
-          <rect x="76" y="36" width="11" height="3" fill="#888" stroke="#3D2817" stroke-width="1"/>
-          <rect x="76" y="36" width="2" height="8" fill="#888"/>
-          <rect x="80" y="36" width="2" height="8" fill="#888"/>
-          <rect x="85" y="36" width="2" height="8" fill="#888"/>
+          <rect x="80" y="40" width="3" height="40" fill="#8B5A2B" stroke="#3D2817" stroke-width="1" class="avatarHat"/>
+          <rect x="76" y="36" width="11" height="3" fill="#888" stroke="#3D2817" stroke-width="1" class="avatarHat"/>
+          <rect x="76" y="36" width="2" height="8" fill="#888" class="avatarHat"/>
+          <rect x="80" y="36" width="2" height="8" fill="#888" class="avatarHat"/>
+          <rect x="85" y="36" width="2" height="8" fill="#888" class="avatarHat"/>
         </svg>
       </div>
-      <h3 class="pixel-font text-lg" style="color:var(--text-dark);">RIZKY FARMER</h3>
-      <p class="retro-font" style="font-size:1.2em;">Petani / Nelayan / Pencinta Alam</p>
+      <h3 class="pixel-font text-lg" id="displayName" style="color:var(--text-dark);">RIZKY FARMER</h3>
+      <p class="retro-font" id="displayTitle" style="font-size:1.2em;">Petani / Nelayan / Pencinta Alam</p>
       <div class="mt-3 flex flex-wrap justify-center">
-        <span class="chip">Lv. 25</span>
-        <span class="chip">Petani Master</span>
+        <span class="chip" id="displayLevel">Lv. 25</span>
+        <span class="chip" id="displayRank">Petani Master</span>
       </div>
     </div>
     
     <!-- Info card -->
-    <div class="pixel-card p-6 md:col-span-2">
+    <div class="pixel-card p-6 md:col-span-2 relative">
+      <button class="edit-btn-floating" onclick="openEditModal()">
+        <i class="fas fa-pen"></i> EDIT
+      </button>
       <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">
         <i class="fas fa-book-open"></i> INFORMASI DIRI
       </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 retro-font" style="font-size:1.2em;">
-        <div><i class="fas fa-user" style="color:var(--sunset);"></i> <strong>Nama:</strong> Rizky Pratama</div>
-        <div><i class="fas fa-calendar" style="color:var(--sunset);"></i> <strong>Umur:</strong> 22 Tahun</div>
-        <div><i class="fas fa-map-marker-alt" style="color:var(--sunset);"></i> <strong>Lokasi:</strong> Lembang, Bandung</div>
-        <div><i class="fas fa-graduation-cap" style="color:var(--sunset);"></i> <strong>Pendidikan:</strong> S1 Informatika</div>
-        <div><i class="fas fa-briefcase" style="color:var(--sunset);"></i> <strong>Pekerjaan:</strong> Mahasiswa & Petani</div>
-        <div><i class="fas fa-heart" style="color:var(--sunset);"></i> <strong>Status:</strong> Single & Ready to Plant</div>
-        <div class="col-span-2"><i class="fas fa-envelope" style="color:var(--sunset);"></i> <strong>Email:</strong> rizky.farmer@harvesttown.id</div>
-        <div class="col-span-2"><i class="fas fa-phone" style="color:var(--sunset);"></i> <strong>Telepon:</strong> +62 812-3456-7890</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 retro-font" style="font-size:1.2em;" id="infoGrid">
+        <div><i class="fas fa-user" style="color:var(--sunset);"></i> <strong>Nama:</strong> <span id="infoName">Rizky Pratama</span></div>
+        <div><i class="fas fa-calendar" style="color:var(--sunset);"></i> <strong>Umur:</strong> <span id="infoAge">22 Tahun</span></div>
+        <div><i class="fas fa-map-marker-alt" style="color:var(--sunset);"></i> <strong>Lokasi:</strong> <span id="infoLocation">Lembang, Bandung</span></div>
+        <div><i class="fas fa-graduation-cap" style="color:var(--sunset);"></i> <strong>Pendidikan:</strong> <span id="infoEducation">S1 Informatika</span></div>
+        <div><i class="fas fa-briefcase" style="color:var(--sunset);"></i> <strong>Pekerjaan:</strong> <span id="infoJob">Mahasiswa & Petani</span></div>
+        <div><i class="fas fa-heart" style="color:var(--sunset);"></i> <strong>Status:</strong> <span id="infoStatus">Single & Ready to Plant</span></div>
+        <div class="col-span-2"><i class="fas fa-envelope" style="color:var(--sunset);"></i> <strong>Email:</strong> <span id="infoEmail">rizky.farmer@harvesttown.id</span></div>
+        <div class="col-span-2"><i class="fas fa-phone" style="color:var(--sunset);"></i> <strong>Telepon:</strong> <span id="infoPhone">+62 812-3456-7890</span></div>
+        <div class="col-span-2"><i class="fas fa-star" style="color:var(--sunset);"></i> <strong>Zodiak:</strong> <span id="infoZodiac">Virgo</span></div>
+        <div class="col-span-2"><i class="fas fa-utensils" style="color:var(--sunset);"></i> <strong>Makanan Favorit:</strong> <span id="infoFood">Nasi Goreng Kampung</span></div>
+        <div class="col-span-2"><i class="fas fa-music" style="color:var(--sunset);"></i> <strong>Lagu Favorit:</strong> <span id="infoMusic">Acoustic Folk</span></div>
+        <div class="col-span-2"><i class="fas fa-globe" style="color:var(--sunset);"></i> <strong>Website:</strong> <span id="infoWebsite">rizkyfarmer.github.io</span></div>
       </div>
       
       <h3 class="pixel-font text-xl mt-6 mb-3" style="color:var(--text-dark);">
         <i class="fas fa-quote-left"></i> TENTANG SAYA
       </h3>
-      <p class="leading-relaxed" style="color:var(--text-dark);">
+      <p class="leading-relaxed" id="displayAbout" style="color:var(--text-dark);">
         Halo teman-teman! Saya Rizky, seorang mahasiswa yang mencintai dunia pertanian dan teknologi. Saya tumbuh di desa yang dikelilingi sawah dan kebun. Hobi saya bercocok tanam, memancing, dan membuat proyek-proyek kreatif. Saya percaya bahwa gabungan alam dan teknologi bisa menciptakan keajaiban kecil setiap harinya!
       </p>
       
-      <!-- Mood selector -->
       <div class="mt-5">
         <p class="font-bold mb-2"><i class="fas fa-face-smile"></i> Mood hari ini:</p>
         <div class="flex flex-wrap gap-2">
@@ -575,11 +707,14 @@
     </div>
     
     <!-- Skills -->
-    <div class="pixel-card p-6 md:col-span-3">
+    <div class="pixel-card p-6 md:col-span-3 relative">
+      <button class="edit-btn-floating" onclick="openEditModal()">
+        <i class="fas fa-pen"></i> EDIT
+      </button>
       <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">
         <i class="fas fa-star"></i> SKILL PETANI
       </h3>
-      <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+      <div class="grid md:grid-cols-2 gap-x-8 gap-y-4" id="skillsContainer">
         <div>
           <div class="flex justify-between mb-1"><span class="font-bold">🌱 Bertani</span><span class="retro-font">Lv. 8 / 10</span></div>
           <div class="skill-bar"><div class="skill-fill" data-target="80%"></div></div>
@@ -608,11 +743,14 @@
     </div>
     
     <!-- Hobbies -->
-    <div class="pixel-card p-6 md:col-span-3">
+    <div class="pixel-card p-6 md:col-span-3 relative">
+      <button class="edit-btn-floating" onclick="openEditModal()">
+        <i class="fas fa-pen"></i> EDIT
+      </button>
       <h3 class="pixel-font text-xl mb-3" style="color:var(--text-dark);">
         <i class="fas fa-palette"></i> HOBI & MINAT
       </h3>
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap" id="hobbiesContainer">
         <span class="chip">📸 Fotografi Alam</span>
         <span class="chip">🎮 Game Indie</span>
         <span class="chip">📚 Membaca Novel</span>
@@ -624,6 +762,26 @@
         <span class="chip">✏️ Menggambar Pixel Art</span>
       </div>
     </div>
+    <div class="pixel-card p-6 md:col-span-3 relative">
+      <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">JARINGAN TEMAN</h3>
+      <div class="grid md:grid-cols-3 gap-4 mb-4">
+        <div class="md:col-span-2">
+          <input id="friendSearchInput" class="friend-search-input" placeholder="Cari nama teman, lokasi, atau hobi..." oninput="searchFriends()" />
+          <div id="friendSearchResults" class="mt-4 retro-font" style="min-height:120px;">Ketik nama teman untuk mencari di jaringan lokal.</div>
+        </div>
+        <div class="md:col-span-1">
+          <div class="friend-card">
+            <div class="font-bold">Tambah Teman</div>
+            <input id="friendName" class="friend-search-input mt-2" placeholder="Nama teman" />
+            <input id="friendLocation" class="friend-search-input mt-2" placeholder="Lokasi" />
+            <input id="friendHobby" class="friend-search-input mt-2" placeholder="Hobi (mis: 🎣 Memancing)" />
+            <textarea id="friendNote" class="friend-search-input mt-2" placeholder="Catatan singkat" rows="4"></textarea>
+            <button class="start-btn mt-2 w-full" onclick="addFriendFromForm()">Tambah Teman</button>
+          </div>
+        </div>
+      </div>
+      <div id="friendList" class="grid md:grid-cols-2 gap-4"></div>
+    </div>
   </div>
 </section>
 
@@ -633,7 +791,6 @@
   <p class="text-center retro-font mb-8" style="font-size:1.4em;">~ Klik tab musim untuk melihat adegan ~</p>
   
   <div class="max-w-5xl mx-auto">
-    <!-- Season tabs -->
     <div class="flex gap-2 mb-6 flex-wrap">
       <button class="season-tab active" data-season="spring" onclick="changeSeason('spring')">
         <i class="fas fa-seedling"></i> MUSIM SEMI
@@ -649,14 +806,10 @@
       </button>
     </div>
     
-    <!-- Season scene -->
     <div class="pixel-card p-2 overflow-hidden" style="height:380px;">
-      <div id="seasonScene" class="w-full h-full relative overflow-hidden rounded">
-        <!-- Filled by JS -->
-      </div>
+      <div id="seasonScene" class="w-full h-full relative overflow-hidden rounded"></div>
     </div>
     
-    <!-- Season info -->
     <div class="pixel-card p-6 mt-6" id="seasonInfo">
       <h3 class="pixel-font text-xl mb-2" style="color:var(--text-dark);" id="seasonTitle">MUSIM SEMI 🌱</h3>
       <p class="retro-font" style="font-size:1.2em;" id="seasonDesc">
@@ -698,13 +851,36 @@
       </div>
     </div>
     
-    <div class="grid grid-cols-6 gap-2" id="farmGrid">
-      <!-- 6x3 = 18 plots -->
+    <div class="grid grid-cols-6 gap-2" id="farmGrid"></div>
+  </div>
+</section>
+
+<!-- MUSIC LOUNGE -->
+<section id="music" class="relative py-16 px-6" style="z-index:5; background:linear-gradient(180deg, #FFF8E7 0%, var(--grass-2) 100%);">
+  <h2 class="section-title">MUSIC LOUNGE</h2>
+  <p class="text-center retro-font mb-8" style="font-size:1.4em;">~ Mainkan lagu desa atau tantang diri di game ritme ~</p>
+  <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-6">
+    <div class="pixel-card p-6 music-card">
+      <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">Pilih Lagu</h3>
+      <div class="music-controls">
+        <button class="music-button active" id="trackFolkBtn" onclick="setMusicTrack('folk')">Acoustic Folk</button>
+        <button class="music-button" id="trackRainBtn" onclick="setMusicTrack('rain')">Hujan Malam</button>
+        <button class="music-button" id="trackWindBtn" onclick="setMusicTrack('wind')">Angin Desa</button>
+      </div>
+      <div class="music-controls">
+        <button class="music-button" onclick="toggleMusic()" id="toggleMusicBtn">Putar Musik</button>
+        <div id="musicStatus" class="retro-font" style="margin-top:10px;">Status: Diam</div>
+      </div>
+      <div class="music-visual" id="musicVisual"></div>
     </div>
-    
-    <p class="text-center mt-4 retro-font" style="font-size:1.1em; color:var(--text-dark);">
-      💡 Klik biji di atas, lalu klik petak tanah. Tunggu beberapa detik untuk panen!
-    </p>
+    <div class="pixel-card p-6 lg:col-span-2">
+      <h3 class="pixel-font text-xl mb-4" style="color:var(--text-dark);">GAME RITME</h3>
+      <p class="retro-font mb-4" style="font-size:1.1em;">Ikuti urutan nada yang muncul. Setiap berhasil, skormu bertambah!</p>
+      <div class="flex flex-wrap gap-3 mb-4" id="rhythmSequence"></div>
+      <div class="flex flex-wrap gap-3 mb-4" id="rhythmButtons"></div>
+      <div class="retro-font" style="font-size:1.1em;">Skor: <strong id="rhythmScore">0</strong></div>
+      <div id="rhythmMessage" class="retro-font mt-3" style="font-size:1.05em; color:var(--accent);"></div>
+    </div>
   </div>
 </section>
 
@@ -721,13 +897,31 @@
       <div><i class="fas fa-trophy" style="color:var(--accent-2);"></i> Best: <span id="gameBest">0</span></div>
     </div>
     
-    <div class="relative">
+    <!-- Difficulty & combo bar -->
+    <div class="flex justify-between items-center mb-2 px-2">
+      <div class="retro-font" style="font-size:1em;">
+        <i class="fas fa-fire" style="color:#FF6B35;"></i> Combo: <span id="comboCount">0</span>x
+      </div>
+      <div class="flex-1 mx-4">
+        <div class="retro-font" style="font-size:0.8em; color:var(--text-dark);">Tingkat Kesulitan</div>
+        <div class="difficulty-bar"><div class="difficulty-fill" id="difficultyFill"></div></div>
+      </div>
+      <div class="retro-font" style="font-size:1em;">
+        <i class="fas fa-bolt" style="color:var(--accent-2);"></i> Lv: <span id="gameLevel">1</span>
+      </div>
+    </div>
+    
+    <div class="relative" id="gameWrapper">
       <canvas id="gameCanvas" width="800" height="450" class="w-full"></canvas>
+      <div class="combo-display" id="comboDisplay"></div>
+      <div class="powerup-indicator" id="powerupIndicator"></div>
+      <div class="game-flash" id="gameFlash"></div>
       <div id="gameOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded text-white">
         <h3 class="pixel-font text-3xl mb-3" style="color:var(--accent);">GAME PANEN</h3>
         <p class="retro-font mb-4 text-center px-4" style="font-size:1.3em;">
           Tangkap buah dengan keranjang! <br/>
-          <span style="color:var(--accent);">Buah = +10 poin</span> • <span style="color:#FF6B35;">Batu = -1 nyawa</span>
+          <span style="color:var(--accent);">Buah = +10 poin</span> • <span style="color:#FF6B35;">Batu = -1 nyawa</span><br/>
+          <span style="color:#FFD700;">⭐ Power-up spesial muncul!</span>
         </p>
         <button class="start-btn" onclick="startGame()">
           <i class="fas fa-play"></i> MULAI MAIN
@@ -736,7 +930,7 @@
     </div>
     
     <p class="text-center mt-3 retro-font" style="font-size:1.1em;">
-      🖱️ Gerakkan mouse untuk mengontrol keranjang!
+      🖱️ Gerakkan mouse untuk mengontrol keranjang! • 🎯 Combo untuk skor bonus!
     </p>
   </div>
 </section>
@@ -746,14 +940,14 @@
   <h2 class="section-title" style="color:var(--accent); text-shadow:3px 3px 0 #000;">HUBUNGI SAYA</h2>
   <p class="text-center retro-font mb-8" style="font-size:1.4em; color:var(--text-cream);">~ Mari berteman di media sosial ~</p>
   
-  <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-4">
+  <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-4" id="contactGrid">
     <div class="contact-card" onclick="showToast('📧 Email disalin!')">
       <div style="width:50px; height:50px; background:#FF6B35; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
         <i class="fas fa-envelope"></i>
       </div>
       <div>
         <div class="font-bold">Email</div>
-        <div class="retro-font" style="font-size:1.1em;">rizky.farmer@harvesttown.id</div>
+        <div class="retro-font" style="font-size:1.1em;" id="contactEmail">rizky.farmer@harvesttown.id</div>
       </div>
     </div>
     
@@ -763,7 +957,7 @@
       </div>
       <div>
         <div class="font-bold">WhatsApp</div>
-        <div class="retro-font" style="font-size:1.1em;">+62 812-3456-7890</div>
+        <div class="retro-font" style="font-size:1.1em;" id="contactPhone">+62 812-3456-7890</div>
       </div>
     </div>
     
@@ -783,21 +977,20 @@
       </div>
       <div>
         <div class="font-bold">GitHub</div>
-        <div class="retro-font" style="font-size:1.1em;">github.com/rizkyfarmer</div>
+        <div class="retro-font" style="font-size:1.1em;" id="contactGithub">github.com/rizkyfarmer</div>
       </div>
     </div>
   </div>
   
-  <!-- Send message form -->
   <div class="max-w-3xl mx-auto pixel-card p-6 mt-8">
     <h3 class="pixel-font text-lg mb-4" style="color:var(--text-dark);">
       <i class="fas fa-paper-plane"></i> KIRIM PESAN
     </h3>
     <div class="grid md:grid-cols-2 gap-4">
-      <input type="text" placeholder="Nama kamu" class="p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;">
-      <input type="email" placeholder="Email kamu" class="p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;">
+      <input type="text" placeholder="Nama kamu" class="p-3 border-[3px] border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]">
+      <input type="email" placeholder="Email kamu" class="p-3 border-[3px] border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]">
     </div>
-    <textarea placeholder="Tulis pesan untuk sang petani..." rows="4" class="w-full mt-4 p-3 border-3 border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" style="border-width:3px;"></textarea>
+    <textarea placeholder="Tulis pesan untuk sang petani..." rows="4" class="w-full mt-4 p-3 border-[3px] border-[#3D2817] rounded bg-[#FFF8E7] focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"></textarea>
     <button class="start-btn mt-4 w-full" onclick="showToast('🌾 Pesan terkirim! Terima kasih sudah menyapa!')">
       <i class="fas fa-paper-plane"></i> KIRIM PESAN
     </button>
@@ -807,7 +1000,7 @@
 <!-- FOOTER -->
 <footer class="relative py-8 px-6 text-center" style="background:var(--text-dark); color:var(--text-cream); z-index:5;">
   <div class="pixel-font text-lg mb-2" style="color:var(--accent);">HARVEST TOWN</div>
-  <p class="retro-font" style="font-size:1.2em;">Dibuat dengan 💛 oleh Rizky Pratama • 2024</p>
+  <p class="retro-font" style="font-size:1.2em;">Dibuat dengan 💛 oleh <span id="footerName">Rizky Pratama</span> • 2024</p>
   <p class="text-sm mt-2 opacity-70">"Bertani itu bukan soal hasil, tapi soal menikmati prosesnya."</p>
   <div class="flex justify-center gap-4 mt-4 text-2xl">
     <i class="fas fa-seedling" style="color:var(--grass-2);"></i>
@@ -829,6 +1022,151 @@
   </svg>
 </div>
 
+<!-- ===== EDIT MODAL ===== -->
+<div class="edit-modal-overlay" id="editModalOverlay">
+  <div class="edit-modal">
+    <button class="close-btn" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-pen-to-square"></i> EDIT BIODATA</h2>
+    <div class="auto-save-badge">Auto-save aktif</div>
+    
+    <div class="form-grid">
+      <div class="form-group">
+        <label>NAMA LENGKAP</label>
+        <input type="text" id="editName" value="Rizky Pratama">
+      </div>
+      <div class="form-group">
+        <label>UMUR</label>
+        <input type="number" id="editAge" value="22">
+      </div>
+      <div class="form-group full">
+        <label>ALAMAT / LOKASI</label>
+        <input type="text" id="editLocation" value="Lembang, Bandung">
+      </div>
+      <div class="form-group">
+        <label>PENDIDIKAN</label>
+        <input type="text" id="editEducation" value="S1 Informatika">
+      </div>
+      <div class="form-group">
+        <label>PEKERJAAN</label>
+        <input type="text" id="editJob" value="Mahasiswa & Petani">
+      </div>
+      <div class="form-group">
+        <label>STATUS</label>
+        <select id="editStatus">
+          <option>Single & Ready to Plant</option>
+          <option>Single</option>
+          <option>Tunangan</option>
+          <option>Menikah</option>
+          <option>Rahasia</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ZODIAK</label>
+        <select id="editZodiac">
+          <option>Virgo</option><option>Aries</option><option>Taurus</option><option>Gemini</option>
+          <option>Cancer</option><option>Leo</option><option>Libra</option><option>Scorpio</option>
+          <option>Sagittarius</option><option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>EMAIL</label>
+        <input type="email" id="editEmail" value="rizky.farmer@harvesttown.id">
+      </div>
+      <div class="form-group">
+        <label>TELEPON</label>
+        <input type="text" id="editPhone" value="+62 812-3456-7890">
+      </div>
+      <div class="form-group">
+        <label>MAKANAN FAVORIT</label>
+        <input type="text" id="editFood" value="Nasi Goreng Kampung">
+      </div>
+      <div class="form-group">
+        <label>LAGU FAVORIT</label>
+        <input type="text" id="editMusic" value="Acoustic Folk">
+      </div>
+      <div class="form-group full">
+        <label>WEBSITE</label>
+        <input type="text" id="editWebsite" value="rizkyfarmer.github.io">
+      </div>
+      <div class="form-group full">
+        <label>JUDUL / GELAR (tampil di bawah nama)</label>
+        <input type="text" id="editTitle" value="Petani / Nelayan / Pencinta Alam">
+      </div>
+      <div class="form-group">
+        <label>LEVEL PETANI</label>
+        <input type="number" id="editLevel" value="25" min="1" max="99">
+      </div>
+      <div class="form-group">
+        <label>PANGKAT</label>
+        <input type="text" id="editRank" value="Petani Master">
+      </div>
+      <div class="form-group full">
+        <label>UPLOAD FOTO / PILIH AVATAR</label>
+        <div class="flex flex-wrap gap-4 items-start">
+          <div class="avatar-preview" id="photoPreview"><i class="fas fa-photo-video"></i></div>
+          <div class="flex-1">
+            <input type="file" id="editPhoto" accept="image/*" onchange="handlePhotoUpload(event)">
+            <div class="avatar-options">
+              <button type="button" class="avatar-preset-btn avatar-preset-btn active" data-preset="pixel" onclick="chooseAvatarPreset('pixel')">Pixel</button>
+              <button type="button" class="avatar-preset-btn" data-preset="country" onclick="chooseAvatarPreset('country')">Country</button>
+              <button type="button" class="avatar-preset-btn" data-preset="forest" onclick="chooseAvatarPreset('forest')">Forest</button>
+              <button type="button" class="avatar-preset-btn" data-preset="photo" onclick="chooseAvatarPreset('photo')">Foto</button>
+            </div>
+            <button type="button" class="start-btn mt-3" style="padding:8px 12px; font-size:12px;" onclick="removePhoto()">Hapus Foto</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>WARNA BAJU AVATAR</label>
+        <select id="editShirtColor">
+          <option value="#3D8BD8">Biru</option>
+          <option value="#FF6B35">Oranye</option>
+          <option value="#52B788">Hijau</option>
+          <option value="#FF9FB2">Pink</option>
+          <option value="#9B59B6">Ungu</option>
+          <option value="#E74C3C">Merah</option>
+          <option value="#F4D35E">Kuning</option>
+          <option value="#3D2817">Coklat</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>WARNA TOPI AVATAR</label>
+        <select id="editHatColor">
+          <option value="#D88C44">Coklat Jerami</option>
+          <option value="#FF6B35">Oranye</option>
+          <option value="#3D2817">Coklat Gelap</option>
+          <option value="#52B788">Hijau</option>
+          <option value="#9B59B6">Ungu</option>
+          <option value="#E74C3C">Merah</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>TENTANG SAYA</label>
+        <textarea id="editAbout">Halo teman-teman! Saya Rizky, seorang mahasiswa yang mencintai dunia pertanian dan teknologi. Saya tumbuh di desa yang dikelilingi sawah dan kebun. Hobi saya bercocok tanam, memancing, dan membuat proyek-proyek kreatif. Saya percaya bahwa gabungan alam dan teknologi bisa menciptakan keajaiban kecil setiap harinya!</textarea>
+      </div>
+    </div>
+    
+    <h3 class="pixel-font text-sm mt-6 mb-3" style="color:var(--text-dark);"><i class="fas fa-chart-bar"></i> SKILL LEVEL (0-10)</h3>
+    <div id="skillEditor"></div>
+    
+    <h3 class="pixel-font text-sm mt-6 mb-3" style="color:var(--text-dark);"><i class="fas fa-tags"></i> HOBI & MINAT</h3>
+    <div id="hobbyEditor" class="flex flex-wrap gap-2 mb-2"></div>
+    <div class="hobby-input-row">
+      <input type="text" id="newHobbyInput" placeholder="Tambah hobi (mis: 🎵 Bermain Piano)" onkeydown="if(event.key==='Enter')addHobby()">
+      <button class="start-btn" style="padding:8px 16px; font-size:11px;" onclick="addHobby()"><i class="fas fa-plus"></i> TAMBAH</button>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="start-btn" style="background:#FF6B35;" onclick="resetBiodata()">
+        <i class="fas fa-undo"></i> RESET
+      </button>
+      <button class="start-btn" onclick="saveBiodata()">
+        <i class="fas fa-save"></i> SIMPAN
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============== UTILITIES ============== */
 function scrollToSection(id){
@@ -839,6 +1177,226 @@ function showToast(msg){
   t.innerHTML = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+function debounce(fn, delay=450){
+  let timer;
+  return (...args)=>{
+    clearTimeout(timer);
+    timer = setTimeout(()=>fn(...args), delay);
+  };
+}
+
+let friendProfiles = [];
+const defaultFriends = [
+  { name:'Sari Wijaya', location:'Malang', hobby:'🪴 Berkebun', note:'Teman eksperimen hidroponik.', photo:'', createdAt:Date.now() - 86400000 },
+  { name:'Aldi Pratama', location:'Yogyakarta', hobby:'🎮 Game & Coding', note:'Pintar membuat mini game pertanian.', photo:'', createdAt:Date.now() - 172800000 },
+  { name:'Maya Laras', location:'Bandung', hobby:'📸 Fotografi Alam', note:'Suka memotret suasana desa dan kebun.', photo:'', createdAt:Date.now() - 259200000 },
+  { name:'Rina Cahaya', location:'Bogor', hobby:'🍳 Masak Tradisional', note:'Ahli resep masakan hasil panen.', photo:'', createdAt:Date.now() - 432000000 }
+];
+let currentAvatarPreset = 'pixel';
+
+function loadFriends(){
+  const saved = localStorage.getItem('harvestTownFriends');
+  if(saved){
+    try{ friendProfiles = JSON.parse(saved); }
+    catch(e){ friendProfiles = [...defaultFriends]; }
+  } else {
+    friendProfiles = [...defaultFriends];
+  }
+  displayFriendList();
+}
+
+function saveFriends(){
+  localStorage.setItem('harvestTownFriends', JSON.stringify(friendProfiles));
+}
+
+function renderFriendCard(friend, index, container){
+  const card = document.createElement('div');
+  card.className = 'friend-card';
+  card.innerHTML = `
+    <div class="friend-header">
+      <div>
+        <div class="font-bold">${friend.name}</div>
+        <div class="retro-font" style="font-size:0.95em;">${friend.location}</div>
+      </div>
+      <button class="nav-btn" style="padding:6px 10px; font-size:11px;" onclick="deleteFriend(${index})">Hapus</button>
+    </div>
+    <div class="friend-pill">${friend.hobby}</div>
+    <div class="retro-font" style="font-size:0.95em; line-height:1.4;">${friend.note}</div>
+  `;
+  container.appendChild(card);
+}
+
+function displayFriendList(){
+  const container = document.getElementById('friendList');
+  if(!container) return;
+  container.innerHTML = '';
+  if(friendProfiles.length === 0){
+    container.innerHTML = '<div class="retro-font">Belum ada teman tersimpan. Tambahkan teman baru di kiri.</div>';
+    return;
+  }
+  friendProfiles.slice().sort((a,b)=> b.createdAt - a.createdAt).forEach((friend, idx)=> renderFriendCard(friend, idx, container));
+}
+
+function searchFriends(){
+  const query = document.getElementById('friendSearchInput').value.trim().toLowerCase();
+  const results = document.getElementById('friendSearchResults');
+  results.innerHTML = '';
+  if(!query){
+    results.innerHTML = '<div class="retro-font">Ketik nama teman untuk mencari di jaringan lokal.</div>';
+    return;
+  }
+  const matches = friendProfiles.filter(friend=>
+    friend.name.toLowerCase().includes(query) ||
+    friend.location.toLowerCase().includes(query) ||
+    friend.hobby.toLowerCase().includes(query) ||
+    friend.note.toLowerCase().includes(query)
+  );
+  const selfData = JSON.parse(localStorage.getItem('harvestTownBiodata') || '{}');
+  if(selfData.name && selfData.name.toLowerCase().includes(query)){
+    matches.unshift({ name:selfData.name, location:selfData.location || '-', hobby:selfData.job || 'Profil Saya', note:selfData.about || 'Ini adalah biodata saya sendiri.', photo:selfData.photo || '' });
+  }
+  if(matches.length === 0){
+    results.innerHTML = '<div class="retro-font">Tidak ditemukan. Ajak temanmu untuk menggunakan website ini!</div>';
+    return;
+  }
+  matches.forEach(friend=>{
+    const card = document.createElement('div');
+    card.className = 'friend-card';
+    card.innerHTML = `
+      <div class="friend-header">
+        <div>
+          <div class="font-bold">${friend.name}</div>
+          <div class="retro-font" style="font-size:0.95em;">${friend.location}</div>
+        </div>
+        <span class="friend-pill">${friend.hobby}</span>
+      </div>
+      <div class="retro-font" style="font-size:0.95em; line-height:1.4;">${friend.note}</div>
+    `;
+    results.appendChild(card);
+  });
+}
+
+function addFriendFromForm(){
+  const name = document.getElementById('friendName').value.trim();
+  const location = document.getElementById('friendLocation').value.trim();
+  const hobby = document.getElementById('friendHobby').value.trim();
+  const note = document.getElementById('friendNote').value.trim();
+  if(!name || !location){ showToast('Nama dan lokasi teman wajib diisi!'); return; }
+  friendProfiles.unshift({ name, location, hobby: hobby || 'Teman Baru', note: note || 'Teman baru di Harvest Town.', photo:'', createdAt: Date.now() });
+  saveFriends();
+  displayFriendList();
+  searchFriends();
+  document.getElementById('friendName').value = '';
+  document.getElementById('friendLocation').value = '';
+  document.getElementById('friendHobby').value = '';
+  document.getElementById('friendNote').value = '';
+  showToast('👥 Teman baru berhasil ditambahkan!');
+}
+
+function deleteFriend(index){
+  friendProfiles.splice(index, 1);
+  saveFriends();
+  displayFriendList();
+  searchFriends();
+  showToast('🗑️ Teman dihapus dari jaringan.');
+}
+
+function handlePhotoUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    document.getElementById('editPhoto').dataset.photo = reader.result;
+    updatePhotoPreview(reader.result);
+    chooseAvatarPreset('photo');
+    autoSaveBiodata();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updatePhotoPreview(src){
+  const preview = document.getElementById('photoPreview');
+  if(!preview) return;
+  if(src){
+    preview.style.backgroundImage = `url(${src})`;
+    preview.innerHTML = '';
+  } else {
+    preview.style.backgroundImage = 'none';
+    preview.innerHTML = '<i class="fas fa-photo-video"></i>';
+  }
+}
+
+function removePhoto(){
+  const input = document.getElementById('editPhoto');
+  if(input){ input.value = ''; input.dataset.photo = '';} 
+  updatePhotoPreview('');
+  chooseAvatarPreset('pixel');
+  autoSaveBiodata();
+}
+
+function chooseAvatarPreset(preset, initial=false){
+  currentAvatarPreset = preset;
+  document.querySelectorAll('.avatar-preset-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.preset === preset);
+  });
+  if(!initial){
+    showToast(`Avatar ${preset.charAt(0).toUpperCase()+preset.slice(1)} dipilih.`);
+    autoSaveBiodata();
+  }
+}
+
+function collectBiodataFromForm(){
+  const photoInput = document.getElementById('editPhoto');
+  return {
+    name: document.getElementById('editName').value,
+    age: document.getElementById('editAge').value,
+    location: document.getElementById('editLocation').value,
+    education: document.getElementById('editEducation').value,
+    job: document.getElementById('editJob').value,
+    status: document.getElementById('editStatus').value,
+    zodiac: document.getElementById('editZodiac').value,
+    email: document.getElementById('editEmail').value,
+    phone: document.getElementById('editPhone').value,
+    food: document.getElementById('editFood').value,
+    music: document.getElementById('editMusic').value,
+    website: document.getElementById('editWebsite').value,
+    title: document.getElementById('editTitle').value,
+    level: document.getElementById('editLevel').value,
+    rank: document.getElementById('editRank').value,
+    shirtColor: document.getElementById('editShirtColor').value,
+    hatColor: document.getElementById('editHatColor').value,
+    about: document.getElementById('editAbout').value,
+    photo: photoInput?.dataset.photo || '',
+    avatarPreset: currentAvatarPreset,
+    skills: [],
+    hobbies: [...editingHobbies]
+  };
+}
+
+function saveBiodataData(data, toastMessage){
+  localStorage.setItem('harvestTownBiodata', JSON.stringify(data));
+  applyBiodata(data);
+  if(toastMessage){ showToast(toastMessage); }
+}
+
+function autoSaveBiodata(){
+  const data = collectBiodataFromForm();
+  saveBiodataData(data);
+  const badge = document.querySelector('.auto-save-badge');
+  if(badge){ badge.textContent = 'Tersimpan otomatis'; setTimeout(()=> badge.textContent = 'Auto-save aktif', 1400); }
+}
+
+function setupAutoSave(){
+  const fields = document.querySelectorAll('#editModalOverlay input, #editModalOverlay textarea, #editModalOverlay select');
+  fields.forEach(field=>{
+    if(field.dataset.autoSaved) return;
+    field.addEventListener('input', debounce(()=>{
+      if(document.getElementById('editModalOverlay').classList.contains('show')) autoSaveBiodata();
+    }, 800));
+    field.dataset.autoSaved = '1';
+  });
 }
 
 /* ============== SKY CANVAS ============== */
@@ -855,7 +1413,6 @@ function resizeSky(){
 resizeSky();
 window.addEventListener('resize', resizeSky);
 
-// Create stars
 for(let i=0; i<80; i++){
   stars.push({
     x: Math.random()*skyW,
@@ -865,7 +1422,6 @@ for(let i=0; i<80; i++){
   });
 }
 
-// Particle types based on theme
 function spawnParticle(type){
   const colors = {
     petal: ['#FF9FB2', '#FFC8DD', '#FFD89B'],
@@ -891,10 +1447,8 @@ let currentParticleType = 'petal';
 
 function drawSky(){
   skyCtx.clearRect(0,0,skyW,skyH);
-  
   const isNight = document.body.classList.contains('night');
   
-  // Stars at night
   if(isNight){
     stars.forEach(s=>{
       s.twinkle += 0.05;
@@ -904,8 +1458,6 @@ function drawSky(){
       skyCtx.arc(s.x, s.y, Math.max(0.1, s.r), 0, Math.PI*2);
       skyCtx.fill();
     });
-    
-    // Moon
     skyCtx.fillStyle = '#FFF8E7';
     skyCtx.beginPath();
     skyCtx.arc(skyW-100, 100, 40, 0, Math.PI*2);
@@ -916,19 +1468,13 @@ function drawSky(){
     skyCtx.fill();
   }
   
-  // Particles
   particles.forEach((p,i)=>{
-    p.x += p.vx;
-    p.y += p.vy;
-    p.rot += p.vr;
-    
+    p.x += p.vx; p.y += p.vy; p.rot += p.vr;
     if(p.y > skyH) particles.splice(i,1);
-    
     skyCtx.save();
     skyCtx.translate(p.x, p.y);
     skyCtx.rotate(p.rot);
     skyCtx.fillStyle = p.color;
-    
     if(p.type === 'snow'){
       skyCtx.beginPath();
       skyCtx.arc(0,0, Math.max(0.5, p.size/3), 0, Math.PI*2);
@@ -942,7 +1488,7 @@ function drawSky(){
       skyCtx.beginPath();
       skyCtx.arc(0,0, Math.max(0.5,p.size/2), 0, Math.PI*2);
       skyCtx.fill();
-    } else { // petal
+    } else {
       skyCtx.beginPath();
       skyCtx.ellipse(0,0, Math.max(0.5,p.size), Math.max(0.5,p.size/2), 0, 0, Math.PI*2);
       skyCtx.fill();
@@ -950,17 +1496,15 @@ function drawSky(){
     skyCtx.restore();
   });
   
-  // Spawn new particles
   if(Math.random() < 0.3 && particles.length < 50){
     particles.push(spawnParticle(currentParticleType));
   }
-  
   requestAnimationFrame(drawSky);
 }
 drawSky();
 
 /* ============== DAY/NIGHT CYCLE ============== */
-let timePhase = 0; // 0=morning, 1=noon, 2=evening, 3=night
+let timePhase = 0;
 const timeOrb = document.getElementById('timeOrb');
 const phases = [
   { bg:'var(--sky-1)', orb:'radial-gradient(circle at 30% 30%, #FFE066, #FF9F1C)', night:false, name:'Pagi' },
@@ -975,23 +1519,19 @@ function setTimePhase(p){
   document.body.style.background = phase.bg;
   document.body.classList.toggle('night', phase.night);
   timeOrb.style.background = phase.orb;
-  showToast(`🌤️ Sekarang waktu: ${phase.name}`);
 }
 
-// Click time orb to change time
 timeOrb.addEventListener('click', ()=>{
   setTimePhase((timePhase+1)%4);
+  showToast(`🌤️ Sekarang waktu: ${phases[timePhase].name}`);
 });
 
-// Auto cycle every 30 seconds
-setInterval(()=>{
-  setTimePhase((timePhase+1)%4);
-}, 30000);
+setInterval(()=>{ setTimePhase((timePhase+1)%4); }, 30000);
 
 /* ============== WALKING CHARACTER ============== */
 const walker = document.getElementById('walker');
 const speech = document.getElementById('speech');
-let walkDir = 1; // 1=right, -1=left
+let walkDir = 1;
 let walkPos = 0;
 let walkSpeed = 1.5;
 
@@ -1005,7 +1545,7 @@ const greetings = [
   "Klik matahari di pojok atas!",
   "Aku suka musim semi!",
   "Panen sudah siap!",
-  "Pesan-pesan indah hari ini!"
+  "Edit biodata-ku yuk!"
 ];
 
 function greet(){
@@ -1014,7 +1554,6 @@ function greet(){
   setTimeout(()=>speech.classList.remove('show'), 3000);
 }
 
-// Walker auto walk
 function walk(){
   walkPos += walkSpeed * walkDir;
   const maxPos = window.innerWidth - 60;
@@ -1025,9 +1564,7 @@ function walk(){
 }
 walk();
 
-// Click walker
 walker.addEventListener('click', greet);
-// Random greet every 8-15 sec
 function randomGreet(){
   greet();
   setTimeout(randomGreet, 8000 + Math.random()*7000);
@@ -1077,60 +1614,39 @@ const seasonData = {
   spring: {
     title: 'MUSIM SEMI 🌱',
     desc: 'Musim bunga yang indah! Bunga-bunga mulai mekar, biji-bijian ditanam, dan udara terasa segar. Waktu terbaik untuk memulai kebun baru!',
-    temp: '15-22°C',
-    weather: 'Berawan',
-    crops: 'Bunga, Strawberry',
-    festival: 'Festival Bunga',
-    particle: 'petal',
-    bg: 'linear-gradient(180deg, #FFD89B 0%, #FFAB76 50%, #A8D877 100%)'
+    temp: '15-22°C', weather: 'Berawan', crops: 'Bunga, Strawberry', festival: 'Festival Bunga',
+    particle: 'petal', bg: 'linear-gradient(180deg, #FFD89B 0%, #FFAB76 50%, #A8D877 100%)'
   },
   summer: {
     title: 'MUSIM PANAS ☀️',
     desc: 'Matahari bersinar terang! Waktu terbaik untuk memanen tomat, semangka, dan jagung. Jangan lupa siram tanaman secara teratur!',
-    temp: '25-35°C',
-    weather: 'Cerah',
-    crops: 'Tomat, Semangka, Jagung',
-    festival: 'Festival Pantai',
-    particle: 'sun',
-    bg: 'linear-gradient(180deg, #FFE066 0%, #FF9F1C 50%, #FFD89B 100%)'
+    temp: '25-35°C', weather: 'Cerah', crops: 'Tomat, Semangka, Jagung', festival: 'Festival Pantai',
+    particle: 'sun', bg: 'linear-gradient(180deg, #FFE066 0%, #FF9F1C 50%, #FFD89B 100%)'
   },
   autumn: {
     title: 'MUSIM GUGUR 🍂',
     desc: 'Daun-daun mulai berubah warna menjadi oranye dan coklat. Waktu panen utama! Labu, apel, dan anggur siap dipanen.',
-    temp: '10-18°C',
-    weather: 'Sejuk',
-    crops: 'Labu, Apel, Anggur',
-    festival: 'Festival Panen',
-    particle: 'leaf',
-    bg: 'linear-gradient(180deg, #D88C44 0%, #A0522D 50%, #8B5A2B 100%)'
+    temp: '10-18°C', weather: 'Sejuk', crops: 'Labu, Apel, Anggur', festival: 'Festival Panen',
+    particle: 'leaf', bg: 'linear-gradient(180deg, #D88C44 0%, #A0522D 50%, #8B5A2B 100%)'
   },
   winter: {
     title: 'MUSIM DINGIN ❄️',
     desc: 'Salju turun dan menutupi tanah. Waktu untuk istirahat dan menikmati hangatnya kakao. Beberapa tanaman seperti wortel musim dingin masih bisa dipanen.',
-    temp: '-5 to 5°C',
-    weather: 'Bersalju',
-    crops: 'Wortel Salju, Kale',
-    festival: 'Festival Anjangsalju',
-    particle: 'snow',
-    bg: 'linear-gradient(180deg, #B8D4E3 0%, #E0E7FF 50%, #F0F4F8 100%)'
+    temp: '-5 to 5°C', weather: 'Bersalju', crops: 'Wortel Salju, Kale', festival: 'Festival Anjangsalju',
+    particle: 'snow', bg: 'linear-gradient(180deg, #B8D4E3 0%, #E0E7FF 50%, #F0F4F8 100%)'
   }
 };
 
 function drawSeasonScene(season){
   const scene = document.getElementById('seasonScene');
   scene.style.background = seasonData[season].bg;
-  
   let html = '';
   
-  // Trees/elements based on season
   if(season === 'spring'){
     html += `
-      <!-- Sun -->
       <div style="position:absolute; top:20px; right:20px; width:60px; height:60px; background:radial-gradient(circle, #FFE066, #FF9F1C); border-radius:50%; box-shadow:0 0 40px #FFE066;"></div>
-      <!-- Clouds -->
       <div style="position:absolute; top:40px; left:15%; width:80px; height:25px; background:#fff; border-radius:30px; opacity:0.9;"></div>
       <div style="position:absolute; top:60px; left:40%; width:100px; height:30px; background:#fff; border-radius:30px; opacity:0.9;"></div>
-      <!-- Cherry blossom tree -->
       <svg style="position:absolute; bottom:20px; left:10%;" width="140" height="180" viewBox="0 0 140 180">
         <rect x="60" y="100" width="20" height="80" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
         <circle cx="70" cy="70" r="40" fill="#FF9FB2" stroke="#3D2817" stroke-width="3"/>
@@ -1138,38 +1654,25 @@ function drawSeasonScene(season){
         <circle cx="100" cy="80" r="28" fill="#FFC8DD" stroke="#3D2817" stroke-width="3"/>
         <circle cx="70" cy="40" r="25" fill="#FFD1E8" stroke="#3D2817" stroke-width="3"/>
       </svg>
-      <!-- Flowers row -->
       <div style="position:absolute; bottom:20px; left:35%; display:flex; gap:8px;">
-        ${[0,1,2,3,4,5].map(i=>`
-          <svg width="30" height="50" viewBox="0 0 30 50">
-            <rect x="14" y="20" width="2" height="30" fill="#5A9E3A"/>
-            <circle cx="15" cy="15" r="6" fill="#FFE066" stroke="#3D2817" stroke-width="1.5"/>
-            <circle cx="15" cy="15" r="2" fill="#8B5A2B"/>
-          </svg>
-        `).join('')}
+        ${[0,1,2,3,4,5].map(i=>`<svg width="30" height="50" viewBox="0 0 30 50"><rect x="14" y="20" width="2" height="30" fill="#5A9E3A"/><circle cx="15" cy="15" r="6" fill="#FFE066" stroke="#3D2817" stroke-width="1.5"/><circle cx="15" cy="15" r="2" fill="#8B5A2B"/></svg>`).join('')}
       </div>
-      <!-- Character planting -->
       <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
         <rect x="35" y="50" width="10" height="50" fill="#3D8BD8" stroke="#3D2817" stroke-width="2"/>
         <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="22" y="10" width="36" height="6" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
         <rect x="32" y="2" width="16" height="12" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
-        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
-        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/><rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
         <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
         <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-        <!-- Sunflower in hand -->
         <circle cx="56" cy="50" r="6" fill="#FFE066" stroke="#3D2817" stroke-width="2"/>
       </svg>
-      <!-- Grass ground -->
       <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#7BC04C; border-top:3px solid #5A9E3A;"></div>
     `;
   } else if(season === 'summer'){
     html += `
-      <!-- Big sun -->
       <div style="position:absolute; top:20px; right:30px; width:80px; height:80px; background:radial-gradient(circle, #FFFF00, #FF9F1C); border-radius:50%; box-shadow:0 0 60px #FFE066; animation: floatY 3s ease-in-out infinite;"></div>
-      <!-- Palm tree -->
       <svg style="position:absolute; bottom:20px; left:10%;" width="120" height="180" viewBox="0 0 120 180">
         <path d="M55 180 Q50 100 60 30 L65 30 Q60 100 65 180 Z" fill="#8B5A2B" stroke="#3D2817" stroke-width="3"/>
         <ellipse cx="40" cy="30" rx="25" ry="8" fill="#5A9E3A" stroke="#3D2817" stroke-width="2" transform="rotate(-30 40 30)"/>
@@ -1177,129 +1680,78 @@ function drawSeasonScene(season){
         <ellipse cx="60" cy="20" rx="25" ry="8" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
         <ellipse cx="60" cy="40" rx="25" ry="8" fill="#5A9E3A" stroke="#3D2817" stroke-width="2" transform="rotate(90 60 40)"/>
       </svg>
-      <!-- Watermelon row -->
       <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:15px;">
-        ${[0,1,2,3].map(i=>`
-          <svg width="50" height="40" viewBox="0 0 50 40">
-            <ellipse cx="25" cy="30" rx="20" ry="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="2"/>
-            <ellipse cx="25" cy="28" rx="18" ry="8" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/>
-            <path d="M10 28 Q15 25 20 28 M30 28 Q35 25 40 28" stroke="#3D2817" stroke-width="1.5" fill="none"/>
-          </svg>
-        `).join('')}
+        ${[0,1,2,3].map(i=>`<svg width="50" height="40" viewBox="0 0 50 40"><ellipse cx="25" cy="30" rx="20" ry="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="2"/><ellipse cx="25" cy="28" rx="18" ry="8" fill="#7BC04C" stroke="#3D2817" stroke-width="2"/><path d="M10 28 Q15 25 20 28 M30 28 Q35 25 40 28" stroke="#3D2817" stroke-width="1.5" fill="none"/></svg>`).join('')}
       </div>
-      <!-- Character with watering can -->
       <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
         <rect x="35" y="50" width="10" height="50" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
         <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="22" y="10" width="36" height="6" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
-        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/><rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
         <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
         <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-        <!-- Watering can -->
         <rect x="55" y="45" width="14" height="12" fill="#4ECDC4" stroke="#3D2817" stroke-width="2"/>
         <path d="M69 50 L80 45" stroke="#3D2817" stroke-width="3" fill="none"/>
         <circle cx="80" cy="45" r="2" fill="#4ECDC4"/>
       </svg>
-      <!-- Sand ground -->
       <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#FFD89B; border-top:3px solid #D88C44;"></div>
     `;
   } else if(season === 'autumn'){
     html += `
-      <!-- Setting sun -->
       <div style="position:absolute; top:30px; right:30px; width:70px; height:70px; background:radial-gradient(circle, #FF6B35, #C73E1D); border-radius:50%; box-shadow:0 0 40px #FF6B35;"></div>
-      <!-- Orange tree -->
       <svg style="position:absolute; bottom:20px; left:10%;" width="140" height="180" viewBox="0 0 140 180">
         <rect x="60" y="100" width="20" height="80" fill="#5D3A1A" stroke="#3D2817" stroke-width="3"/>
         <circle cx="70" cy="70" r="40" fill="#D88C44" stroke="#3D2817" stroke-width="3"/>
         <circle cx="40" cy="80" r="28" fill="#A0522D" stroke="#3D2817" stroke-width="3"/>
         <circle cx="100" cy="80" r="28" fill="#A0522D" stroke="#3D2817" stroke-width="3"/>
-        <!-- Falling leaves -->
-        <circle cx="50" cy="50" r="4" fill="#FF6B35"/>
-        <circle cx="90" cy="60" r="4" fill="#D88C44"/>
-        <circle cx="65" cy="100" r="4" fill="#A0522D"/>
+        <circle cx="50" cy="50" r="4" fill="#FF6B35"/><circle cx="90" cy="60" r="4" fill="#D88C44"/><circle cx="65" cy="100" r="4" fill="#A0522D"/>
       </svg>
-      <!-- Pumpkins -->
       <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:15px;">
-        ${[0,1,2,3].map(i=>`
-          <svg width="60" height="50" viewBox="0 0 60 50">
-            <ellipse cx="30" cy="40" rx="25" ry="10" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
-            <ellipse cx="20" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
-            <ellipse cx="30" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
-            <ellipse cx="40" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/>
-            <rect x="28" y="25" width="4" height="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="1.5"/>
-          </svg>
-        `).join('')}
+        ${[0,1,2,3].map(i=>`<svg width="60" height="50" viewBox="0 0 60 50"><ellipse cx="30" cy="40" rx="25" ry="10" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/><ellipse cx="20" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/><ellipse cx="30" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/><ellipse cx="40" cy="38" rx="8" ry="10" fill="#FF9F1C" stroke="#3D2817" stroke-width="2"/><rect x="28" y="25" width="4" height="10" fill="#5A9E3A" stroke="#3D2817" stroke-width="1.5"/></svg>`).join('')}
       </div>
-      <!-- Character -->
       <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
         <rect x="35" y="50" width="10" height="50" fill="#8B5A2B" stroke="#3D2817" stroke-width="2"/>
         <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="22" y="10" width="36" height="6" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
         <rect x="32" y="2" width="16" height="12" fill="#D88C44" stroke="#3D2817" stroke-width="2"/>
-        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
-        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/><rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
         <rect x="32" y="40" width="16" height="2" fill="#3D2817"/>
         <rect x="20" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
         <rect x="52" y="55" width="8" height="20" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-        <!-- Pumpkin in hand -->
         <ellipse cx="58" cy="55" rx="6" ry="5" fill="#FF6B35" stroke="#3D2817" stroke-width="1.5"/>
       </svg>
       <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#8B5A2B; border-top:3px solid #5D3A1A;"></div>
     `;
   } else if(season === 'winter'){
     html += `
-      <!-- Moon -->
       <div style="position:absolute; top:30px; right:30px; width:70px; height:70px; background:radial-gradient(circle at 30% 30%, #fff, #C8D8E8); border-radius:50%; box-shadow:0 0 40px #fff;"></div>
-      <!-- Snow-covered pine tree -->
       <svg style="position:absolute; bottom:20px; left:10%;" width="120" height="180" viewBox="0 0 120 180">
         <rect x="55" y="140" width="14" height="40" fill="#5D3A1A" stroke="#3D2817" stroke-width="2"/>
         <polygon points="62,20 30,80 94,80" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
         <polygon points="62,50 25,110 99,110" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
         <polygon points="62,90 20,150 104,150" fill="#2D5A3D" stroke="#3D2817" stroke-width="2"/>
-        <!-- Snow on tree -->
         <polygon points="62,20 35,75 89,75" fill="#fff" opacity="0.85"/>
         <polygon points="62,50 30,105 94,105" fill="#fff" opacity="0.7"/>
         <polygon points="62,90 25,145 99,145" fill="#fff" opacity="0.6"/>
       </svg>
-      <!-- Snowmen row -->
       <div style="position:absolute; bottom:25px; left:35%; display:flex; gap:30px;">
-        ${[0,1,2].map(i=>`
-          <svg width="50" height="80" viewBox="0 0 50 80">
-            <circle cx="25" cy="60" r="15" fill="#fff" stroke="#3D2817" stroke-width="2"/>
-            <circle cx="25" cy="35" r="10" fill="#fff" stroke="#3D2817" stroke-width="2"/>
-            <circle cx="22" cy="33" r="1.5" fill="#3D2817"/>
-            <circle cx="28" cy="33" r="1.5" fill="#3D2817"/>
-            <polygon points="23,37 30,38 23,40" fill="#FF9F1C"/>
-            <rect x="15" y="28" width="20" height="3" fill="#3D2817"/>
-            <rect x="18" y="25" width="14" height="3" fill="#3D2817"/>
-            <!-- Buttons -->
-            <circle cx="25" cy="55" r="1.5" fill="#3D2817"/>
-            <circle cx="25" cy="62" r="1.5" fill="#3D2817"/>
-          </svg>
-        `).join('')}
+        ${[0,1,2].map(i=>`<svg width="50" height="80" viewBox="0 0 50 80"><circle cx="25" cy="60" r="15" fill="#fff" stroke="#3D2817" stroke-width="2"/><circle cx="25" cy="35" r="10" fill="#fff" stroke="#3D2817" stroke-width="2"/><circle cx="22" cy="33" r="1.5" fill="#3D2817"/><circle cx="28" cy="33" r="1.5" fill="#3D2817"/><polygon points="23,37 30,38 23,40" fill="#FF9F1C"/><rect x="15" y="28" width="20" height="3" fill="#3D2817"/><rect x="18" y="25" width="14" height="3" fill="#3D2817"/><circle cx="25" cy="55" r="1.5" fill="#3D2817"/><circle cx="25" cy="62" r="1.5" fill="#3D2817"/></svg>`).join('')}
       </div>
-      <!-- Character with coat -->
       <svg style="position:absolute; bottom:30px; right:15%;" width="80" height="100" viewBox="0 0 80 100">
         <rect x="35" y="50" width="10" height="50" fill="#3D2817" stroke="#3D2817" stroke-width="2"/>
         <rect x="28" y="20" width="24" height="30" fill="#FFD89B" stroke="#3D2817" stroke-width="2"/>
-        <!-- Winter hat -->
         <rect x="22" y="12" width="36" height="10" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
         <circle cx="40" cy="8" r="5" fill="#fff" stroke="#3D2817" stroke-width="2"/>
-        <!-- Scarf -->
         <rect x="25" y="40" width="30" height="6" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
         <rect x="32" y="45" width="6" height="12" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
-        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/>
-        <rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
+        <rect x="35" y="28" width="4" height="6" fill="#3D2817"/><rect x="42" y="28" width="4" height="6" fill="#3D2817"/>
         <rect x="20" y="55" width="8" height="20" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
         <rect x="52" y="55" width="8" height="20" fill="#FF6B35" stroke="#3D2817" stroke-width="2"/>
       </svg>
-      <!-- Snow ground -->
       <div style="position:absolute; bottom:0; left:0; right:0; height:30px; background:#fff; border-top:3px solid #C8D8E8;"></div>
     `;
   }
-  
   scene.innerHTML = html;
 }
 
@@ -1317,7 +1769,6 @@ function changeSeason(s){
   drawSeasonScene(s);
   showToast(`🍂 Musim berubah ke: ${d.title}`);
 }
-// Init
 drawSeasonScene('spring');
 
 /* ============== FARM GRID ============== */
@@ -1331,16 +1782,20 @@ let coins = 50;
 let harvestCount = 0;
 let selectedCrop = null;
 
-// Create 18 plots
 for(let i=0; i<18; i++){
   const plot = document.createElement('div');
   plot.className = 'plot';
   plot.dataset.idx = i;
   plot.dataset.stage = 'empty';
+  plot.dataset.crop = '';
+  plot.dataset.plantedAt = '';
+  plot.dataset.growTime = '';
   plot.innerHTML = `<div class="crop"></div>`;
   plot.addEventListener('click', ()=>plantOnPlot(plot, i));
   farmGrid.appendChild(plot);
 }
+
+loadFarmState();
 
 function plantSeed(type){
   if(coins < crops[type].cost){
@@ -1354,7 +1809,6 @@ function plantSeed(type){
 function plantOnPlot(plot, idx){
   if(plot.dataset.stage !== 'empty'){
     if(plot.dataset.stage === '3'){
-      // Harvest!
       const cropType = plot.dataset.crop;
       const sellPrice = crops[cropType].sell;
       coins += sellPrice;
@@ -1364,71 +1818,69 @@ function plantOnPlot(plot, idx){
       plot.dataset.stage = 'empty';
       plot.className = 'plot';
       plot.dataset.crop = '';
+      plot.dataset.plantedAt = '';
+      plot.dataset.growTime = '';
       plot.querySelector('.crop').innerHTML = '';
+      saveFarmState();
       showToast(`🎉 Panen! +${sellPrice} koin!`);
     } else {
       showToast('⏳ Tanaman belum tumbuh sempurna!');
     }
     return;
   }
-  
-  if(!selectedCrop){
-    showToast('🌱 Pilih biji dulu di tombol atas!');
-    return;
-  }
-  
+  if(!selectedCrop){ showToast('🌱 Pilih biji dulu di tombol atas!'); return; }
   const crop = crops[selectedCrop];
-  if(coins < crop.cost){
-    showToast('🪙 Koin tidak cukup!');
-    return;
-  }
-  
+  if(coins < crop.cost){ showToast('🪙 Koin tidak cukup!'); return; }
   coins -= crop.cost;
   document.getElementById('coinCount').textContent = coins;
-  
   plot.dataset.stage = '1';
   plot.dataset.crop = selectedCrop;
+  plot.dataset.plantedAt = String(Date.now());
+  plot.dataset.growTime = String(crop.growTime);
   plot.className = 'plot stage-1';
   plot.querySelector('.crop').innerHTML = `<span style="font-size:14px;">${crop.stages[0]}</span>`;
-  
+  saveFarmState();
   setTimeout(()=>{
     if(plot.dataset.stage === '1'){
       plot.dataset.stage = '2';
       plot.className = 'plot stage-2';
       plot.querySelector('.crop').innerHTML = `<span style="font-size:18px;">${crop.stages[1]}</span>`;
+      saveFarmState();
     }
   }, crop.growTime/2);
-  
   setTimeout(()=>{
     if(plot.dataset.stage === '2'){
       plot.dataset.stage = '3';
       plot.className = 'plot stage-3';
       plot.querySelector('.crop').innerHTML = `<span style="font-size:28px;">${crop.stages[2]}</span>`;
       showToast(`✨ ${crop.emoji} Siap dipanen! Klik petaknya!`);
+      saveFarmState();
     }
   }, crop.growTime);
-  
   selectedCrop = null;
 }
 
-/* ============== MINI GAME ============== */
+/* ============== MINI GAME (ENHANCED) ============== */
 const gameCanvas = document.getElementById('gameCanvas');
 const gameCtx = gameCanvas.getContext('2d');
 const gameOverlay = document.getElementById('gameOverlay');
 const basketCursor = document.getElementById('basketCursor');
+const gameWrapper = document.getElementById('gameWrapper');
+const comboDisplay = document.getElementById('comboDisplay');
+const powerupIndicator = document.getElementById('powerupIndicator');
+const gameFlash = document.getElementById('gameFlash');
+const difficultyFill = document.getElementById('difficultyFill');
 
 let game = {
-  running: false,
-  score: 0,
-  lives: 3,
-  time: 30,
-  basketX: 400,
-  basketY: 400,
-  items: [],
-  best: 0
+  running: false, score: 0, lives: 3, time: 45,
+  basketX: 400, basketY: 400, items: [], best: 0,
+  combo: 0, maxCombo: 0, level: 1, difficulty: 1,
+  particles: [], floatTexts: [], shake: 0,
+  powerups: { doubleScore: 0, magnet: 0, slowMo: 0, shield: 0 },
+  spawnRate: 700, baseSpawnRate: 700,
+  bgOffset: 0
 };
 
-// Resize canvas
 function fitCanvas(){
   const ratio = gameCanvas.width / gameCanvas.height;
   const w = gameCanvas.parentElement.clientWidth - 8;
@@ -1443,93 +1895,248 @@ gameCanvas.addEventListener('mousemove', (e)=>{
   game.basketX = (e.clientX - rect.left) * (gameCanvas.width / rect.width);
   game.basketY = (e.clientY - rect.top) * (gameCanvas.height / rect.height);
 });
-
-gameCanvas.addEventListener('mouseenter', ()=>{
-  if(game.running) basketCursor.style.display = 'block';
-});
-gameCanvas.addEventListener('mouseleave', ()=>{
-  basketCursor.style.display = 'none';
-});
-
+gameCanvas.addEventListener('mouseenter', ()=>{ if(game.running) basketCursor.style.display = 'block'; });
+gameCanvas.addEventListener('mouseleave', ()=>{ basketCursor.style.display = 'none'; });
 document.addEventListener('mousemove', (e)=>{
   basketCursor.style.left = (e.clientX - 16) + 'px';
   basketCursor.style.top = (e.clientY - 16) + 'px';
 });
 
+// Touch support
+gameCanvas.addEventListener('touchmove', (e)=>{
+  e.preventDefault();
+  const rect = gameCanvas.getBoundingClientRect();
+  const t = e.touches[0];
+  game.basketX = (t.clientX - rect.left) * (gameCanvas.width / rect.width);
+  game.basketY = (t.clientY - rect.top) * (gameCanvas.height / rect.height);
+}, {passive:false});
+
+// Simple sound effects using Web Audio API
+let audioCtx = null;
+function playSound(freq, duration, type='sine', volume=0.1){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  }catch(e){}
+}
+function playCatchSound(){ playSound(523, 0.15, 'square', 0.08); setTimeout(()=>playSound(659, 0.1, 'square', 0.06), 50); }
+function playBadSound(){ playSound(150, 0.3, 'sawtooth', 0.1); }
+function playPowerupSound(){ playSound(440, 0.1, 'sine', 0.1); setTimeout(()=>playSound(554, 0.1, 'sine', 0.1), 80); setTimeout(()=>playSound(659, 0.15, 'sine', 0.1), 160); }
+function playComboSound(){ playSound(880, 0.1, 'triangle', 0.08); setTimeout(()=>playSound(1100, 0.1, 'triangle', 0.08), 60); }
+
 function startGame(){
   game.running = true;
-  game.score = 0;
-  game.lives = 3;
-  game.time = 30;
-  game.items = [];
+  game.score = 0; game.lives = 3; game.time = 45;
+  game.items = []; game.combo = 0; game.maxCombo = 0;
+  game.level = 1; game.difficulty = 1;
+  game.particles = []; game.floatTexts = []; game.shake = 0;
+  game.spawnRate = game.baseSpawnRate;
+  game.powerups = { doubleScore: 0, magnet: 0, slowMo: 0, shield: 0 };
   gameOverlay.style.display = 'none';
   basketCursor.style.display = 'block';
   
   document.getElementById('gameScore').textContent = '0';
   document.getElementById('gameLives').textContent = '3';
-  document.getElementById('gameTime').textContent = '30';
+  document.getElementById('gameTime').textContent = '45';
+  document.getElementById('comboCount').textContent = '0';
+  document.getElementById('gameLevel').textContent = '1';
+  difficultyFill.style.width = '10%';
+  powerupIndicator.innerHTML = '';
   
-  // Countdown
   const timer = setInterval(()=>{
     if(!game.running){ clearInterval(timer); return; }
     game.time--;
     document.getElementById('gameTime').textContent = game.time;
-    if(game.time <= 0){
-      endGame();
-      clearInterval(timer);
+    // Increase difficulty every 10 seconds
+    if(game.time % 10 === 0 && game.time > 0){
+      game.difficulty += 0.3;
+      game.level++;
+      game.spawnRate = Math.max(300, game.baseSpawnRate - game.level * 50);
+      document.getElementById('gameLevel').textContent = game.level;
+      difficultyFill.style.width = Math.min(100, 10 + game.level * 12) + '%';
+      showToast(`⚡ Level ${game.level}! Lebih cepat!`);
+      playComboSound();
     }
+    if(game.time <= 0){ endGame(); clearInterval(timer); }
   }, 1000);
   
-  // Spawn items
+  // Decrement powerup timers
+  const powerTimer = setInterval(()=>{
+    if(!game.running){ clearInterval(powerTimer); return; }
+    let changed = false;
+    for(let key in game.powerups){
+      if(game.powerups[key] > 0){
+        game.powerups[key]--;
+        changed = true;
+      }
+    }
+    if(changed) updatePowerupDisplay();
+  }, 1000);
+  
   const spawner = setInterval(()=>{
     if(!game.running){ clearInterval(spawner); return; }
     spawnItem();
-  }, 600);
+  }, game.spawnRate);
   
   gameLoop();
 }
 
 function spawnItem(){
-  const types = [
-    { type:'apple', emoji:'🍎', points:10, bad:false },
-    { type:'carrot', emoji:'🥕', points:10, bad:false },
-    { type:'tomato', emoji:'🍅', points:10, bad:false },
-    { type:'pumpkin', emoji:'🎃', points:15, bad:false },
-    { type:'corn', emoji:'🌽', points:10, bad:false },
-    { type:'rock', emoji:'🪨', points:0, bad:true },
-    { type:'bomb', emoji:'💣', points:0, bad:true }
-  ];
+  const r = Math.random();
+  let types;
+  
+  if(r < 0.08){
+    // Power-up items (8% chance)
+    types = [
+      { type:'golden', emoji:'⭐', points:0, bad:false, powerup:'doubleScore', duration:6, color:'#FFD700' },
+      { type:'magnet', emoji:'🧲', points:0, bad:false, powerup:'magnet', duration:5, color:'#FF6B35' },
+      { type:'clock', emoji:'⏰', points:0, bad:false, powerup:'slowMo', duration:5, color:'#4ECDC4' },
+      { type:'heart', emoji:'💖', points:0, bad:false, powerup:'heart', color:'#FF9FB2' },
+      { type:'shield', emoji:'🛡️', points:0, bad:false, powerup:'shield', duration:8, color:'#52B788' }
+    ];
+  } else if(r < 0.25){
+    // Bad items
+    types = [
+      { type:'rock', emoji:'🪨', points:0, bad:true },
+      { type:'bomb', emoji:'💣', points:0, bad:true, explosion:true },
+      { type:'weed', emoji:'🌿', points:0, bad:true }
+    ];
+  } else {
+    // Good items
+    types = [
+      { type:'apple', emoji:'🍎', points:10, bad:false },
+      { type:'carrot', emoji:'🥕', points:10, bad:false },
+      { type:'tomato', emoji:'🍅', points:10, bad:false },
+      { type:'pumpkin', emoji:'🎃', points:15, bad:false },
+      { type:'corn', emoji:'🌽', points:10, bad:false },
+      { type:'grape', emoji:'🍇', points:12, bad:false },
+      { type:'strawberry', emoji:'🍓', points:12, bad:false },
+      { type:'watermelon', emoji:'🍉', points:15, bad:false },
+      { type:'golden_apple', emoji:'🌟', points:50, bad:false, special:true }
+    ];
+  }
+  
   const t = types[Math.floor(Math.random()*types.length)];
+  const slowFactor = game.powerups.slowMo > 0 ? 0.4 : 1;
   game.items.push({
-    x: Math.random()*(gameCanvas.width-40) + 20,
+    x: Math.random()*(gameCanvas.width-60) + 30,
     y: -30,
-    vy: 2 + Math.random()*2,
+    vx: 0,
+    vy: (2 + Math.random()*1.5 + game.difficulty * 0.5) * slowFactor,
     rot: 0,
     vr: (Math.random()-0.5)*0.1,
+    scale: 1,
     ...t
   });
+}
+
+function createParticles(x, y, color, count=12){
+  for(let i=0; i<count; i++){
+    const angle = (Math.PI*2 / count) * i + Math.random()*0.5;
+    const speed = 2 + Math.random()*4;
+    game.particles.push({
+      x: x, y: y,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed - 2,
+      life: 1,
+      color: color,
+      size: 3 + Math.random()*4
+    });
+  }
+}
+
+function createFloatText(x, y, text, color){
+  game.floatTexts.push({ x, y, text, color, life: 1, vy: -2 });
+}
+
+function flashScreen(color){
+  gameFlash.style.background = color;
+  gameFlash.classList.remove('flash');
+  void gameFlash.offsetWidth;
+  gameFlash.classList.add('flash');
+}
+
+function shakeScreen(amount){
+  game.shake = amount;
+}
+
+function updatePowerupDisplay(){
+  powerupIndicator.innerHTML = '';
+  const labels = {
+    doubleScore: { icon:'⭐', name:'2X SCORE', color:'#FFD700' },
+    magnet: { icon:'🧲', name:'MAGNET', color:'#FF6B35' },
+    slowMo: { icon:'⏰', name:'SLOW MO', color:'#4ECDC4' },
+    shield: { icon:'🛡️', name:'SHIELD', color:'#52B788' }
+  };
+  for(let key in game.powerups){
+    if(game.powerups[key] > 0 && labels[key]){
+      const badge = document.createElement('div');
+      badge.className = 'powerup-badge';
+      badge.style.borderColor = labels[key].color;
+      badge.innerHTML = `${labels[key].icon} ${labels[key].name} ${game.powerups[key]}s`;
+      powerupIndicator.appendChild(badge);
+    }
+  }
+}
+
+function showCombo(count){
+  if(count < 3) return;
+  comboDisplay.textContent = `🔥 COMBO ${count}x!`;
+  comboDisplay.style.color = count >= 10 ? '#FF6B35' : count >= 7 ? '#FF9F1C' : '#F4D35E';
+  comboDisplay.classList.remove('show');
+  void comboDisplay.offsetWidth;
+  comboDisplay.classList.add('show');
+  setTimeout(()=>comboDisplay.classList.remove('show'), 1500);
 }
 
 function gameLoop(){
   if(!game.running) return;
   
-  // Clear
   gameCtx.clearRect(0,0,gameCanvas.width, gameCanvas.height);
   
-  // Background pattern (clouds)
-  gameCtx.fillStyle = 'rgba(255,255,255,0.4)';
-  gameCtx.beginPath();
-  gameCtx.arc(100, 60, 25, 0, Math.PI*2);
-  gameCtx.arc(140, 60, 30, 0, Math.PI*2);
-  gameCtx.arc(180, 60, 25, 0, Math.PI*2);
-  gameCtx.fill();
-  gameCtx.beginPath();
-  gameCtx.arc(600, 80, 30, 0, Math.PI*2);
-  gameCtx.arc(640, 80, 35, 0, Math.PI*2);
-  gameCtx.arc(680, 80, 25, 0, Math.PI*2);
-  gameCtx.fill();
+  // Apply shake
+  let shakeX = 0, shakeY = 0;
+  if(game.shake > 0){
+    shakeX = (Math.random()-0.5)*game.shake;
+    shakeY = (Math.random()-0.5)*game.shake;
+    game.shake *= 0.85;
+    if(game.shake < 0.5) game.shake = 0;
+  }
+  gameCtx.save();
+  gameCtx.translate(shakeX, shakeY);
   
-  // Grass
+  // Animated background
+  game.bgOffset += 0.5;
+  // Sky gradient
+  const skyGrad = gameCtx.createLinearGradient(0, 0, 0, gameCanvas.height);
+  skyGrad.addColorStop(0, '#87CEEB');
+  skyGrad.addColorStop(0.6, '#B5E48C');
+  skyGrad.addColorStop(1, '#7BC04C');
+  gameCtx.fillStyle = skyGrad;
+  gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+  
+  // Moving clouds
+  gameCtx.fillStyle = 'rgba(255,255,255,0.5)';
+  for(let i=0; i<3; i++){
+    const cx = ((game.bgOffset * (0.3 + i*0.2)) + i*300) % (gameCanvas.width + 200) - 100;
+    const cy = 40 + i*30;
+    gameCtx.beginPath();
+    gameCtx.arc(cx, cy, 25, 0, Math.PI*2);
+    gameCtx.arc(cx+35, cy, 30, 0, Math.PI*2);
+    gameCtx.arc(cx+70, cy, 25, 0, Math.PI*2);
+    gameCtx.fill();
+  }
+  
+  // Grass field
   gameCtx.fillStyle = '#5A9E3A';
   gameCtx.fillRect(0, gameCanvas.height-20, gameCanvas.width, 20);
   gameCtx.fillStyle = '#7BC04C';
@@ -1537,27 +2144,117 @@ function gameLoop(){
     gameCtx.fillRect(i, gameCanvas.height-25, 3, 8);
   }
   
+  // Decorative trees
+  for(let i=0; i<3; i++){
+    const tx = 50 + i*280;
+    const ty = gameCanvas.height - 25;
+    gameCtx.fillStyle = '#5D3A1A';
+    gameCtx.fillRect(tx-4, ty-40, 8, 40);
+    gameCtx.fillStyle = '#5A9E3A';
+    gameCtx.beginPath();
+    gameCtx.arc(tx, ty-50, 20, 0, Math.PI*2);
+    gameCtx.arc(tx-15, ty-45, 15, 0, Math.PI*2);
+    gameCtx.arc(tx+15, ty-45, 15, 0, Math.PI*2);
+    gameCtx.fill();
+  }
+  
   // Update and draw items
   for(let i=game.items.length-1; i>=0; i--){
     const it = game.items[i];
+    
+    // Magnet effect
+    if(game.powerups.magnet > 0 && !it.bad){
+      const dx = game.basketX - it.x;
+      const dy = game.basketY - it.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 200){
+        it.vx += (dx/dist) * 0.5;
+        it.vy += (dy/dist) * 0.3;
+      }
+    }
+    
+    it.x += it.vx;
     it.y += it.vy;
     it.rot += it.vr;
+    it.vx *= 0.98;
+    
+    // Bounce off walls
+    if(it.x < 20){ it.x = 20; it.vx *= -0.5; }
+    if(it.x > gameCanvas.width-20){ it.x = gameCanvas.width-20; it.vx *= -0.5; }
     
     // Check basket collision
     const dx = it.x - game.basketX;
     const dy = it.y - game.basketY;
-    if(Math.abs(dx) < 35 && Math.abs(dy) < 25 && it.y > game.basketY-20){
+    if(Math.abs(dx) < 38 && Math.abs(dy) < 28 && it.y > game.basketY-25){
       if(it.bad){
-        game.lives--;
-        document.getElementById('gameLives').textContent = game.lives;
-        showToast(`💥 Oh tidak! -1 nyawa`);
-        if(game.lives <= 0){
-          endGame();
-          return;
+        if(game.powerups.shield > 0){
+          // Shield blocks
+          createParticles(it.x, it.y, '#52B788', 15);
+          flashScreen('rgba(82,183,136,0.3)');
+          playSound(300, 0.1, 'square', 0.08);
+          game.powerups.shield = 0;
+          updatePowerupDisplay();
+          showToast('🛡️ Shield melindungimu!');
+        } else {
+          game.lives--;
+          game.combo = 0;
+          document.getElementById('gameLives').textContent = game.lives;
+          document.getElementById('comboCount').textContent = '0';
+          createParticles(it.x, it.y, '#FF0000', 20);
+          flashScreen('rgba(255,0,0,0.4)');
+          shakeScreen(15);
+          playBadSound();
+          showToast(`💥 Oh tidak! -1 nyawa`);
+          if(it.explosion){
+            // Bomb clears nearby items
+            for(let j=game.items.length-1; j>=0; j--){
+              if(j !== i){
+                const ddx = game.items[j].x - it.x;
+                const ddy = game.items[j].y - it.y;
+                if(Math.sqrt(ddx*ddx+ddy*ddy) < 100){
+                  createParticles(game.items[j].x, game.items[j].y, '#FF6B35', 8);
+                  game.items.splice(j, 1);
+                }
+              }
+            }
+          }
+          if(game.lives <= 0){ endGame(); return; }
         }
+      } else if(it.powerup){
+        // Power-up collected
+        if(it.powerup === 'heart'){
+          game.lives = Math.min(5, game.lives + 1);
+          document.getElementById('gameLives').textContent = game.lives;
+          showToast('💖 +1 Nyawa!');
+        } else {
+          game.powerups[it.powerup] = it.duration || 5;
+          updatePowerupDisplay();
+          showToast(`✨ ${it.powerup.toUpperCase()} aktif!`);
+        }
+        createParticles(it.x, it.y, it.color || '#FFD700', 20);
+        flashScreen((it.color || '#FFD700') + '66');
+        playPowerupSound();
       } else {
-        game.score += it.points;
+        // Good item
+        game.combo++;
+        if(game.combo > game.maxCombo) game.maxCombo = game.combo;
+        const comboBonus = Math.floor(game.combo / 3) * 5;
+        const doubleMult = game.powerups.doubleScore > 0 ? 2 : 1;
+        const points = (it.points + comboBonus) * doubleMult;
+        game.score += points;
         document.getElementById('gameScore').textContent = game.score;
+        document.getElementById('comboCount').textContent = game.combo;
+        
+        createParticles(it.x, it.y, it.special ? '#FFD700' : '#7BC04C', it.special ? 25 : 12);
+        createFloatText(it.x, it.y, `+${points}`, it.special ? '#FFD700' : '#fff');
+        
+        if(game.combo >= 3 && game.combo % 3 === 0){
+          showCombo(game.combo);
+          playComboSound();
+          shakeScreen(5);
+        } else {
+          playCatchSound();
+        }
       }
       game.items.splice(i,1);
       continue;
@@ -1565,14 +2262,30 @@ function gameLoop(){
     
     // Remove if off screen
     if(it.y > gameCanvas.height+30){
+      if(!it.bad && !it.powerup){
+        game.combo = 0;
+        document.getElementById('comboCount').textContent = '0';
+      }
       game.items.splice(i,1);
       continue;
     }
     
-    // Draw item
+    // Draw item with glow for special
     gameCtx.save();
     gameCtx.translate(it.x, it.y);
     gameCtx.rotate(it.rot);
+    
+    if(it.special || it.powerup){
+      gameCtx.shadowBlur = 20;
+      gameCtx.shadowColor = it.color || '#FFD700';
+    }
+    
+    // Pulsing for powerups
+    if(it.powerup){
+      it.scale = 1 + Math.sin(Date.now()*0.005) * 0.15;
+      gameCtx.scale(it.scale, it.scale);
+    }
+    
     gameCtx.font = '32px sans-serif';
     gameCtx.textAlign = 'center';
     gameCtx.textBaseline = 'middle';
@@ -1580,9 +2293,76 @@ function gameLoop(){
     gameCtx.restore();
   }
   
+  // Update and draw particles
+  for(let i=game.particles.length-1; i>=0; i--){
+    const p = game.particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.2;
+    p.life -= 0.025;
+    if(p.life <= 0){ game.particles.splice(i,1); continue; }
+    gameCtx.save();
+    gameCtx.globalAlpha = p.life;
+    gameCtx.fillStyle = p.color;
+    gameCtx.beginPath();
+    gameCtx.arc(p.x, p.y, Math.max(0.5, p.size * p.life), 0, Math.PI*2);
+    gameCtx.fill();
+    gameCtx.restore();
+  }
+  
+  // Update and draw float texts
+  for(let i=game.floatTexts.length-1; i>=0; i--){
+    const ft = game.floatTexts[i];
+    ft.y += ft.vy;
+    ft.vy *= 0.95;
+    ft.life -= 0.02;
+    if(ft.life <= 0){ game.floatTexts.splice(i,1); continue; }
+    gameCtx.save();
+    gameCtx.globalAlpha = ft.life;
+    gameCtx.font = 'bold 22px Silkscreen, monospace';
+    gameCtx.textAlign = 'center';
+    gameCtx.strokeStyle = '#000';
+    gameCtx.lineWidth = 4;
+    gameCtx.strokeText(ft.text, ft.x, ft.y);
+    gameCtx.fillStyle = ft.color;
+    gameCtx.fillText(ft.text, ft.x, ft.y);
+    gameCtx.restore();
+  }
+  
   // Draw basket
   gameCtx.save();
   gameCtx.translate(game.basketX, game.basketY);
+  
+  // Shield aura
+  if(game.powerups.shield > 0){
+    gameCtx.strokeStyle = 'rgba(82,183,136,0.6)';
+    gameCtx.lineWidth = 3;
+    gameCtx.beginPath();
+    gameCtx.arc(0, 0, 50 + Math.sin(Date.now()*0.005)*5, 0, Math.PI*2);
+    gameCtx.stroke();
+    gameCtx.strokeStyle = 'rgba(82,183,136,0.3)';
+    gameCtx.beginPath();
+    gameCtx.arc(0, 0, 60 + Math.sin(Date.now()*0.005)*5, 0, Math.PI*2);
+    gameCtx.stroke();
+  }
+  
+  // Magnet aura
+  if(game.powerups.magnet > 0){
+    gameCtx.strokeStyle = 'rgba(255,107,53,0.4)';
+    gameCtx.lineWidth = 2;
+    gameCtx.setLineDash([5, 5]);
+    gameCtx.beginPath();
+    gameCtx.arc(0, 0, 200, 0, Math.PI*2);
+    gameCtx.stroke();
+    gameCtx.setLineDash([]);
+  }
+  
+  // Double score glow
+  if(game.powerups.doubleScore > 0){
+    gameCtx.shadowBlur = 15;
+    gameCtx.shadowColor = '#FFD700';
+  }
+  
   // Basket body
   gameCtx.fillStyle = '#8B5A2B';
   gameCtx.strokeStyle = '#3D2817';
@@ -1595,11 +2375,9 @@ function gameLoop(){
   gameCtx.closePath();
   gameCtx.fill();
   gameCtx.stroke();
-  // Top edge
   gameCtx.fillStyle = '#A0522D';
   gameCtx.fillRect(-38, -18, 76, 6);
   gameCtx.strokeRect(-38, -18, 76, 6);
-  // Weave pattern
   gameCtx.strokeStyle = '#5D3A1A';
   gameCtx.lineWidth = 1.5;
   for(let x=-25; x<=25; x+=8){
@@ -1616,6 +2394,8 @@ function gameLoop(){
   }
   gameCtx.restore();
   
+  gameCtx.restore(); // shake restore
+  
   requestAnimationFrame(gameLoop);
 }
 
@@ -1625,37 +2405,473 @@ function endGame(){
   if(game.score > game.best){
     game.best = game.score;
     document.getElementById('gameBest').textContent = game.best;
+    saveGameState();
   }
   gameOverlay.style.display = 'flex';
+  const rank = game.score >= 500 ? '🏆 PETANI LEGENDA!' : game.score >= 300 ? '🥇 PETANI MASTER!' : game.score >= 150 ? '🥈 PETANI AHLI!' : game.score >= 50 ? '🥉 PETANI PEMULA' : '🌱 PEMULA';
   gameOverlay.innerHTML = `
     <h3 class="pixel-font text-3xl mb-3" style="color:var(--accent);">GAME OVER!</h3>
+    <p class="pixel-font text-lg mb-2" style="color:#FFD700;">${rank}</p>
     <p class="retro-font mb-2 text-center" style="font-size:1.5em;">Skor akhir: <strong style="color:var(--accent);">${game.score}</strong></p>
-    <p class="retro-font mb-4 text-center" style="font-size:1.2em;">Total panen: ${harvestCount} • Best: ${game.best}</p>
+    <p class="retro-font mb-1 text-center" style="font-size:1.1em;">🔥 Max Combo: ${game.maxCombo}x • Level: ${game.level}</p>
+    <p class="retro-font mb-4 text-center" style="font-size:1.1em;">Best: ${game.best}</p>
     <button class="start-btn" onclick="startGame()">
       <i class="fas fa-redo"></i> MAIN LAGI
     </button>
   `;
 }
 
+/* ============== BIODATA EDIT SYSTEM ============== */
+const defaultBiodata = {
+  name: 'Rizky Pratama',
+  age: '22',
+  location: 'Lembang, Bandung',
+  education: 'S1 Informatika',
+  job: 'Mahasiswa & Petani',
+  status: 'Single & Ready to Plant',
+  zodiac: 'Virgo',
+  email: 'rizky.farmer@harvesttown.id',
+  phone: '+62 812-3456-7890',
+  food: 'Nasi Goreng Kampung',
+  music: 'Acoustic Folk',
+  website: 'rizkyfarmer.github.io',
+  title: 'Petani / Nelayan / Pencinta Alam',
+  level: '25',
+  rank: 'Petani Master',
+  shirtColor: '#3D8BD8',
+  hatColor: '#D88C44',
+  photo: '',
+  avatarPreset: 'pixel',
+  about: 'Halo teman-teman! Saya Rizky, seorang mahasiswa yang mencintai dunia pertanian dan teknologi. Saya tumbuh di desa yang dikelilingi sawah dan kebun. Hobi saya bercocok tanam, memancing, dan membuat proyek-proyek kreatif. Saya percaya bahwa gabungan alam dan teknologi bisa menciptakan keajaiban kecil setiap harinya!',
+  skills: [
+    { name: '🌱 Bertani', level: 8 },
+    { name: '🎣 Memancing', level: 7 },
+    { name: '🍳 Memasak', level: 6 },
+    { name: '⛏️ Menambang', level: 5 },
+    { name: '💻 Coding', level: 9 },
+    { name: '🎨 Desain', level: 7 }
+  ],
+  hobbies: ['📸 Fotografi Alam','🎮 Game Indie','📚 Membaca Novel','🎸 Bermain Gitar','🏞️ Mendaki Gunung','🍳 Masak Masakan Rumah','🐟 Memancing','🌱 Berkebun','✏️ Menggambar Pixel Art']
+};
+
+let editingHobbies = [];
+
+function loadBiodata(){
+  const saved = localStorage.getItem('harvestTownBiodata');
+  if(saved){
+    try{
+      const data = JSON.parse(saved);
+      currentAvatarPreset = data.avatarPreset || 'pixel';
+      applyBiodata(data);
+    }catch(e){
+      currentAvatarPreset = defaultBiodata.avatarPreset;
+      applyBiodata(defaultBiodata);
+    }
+  } else {
+    currentAvatarPreset = defaultBiodata.avatarPreset;
+    applyBiodata(defaultBiodata);
+  }
+  chooseAvatarPreset(currentAvatarPreset, true);
+}
+
+function saveFarmState(){
+  const plots = [];
+  document.querySelectorAll('.plot').forEach(plot=>{
+    plots.push({
+      crop: plot.dataset.crop || '',
+      stage: plot.dataset.stage || 'empty',
+      plantedAt: plot.dataset.plantedAt || '',
+      growTime: plot.dataset.growTime || ''
+    });
+  });
+  localStorage.setItem('harvestTownFarm', JSON.stringify({ coins, harvestCount, plots }));
+}
+
+function loadFarmState(){
+  const saved = localStorage.getItem('harvestTownFarm');
+  if(!saved) return;
+  try{
+    const data = JSON.parse(saved);
+    coins = data.coins !== undefined ? data.coins : coins;
+    harvestCount = data.harvestCount !== undefined ? data.harvestCount : harvestCount;
+    document.getElementById('coinCount').textContent = coins;
+    document.getElementById('harvestCount').textContent = harvestCount;
+    const plots = data.plots || [];
+    document.querySelectorAll('.plot').forEach((plot, index)=>{
+      const savedPlot = plots[index];
+      if(savedPlot && savedPlot.crop && savedPlot.stage !== 'empty'){
+        const cropType = savedPlot.crop;
+        const info = crops[cropType];
+        if(info){
+          const plantedAt = parseInt(savedPlot.plantedAt, 10) || Date.now();
+          const elapsed = Date.now() - plantedAt;
+          let stage = 1;
+          if(elapsed >= info.growTime) stage = 3;
+          else if(elapsed >= info.growTime / 2) stage = 2;
+          plot.dataset.crop = cropType;
+          plot.dataset.stage = String(stage);
+          plot.dataset.plantedAt = String(plantedAt);
+          plot.dataset.growTime = String(info.growTime);
+          plot.className = 'plot stage-' + stage;
+          plot.querySelector('.crop').innerHTML = `<span style="font-size:${stage === 3 ? 28 : stage === 2 ? 18 : 14}px;">${info.stages[stage-1]}</span>`;
+          if(stage === 3){ showToast(`✨ ${info.emoji} siap dipanen di kebunmu!`); }
+        }
+      }
+    });
+  }catch(e){ }
+}
+
+function loadGameState(){
+  const saved = localStorage.getItem('harvestTownGame');
+  if(saved){
+    try{
+      const data = JSON.parse(saved);
+      game.best = data.best || 0;
+      document.getElementById('gameBest').textContent = game.best;
+    }catch(e){}
+  }
+}
+
+function saveGameState(){
+  localStorage.setItem('harvestTownGame', JSON.stringify({ best: game.best }));
+}
+
+const musicTracks = {
+  folk: { name: 'Acoustic Folk', pattern: [440, 392, 330, 392], tempo: 700, notes:['🎵','🌿','🌸','✨'] },
+  rain: { name: 'Hujan Malam', pattern: [330, 294, 262, 294], tempo: 800, notes:['💧','🌙','🌧','✨'] },
+  wind: { name: 'Angin Desa', pattern: [392, 349, 330, 294], tempo: 650, notes:['🍃','🌬','🌿','✨'] }
+};
+let musicTrack = 'folk';
+let musicPlaying = false;
+let musicInterval = null;
+let musicStepIndex = 0;
+
+const rhythmOptions = [
+  { key: '🍎', note: 262 },
+  { key: '🍅', note: 330 },
+  { key: '🍓', note: 392 },
+  { key: '🌽', note: 440 }
+];
+let rhythmSequence = [];
+let rhythmPosition = 0;
+let rhythmScoreVal = 0;
+let rhythmActive = false;
+
+function setMusicTrack(track){
+  musicTrack = track;
+  document.querySelectorAll('.music-button').forEach(btn => {
+    btn.classList.toggle('active', btn.id === `track${track.charAt(0).toUpperCase() + track.slice(1)}Btn`);
+  });
+  document.getElementById('musicStatus').textContent = musicPlaying ? `Sedang diputar: ${musicTracks[track].name}` : `Track: ${musicTracks[track].name}`;
+}
+
+function toggleMusic(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  const button = document.getElementById('toggleMusicBtn');
+  if(musicPlaying){
+    musicPlaying = false;
+    button.textContent = 'Putar Musik';
+    document.getElementById('musicStatus').textContent = `Diam`;
+    clearInterval(musicInterval);
+    musicInterval = null;
+    return;
+  }
+  musicPlaying = true;
+  button.textContent = 'Jeda Musik';
+  document.getElementById('musicStatus').textContent = `Sedang diputar: ${musicTracks[musicTrack].name}`;
+  musicStepIndex = 0;
+  playMusicStep();
+  musicInterval = setInterval(playMusicStep, musicTracks[musicTrack].tempo);
+}
+
+function playMusicStep(){
+  const track = musicTracks[musicTrack];
+  const freq = track.pattern[musicStepIndex % track.pattern.length];
+  playSound(freq, 0.2, 'triangle', 0.08);
+  createMusicNote(track.notes[musicStepIndex % track.notes.length]);
+  musicStepIndex = (musicStepIndex + 1) % track.pattern.length;
+}
+
+function createMusicNote(symbol){
+  const visual = document.getElementById('musicVisual');
+  const note = document.createElement('div');
+  note.className = 'music-note';
+  note.textContent = symbol;
+  note.style.left = `${Math.random() * 80 + 10}%`;
+  note.style.top = '100%';
+  visual.appendChild(note);
+  requestAnimationFrame(() => note.style.top = '20%');
+  setTimeout(() => note.remove(), 2000);
+}
+
+function initRhythmGame(){
+  rhythmScoreVal = 0;
+  rhythmSequence = [];
+  rhythmPosition = 0;
+  rhythmActive = true;
+  const buttons = document.getElementById('rhythmButtons');
+  buttons.innerHTML = '';
+  rhythmOptions.forEach(option => {
+    const btn = document.createElement('button');
+    btn.className = 'rhythm-button';
+    btn.textContent = option.key;
+    btn.onclick = () => handleRhythmTap(option);
+    buttons.appendChild(btn);
+  });
+  generateRhythmRound(5);
+}
+
+function generateRhythmRound(length = 5){
+  rhythmSequence = [];
+  for(let i=0; i<length; i++){
+    rhythmSequence.push(rhythmOptions[Math.floor(Math.random()*rhythmOptions.length)]);
+  }
+  rhythmPosition = 0;
+  rhythmActive = true;
+  updateRhythmDisplay();
+  document.getElementById('rhythmMessage').textContent = 'Ikuti urutan nada!';
+  document.getElementById('rhythmScore').textContent = rhythmScoreVal;
+}
+
+function updateRhythmDisplay(){
+  const container = document.getElementById('rhythmSequence');
+  container.innerHTML = '';
+  rhythmSequence.forEach((item, idx) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.style.borderColor = idx === rhythmPosition ? '#FFD700' : '';
+    chip.style.background = idx === rhythmPosition ? '#FFF9C4' : '';
+    chip.textContent = item.key;
+    container.appendChild(chip);
+  });
+}
+
+function handleRhythmTap(option){
+  if(!rhythmActive) return;
+  const expected = rhythmSequence[rhythmPosition];
+  if(option.key === expected.key){
+    playSound(option.note, 0.14, 'triangle', 0.12);
+    rhythmPosition++;
+    rhythmScoreVal += 10;
+    if(rhythmPosition >= rhythmSequence.length){
+      rhythmScoreVal += 25;
+      document.getElementById('rhythmMessage').textContent = 'Hebat! Tambah lagi satu level!';
+      generateRhythmRound(Math.min(rhythmSequence.length + 1, 8));
+    } else {
+      document.getElementById('rhythmMessage').textContent = 'Bagus! Lanjutkan...';
+      updateRhythmDisplay();
+    }
+  } else {
+    playSound(150, 0.22, 'sawtooth', 0.1);
+    rhythmScoreVal = Math.max(0, rhythmScoreVal - 5);
+    document.getElementById('rhythmMessage').textContent = 'Salah nada! Ulangi dari awal.';
+    rhythmPosition = 0;
+    updateRhythmDisplay();
+  }
+  document.getElementById('rhythmScore').textContent = rhythmScoreVal;
+}
+
+function applyBiodata(data){
+  // Update display
+  document.getElementById('displayName').textContent = (data.name || 'Petani').toUpperCase();
+  document.getElementById('displayTitle').textContent = data.title || '';
+  document.getElementById('displayLevel').textContent = 'Lv. ' + (data.level || '1');
+  document.getElementById('displayRank').textContent = data.rank || 'Petani';
+  document.getElementById('infoName').textContent = data.name || '-';
+  document.getElementById('infoAge').textContent = (data.age || '-') + ' Tahun';
+  document.getElementById('infoLocation').textContent = data.location || '-';
+  document.getElementById('infoEducation').textContent = data.education || '-';
+  document.getElementById('infoJob').textContent = data.job || '-';
+  document.getElementById('infoStatus').textContent = data.status || '-';
+  document.getElementById('infoZodiac').textContent = data.zodiac || '-';
+  document.getElementById('infoEmail').textContent = data.email || '-';
+  document.getElementById('infoPhone').textContent = data.phone || '-';
+  document.getElementById('infoFood').textContent = data.food || '-';
+  document.getElementById('infoMusic').textContent = data.music || '-';
+  document.getElementById('infoWebsite').textContent = data.website || '-';
+  document.getElementById('displayAbout').textContent = data.about || '';
+  document.getElementById('contactEmail').textContent = data.email || '-';
+  document.getElementById('contactPhone').textContent = data.phone || '-';
+  document.getElementById('contactGithub').textContent = 'github.com/' + (data.name || 'petani').toLowerCase().replace(/\s+/g,'');
+  document.getElementById('footerName').textContent = data.name || 'Petani';
+  
+  // Avatar photo or pixel avatar
+  const profilePhoto = document.getElementById('profilePhoto');
+  const avatarSvg = document.getElementById('avatarSvg');
+  if(profilePhoto){
+    if(data.photo){
+      profilePhoto.src = data.photo;
+      profilePhoto.style.display = 'block';
+      avatarSvg.style.display = 'none';
+    } else {
+      profilePhoto.style.display = 'none';
+      avatarSvg.style.display = 'block';
+    }
+  }
+  
+  // Update avatar colors
+  const shirtRect = avatarSvg.querySelector('#avatarShirt');
+  if(shirtRect) shirtRect.setAttribute('fill', data.shirtColor || '#3D8BD8');
+  const hatRects = avatarSvg.querySelectorAll('.avatarHat');
+  hatRects.forEach(r => r.setAttribute('fill', data.hatColor || '#D88C44'));
+  
+  // Update photo preview if editing directly
+  const photoInput = document.getElementById('editPhoto');
+  if(photoInput){
+    photoInput.dataset.photo = data.photo || '';
+    updatePhotoPreview(data.photo || '');
+  }
+  
+  // Update skills
+  const skillsContainer = document.getElementById('skillsContainer');
+  skillsContainer.innerHTML = '';
+  if(data.skills){
+    data.skills.forEach(skill => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <div class="flex justify-between mb-1"><span class="font-bold">${skill.name}</span><span class="retro-font">Lv. ${skill.level} / 10</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-target="${skill.level*10}%" style="width:${skill.level*10}%;"></div></div>
+      `;
+      skillsContainer.appendChild(div);
+    });
+  }
+  
+  // Update hobbies
+  const hobbiesContainer = document.getElementById('hobbiesContainer');
+  hobbiesContainer.innerHTML = '';
+  if(data.hobbies){
+    data.hobbies.forEach(h => {
+      const span = document.createElement('span');
+      span.className = 'chip';
+      span.textContent = h;
+      hobbiesContainer.appendChild(span);
+    });
+  }
+}
+
+function openEditModal(){
+  const overlay = document.getElementById('editModalOverlay');
+  const data = JSON.parse(localStorage.getItem('harvestTownBiodata') || JSON.stringify(defaultBiodata));
+  
+  // Fill form
+  document.getElementById('editName').value = data.name || '';
+  document.getElementById('editAge').value = data.age || '';
+  document.getElementById('editLocation').value = data.location || '';
+  document.getElementById('editEducation').value = data.education || '';
+  document.getElementById('editJob').value = data.job || '';
+  document.getElementById('editStatus').value = data.status || 'Single & Ready to Plant';
+  document.getElementById('editZodiac').value = data.zodiac || 'Virgo';
+  document.getElementById('editEmail').value = data.email || '';
+  document.getElementById('editPhone').value = data.phone || '';
+  document.getElementById('editFood').value = data.food || '';
+  document.getElementById('editMusic').value = data.music || '';
+  document.getElementById('editWebsite').value = data.website || '';
+  document.getElementById('editTitle').value = data.title || '';
+  document.getElementById('editLevel').value = data.level || '1';
+  document.getElementById('editRank').value = data.rank || '';
+  document.getElementById('editShirtColor').value = data.shirtColor || '#3D8BD8';
+  document.getElementById('editHatColor').value = data.hatColor || '#D88C44';
+  document.getElementById('editAbout').value = data.about || '';
+  document.getElementById('editPhoto').dataset.photo = data.photo || '';
+  updatePhotoPreview(data.photo || '');
+  currentAvatarPreset = data.avatarPreset || 'pixel';
+  chooseAvatarPreset(currentAvatarPreset, true);
+  
+  // Fill skills editor
+  const skillEditor = document.getElementById('skillEditor');
+  skillEditor.innerHTML = '';
+  const skillNames = ['🌱 Bertani','🎣 Memancing','🍳 Memasak','⛏️ Menambang','💻 Coding','🎨 Desain'];
+  const savedSkills = data.skills || [];
+  skillNames.forEach((name, i) => {
+    const level = savedSkills[i] ? savedSkills[i].level : 5;
+    const row = document.createElement('div');
+    row.className = 'skill-edit-row';
+    row.innerHTML = `
+      <span style="width:120px; font-weight:700; font-size:13px;">${name}</span>
+      <input type="range" min="0" max="10" value="${level}" data-skill="${i}" oninput="this.nextElementSibling.textContent=this.value">
+      <span class="skill-val">${level}</span>
+    `;
+    skillEditor.appendChild(row);
+  });
+  
+  // Fill hobbies
+  editingHobbies = [...(data.hobbies || [])];
+  renderHobbyEditor();
+  
+  overlay.classList.add('show');
+}
+
+function renderHobbyEditor(){
+  const container = document.getElementById('hobbyEditor');
+  container.innerHTML = '';
+  editingHobbies.forEach((h, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip removable';
+    chip.innerHTML = `${h} <i class="fas fa-times ml-1"></i>`;
+    chip.onclick = () => {
+      editingHobbies.splice(i, 1);
+      renderHobbyEditor();
+    };
+    container.appendChild(chip);
+  });
+}
+
+function addHobby(){
+  const input = document.getElementById('newHobbyInput');
+  const val = input.value.trim();
+  if(val){
+    editingHobbies.push(val);
+    input.value = '';
+    renderHobbyEditor();
+  }
+}
+
+function closeEditModal(){
+  document.getElementById('editModalOverlay').classList.remove('show');
+}
+
+function saveBiodata(){
+  const data = collectBiodataFromForm();
+  
+  // Collect skills
+  const skillNames = ['🌱 Bertani','🎣 Memancing','🍳 Memasak','⛏️ Menambang','💻 Coding','🎨 Desain'];
+  const skillInputs = document.querySelectorAll('#skillEditor input[type="range"]');
+  data.skills = [];
+  skillInputs.forEach((input, i) => {
+    data.skills.push({ name: skillNames[i], level: parseInt(input.value) });
+  });
+  
+  saveBiodataData(data, '✅ Biodata berhasil disimpan!');
+  closeEditModal();
+}
+
+function resetBiodata(){
+  if(confirm('Reset biodata ke default?')){
+    localStorage.removeItem('harvestTownBiodata');
+    applyBiodata(defaultBiodata);
+    closeEditModal();
+    showToast('🔄 Biodata direset!');
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('editModalOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'editModalOverlay') closeEditModal();
+});
+
 /* ============== INIT ============== */
-// Set initial time
 setTimePhase(0);
-// Greet on load
+loadBiodata();
+loadFriends();
+loadGameState();
+setupAutoSave();
+initRhythmGame();
+setMusicTrack('folk');
+
 setTimeout(()=>{
   greet();
   showToast('🌾 Selamat datang di Harvest Town!');
 }, 1000);
-
-// Smooth scroll for nav
-document.querySelectorAll('.nav-btn').forEach(btn=>{
-  if(btn.onclick === null){
-    btn.addEventListener('click', ()=>{
-      const text = btn.textContent.trim().toLowerCase();
-      const map = { 'home':'hero', 'biodata':'about', 'musim':'seasons', 'farm':'farm', 'game':'game', 'kontak':'contact' };
-      if(map[text]) scrollToSection(map[text]);
-    });
-  }
-});
 </script>
 </body>
 </html>
