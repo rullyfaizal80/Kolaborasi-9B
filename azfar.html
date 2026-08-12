@@ -1,155 +1,1021 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biodata Diri</title>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bio Data</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #030304; color: #fff; overflow-x: hidden; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 9999;
     }
 
-    body {
-      background-color: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: blur(10px);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+    .delay-400 { transition-delay: 400ms; }
+    .delay-500 { transition-delay: 500ms; }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #FFFFFF 0%, #a5b4fc 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-warm {
+      background: linear-gradient(135deg, #fbbf24, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-green {
+      background: linear-gradient(135deg, #34d399, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .card {
-      background-color: #ffffff;
-      width: 100%;
-      max-width: 450px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* Glass panel */
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Glow ring on avatar */
+    .avatar-ring {
+      background: conic-gradient(from 0deg, #6366f1, #a855f7, #ec4899, #f97316, #6366f1);
+      padding: 4px;
+      border-radius: 9999px;
+      animation: spin-slow 6s linear infinite;
+    }
+    @keyframes spin-slow {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Floating animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+    .float { animation: float 4s ease-in-out infinite; }
+    .float-delay { animation: float 5s ease-in-out infinite; animation-delay: 1s; }
+
+    /* Pulse dot */
+    .pulse-dot {
+      width: 8px; height: 8px;
+      background: #10b981;
+      border-radius: 9999px;
+      position: relative;
+    }
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 9999px;
+      background: #10b981;
+      opacity: 0.4;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes ping {
+      75%, 100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    /* Skill bar animation */
+    .skill-fill {
+      width: 0%;
+      transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .skill-fill.active { width: var(--skill-level); }
+
+    /* Marquee */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track { animation: marquee 25s linear infinite; }
+
+    /* Gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    /* Timeline line */
+    .timeline-line {
+      background: linear-gradient(to bottom, #6366f1, #a855f7, #ec4899, transparent);
+    }
+
+    /* Photo gallery hover */
+    .gallery-item {
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gallery-item:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    /* Social icon hover */
+    .social-icon {
+      transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Typing cursor */
+    .cursor-blink::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #6366f1;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Card shine effect */
+    .shine {
+      position: relative;
       overflow: hidden;
     }
-
-    .header {
-      background-color: #4a90e2;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
+    .shine::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent 40%,
+        rgba(255,255,255,0.03) 50%,
+        transparent 60%
+      );
+      transform: rotate(30deg);
+      transition: transform 0.6s ease;
+    }
+    .shine:hover::before {
+      transform: rotate(30deg) translateY(-30%);
     }
 
-    .profile-img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid white;
-      object-fit: cover;
-      margin-bottom: 10px;
+    /* Stat counter */
+    .stat-number {
+      font-variant-numeric: tabular-nums;
     }
 
-    .header h1 {
-      font-size: 22px;
-      margin-bottom: 5px;
+    /* Quote marks */
+    .quote-mark {
+      font-size: 120px;
+      line-height: 1;
+      opacity: 0.08;
+      font-family: Georgia, serif;
+      position: absolute;
+      top: -20px;
+      left: 10px;
     }
 
-    .header p {
-      font-size: 14px;
-      opacity: 0.9;
+    /* Music equalizer */
+    .eq-bar {
+      width: 3px;
+      background: #6366f1;
+      border-radius: 2px;
+      animation: eq 0.8s ease-in-out infinite alternate;
     }
-
-    .content {
-      padding: 25px;
-    }
-
-    .content h2 {
-      font-size: 16px;
-      color: #333;
-      border-bottom: 2px solid #4a90e2;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-      margin-top: 15px;
-    }
-
-    .content h2:first-child {
-      margin-top: 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table td {
-      padding: 8px 0;
-      font-size: 14px;
-      color: #555;
-      vertical-align: top;
-    }
-
-    table td:first-child {
-      width: 40%;
-    }
-
-    .skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      list-style: none;
-    }
-
-    .skills li {
-      background-color: #eef5fc;
-      color: #4a90e2;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
+    .eq-bar:nth-child(1) { animation-delay: 0s; height: 12px; }
+    .eq-bar:nth-child(2) { animation-delay: 0.2s; height: 20px; }
+    .eq-bar:nth-child(3) { animation-delay: 0.1s; height: 8px; }
+    .eq-bar:nth-child(4) { animation-delay: 0.3s; height: 16px; }
+    @keyframes eq {
+      0% { height: 4px; }
+      100% { height: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <div class="header">
-      <img src="https://via.placeholder.com/120" alt="Foto Profil" class="profile-img">
-      <h1>Nama Anda</h1>
-      <p>Pelajar / Web Developer</p>
+  <!-- ========== NAVBAR ========== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6" style="background: rgba(3,3,4,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background: linear-gradient(to top right, #6366f1, #a855f7);">
+          <span class="iconify text-white text-sm" data-icon="lucide:sparkles"></span>
+        </div>
+        <span class="font-semibold text-sm tracking-tight">My Portfolio</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#about" class="text-sm text-slate-400 hover:text-white transition-colors duration-150">Tentang</a>
+        <a href="#hobi" class="text-sm text-slate-400 hover:text-white transition-colors duration-150">Hobi</a>
+        <a href="#skill" class="text-sm text-slate-400 hover:text-white transition-colors duration-150">Keahlian</a>
+        <a href="#gallery" class="text-sm text-slate-400 hover:text-white transition-colors duration-150">Galeri</a>
+        <a href="#kontak" class="text-sm text-slate-400 hover:text-white transition-colors duration-150">Kontak</a>
+      </div>
+      <button id="mobileMenuBtn" class="md:hidden text-slate-400 hover:text-white transition-colors">
+        <span class="iconify text-xl" data-icon="lucide:menu"></span>
+      </button>
     </div>
+  </nav>
 
-    <div class="content">
-      <h2>Informasi Pribadi</h2>
-      <table>
-        <tr>
-          <td><strong>Nama Lengkap</strong></td>
-          <td>: Azfar Tsaqif Al-Farezel</td>
-        </tr>
-        <tr>
-          <td><strong>Tempat, Tgl Lahir</strong></td>
-          <td>: Bandung, 26 Juli 2011</td>
-        </tr>
-        <tr>
-          <td><strong>Jenis Kelamin</strong></td>
-          <td>: Laki-laki</td>
-        </tr>
-        <tr>
-          <td><strong>Alamat</strong></td>
-          <td>: Jl. Kacapiring, Bandung, Indonesia</td>
-        </tr>
-        <tr>
-          <td><strong>Email</strong></td>
-          <td>: azfartsaqif@mimha.sch.id</td>
-        </tr>
-      </table>
-
-      <h2>Hobi & Minat</h2>
-      <ul class="skills">
-        <li>Membaca</li>
-        <li>Belajar</li>
-        <li>Bermain</li>
-        <li>Olahraga</li>
-      </ul>
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 hidden" style="background: rgba(3,3,4,0.95); backdrop-filter: blur(20px);">
+    <div class="flex flex-col items-center justify-center h-full gap-8">
+      <a href="#about" class="text-2xl font-medium text-slate-300 hover:text-white transition-colors mobile-link">Tentang</a>
+      <a href="#hobi" class="text-2xl font-medium text-slate-300 hover:text-white transition-colors mobile-link">Hobi</a>
+      <a href="#skill" class="text-2xl font-medium text-slate-300 hover:text-white transition-colors mobile-link">Keahlian</a>
+      <a href="#gallery" class="text-2xl font-medium text-slate-300 hover:text-white transition-colors mobile-link">Galeri</a>
+      <a href="#kontak" class="text-2xl font-medium text-slate-300 hover:text-white transition-colors mobile-link">Kontak</a>
+      <button id="mobileMenuClose" class="mt-8 text-slate-500 hover:text-white transition-colors">
+        <span class="iconify text-3xl" data-icon="lucide:x"></span>
+      </button>
     </div>
   </div>
+
+  <!-- ========== HERO ========== -->
+  <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 flex flex-col items-center text-center px-6 overflow-hidden">
+    <!-- Orbs -->
+    <div class="orb w-[500px] h-[500px] -top-40 -left-40 opacity-20" style="background: #6366f1;"></div>
+    <div class="orb w-[400px] h-[400px] top-20 -right-40 opacity-15" style="background: #a855f7;"></div>
+    <div class="orb w-[300px] h-[300px] bottom-0 left-1/3 opacity-10" style="background: #ec4899;"></div>
+
+    <!-- Status badge -->
+    <div class="reveal flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
+      <div class="pulse-dot"></div>
+      <span class="text-xs font-medium text-slate-400">Siswa SMP · Belajar & Berkembang</span>
+    </div>
+
+    <!-- Avatar -->
+    <div class="reveal delay-100 avatar-ring mb-8 float">
+      <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden bg-slate-800">
+        <!-- GANTI SRC FOTO DI BAWAH INI DENGAN FOTOMU -->
+        <img src="https://picsum.photos/seed/student-avatar-cool/300/300.jpg" alt="Foto Profil" class="w-full h-full object-cover" />
+      </div>
+    </div>
+
+    <!-- Name -->
+    <h1 class="reveal delay-200 text-4xl md:text-7xl font-medium tracking-tight leading-[1.1] mb-4">
+      <span class="gradient-text">Halo, Saya</span><br />
+      <span id="heroName" class="text-white">Azfar Tsaqif</span>
+    </h1>
+
+    <!-- Typing subtitle -->
+    <p class="reveal delay-300 text-lg md:text-xl font-light text-slate-400 max-w-2xl mb-3">
+      <span id="typingText" class="cursor-blink"></span>
+    </p>
+
+    <!-- Quick info pills -->
+    <div class="reveal delay-400 flex flex-wrap justify-center gap-3 mt-6 mb-10">
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full glass text-xs text-slate-300">
+        <span class="iconify text-indigo-400" data-icon="lucide:map-pin"></span>
+        Bandung, Indonesia
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full glass text-xs text-slate-300">
+        <span class="iconify text-purple-400" data-icon="lucide:school"></span>
+        MTS Informatika MIMHa
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full glass text-xs text-slate-300">
+        <span class="iconify text-pink-400" data-icon="lucide:calendar"></span>
+        Kelas 9 · 2025/2026
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="reveal delay-500 flex flex-wrap justify-center gap-4">
+      <a href="#about" class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-black text-sm font-semibold rounded-full hover:bg-slate-100 transition-all duration-300" style="box-shadow: 0 0 20px -5px rgba(255,255,255,0.3);">
+        <span class="iconify" data-icon="lucide:user"></span>
+        Kenali Saya
+      </a>
+      <a href="#kontak" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-medium transition-all duration-300" style="background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: #a5b4fc;" onmouseover="this.style.background='rgba(99,102,241,0.25)'" onmouseout="this.style.background='rgba(99,102,241,0.15)'">
+        <span class="iconify" data-icon="lucide:send"></span>
+        Hubungi Saya
+      </a>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+      <span class="text-[10px] uppercase tracking-widest text-slate-600">Scroll</span>
+      <span class="iconify text-slate-600" data-icon="lucide:chevron-down"></span>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE ========== -->
+  <div class="relative py-6 overflow-hidden" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <div class="flex whitespace-nowrap marquee-track">
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ PELAJAR</span>
+      <span class="mx-8 text-sm font-medium text-indigo-500/40">MUSIK</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ GAMER</span>
+      <span class="mx-8 text-sm font-medium text-purple-500/40">CODING</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ OLAHRAGA</span>
+      <span class="mx-8 text-sm font-medium text-pink-500/40">FOTOGRAFI</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ DESAIN</span>
+      <span class="mx-8 text-sm font-medium text-emerald-500/40">ANIME</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ PELAJAR</span>
+      <span class="mx-8 text-sm font-medium text-indigo-500/40">MUSIK</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ GAMER</span>
+      <span class="mx-8 text-sm font-medium text-purple-500/40">CODING</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ OLAHRAGA</span>
+      <span class="mx-8 text-sm font-medium text-pink-500/40">FOTOGRAFI</span>
+      <span class="mx-8 text-sm font-medium text-slate-600">✦ DESAIN</span>
+      <span class="mx-8 text-sm font-medium text-emerald-500/40">ANIME</span>
+    </div>
+  </div>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="py-24 px-6 relative">
+    <div class="orb w-[400px] h-[400px] top-1/2 -right-40 -translate-y-1/2 opacity-10" style="background: #6366f1;"></div>
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-indigo-400 mb-3 block">Tentang Saya</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text">Siapa Saya?</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Left: Text -->
+        <div class="reveal space-y-6">
+          <p class="text-slate-400 font-light leading-relaxed text-sm md:text-base">
+            Hai! Perkenalkan, saya <strong class="text-white font-medium">Azfar Tsaqif</strong>. Saya adalah siswa kelas 9 di MTS Informatika MIMHa. Saya punya banyak minat dan hobi yang terus berkembang seiring waktu.
+          </p>
+          <p class="text-slate-400 font-light leading-relaxed text-sm md:text-base">
+            Saya percaya bahwa usia muda bukanlah halangan untuk belajar hal-hal baru. Dari coding, desain, sampai olahraga — saya selalu semangat untuk mengeksplorasi potensi diri!
+          </p>
+
+          <!-- Quote -->
+          <div class="relative p-6 rounded-2xl glass shine mt-8">
+            <span class="quote-mark">"</span>
+            <p class="text-sm text-slate-300 italic font-light relative z-10 pl-4">
+              "Jika dukun bisa membunuhmu tanpa disentuh, percayalah saya pun bisa membuatmu rindu tanpa harus bertemu."
+            </p>
+            <p class="text-xs text-slate-500 mt-2 pl-4">— Far 1945</p>
+          </div>
+        </div>
+
+        <!-- Right: Data Cards -->
+        <div class="space-y-4">
+          <div class="reveal delay-100 glass glass-hover rounded-2xl p-6 transition-all duration-300 shine">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(99,102,241,0.15);">
+                <span class="iconify text-indigo-400 text-lg" data-icon="lucide:user-circle"></span>
+              </div>
+              <div>
+                <h4 class="text-sm font-medium mb-1">Data Pribadi</h4>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-400">
+                  <span>Nama Lengkap</span><span class="text-slate-300">Azfar Tsaqif</span>
+                  <span>NIS / NISN</span><span class="text-slate-300">12345 / 0012345</span>
+                  <span>Tempat Lahir</span><span class="text-slate-300">Bandung</span>
+                  <span>Tanggal Lahir</span><span class="text-slate-300">26 Juli 2011</span>
+                  <span>Jenis Kelamin</span><span class="text-slate-300">Laki-laki</span>
+                  <span>Agama</span><span class="text-slate-300">Islam</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal delay-200 glass glass-hover rounded-2xl p-6 transition-all duration-300 shine">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.15);">
+                <span class="iconify text-purple-400 text-lg" data-icon="lucide:home"></span>
+              </div>
+              <div>
+                <h4 class="text-sm font-medium mb-1">Alamat</h4>
+                <p class="text-xs text-slate-400">Jl. Kacapiring No. 132/122, RT 02/RW 03<br />Kel. Kacapiring, Kec. Batununggal<br />Kota Bandung, 1919</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal delay-300 glass glass-hover rounded-2xl p-6 transition-all duration-300 shine">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(236,72,153,0.15);">
+                <span class="iconify text-pink-400 text-lg" data-icon="lucide:users"></span>
+              </div>
+              <div>
+                <h4 class="text-sm font-medium mb-1">Orang Tua / Wali</h4>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-400">
+                  <span>Nama Ayah</span><span class="text-slate-300">Kepo 1</span>
+                  <span>Nama Ibu</span><span class="text-slate-300">Kepo 2</span>
+                  <span>Pekerjaan Ayah</span><span class="text-slate-300">Sultan Andara</span>
+                  <span>Pekerjaan Ibu</span><span class="text-slate-300">Bos Tambang</span>
+                  <span>No. HP Wali</span><span class="text-slate-300">0800-1111-2222</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STATS ========== -->
+  <section class="py-16 px-6" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="reveal text-center">
+        <div class="text-3xl md:text-4xl font-semibold stat-number gradient-text-warm" data-count="3">0</div>
+        <p class="text-xs text-slate-500 mt-2">Tahun di SMP</p>
+      </div>
+      <div class="reveal delay-100 text-center">
+        <div class="text-3xl md:text-4xl font-semibold stat-number gradient-text" data-count="12">999+</div>
+        <p class="text-xs text-slate-500 mt-2">Prestasi</p>
+      </div>
+      <div class="reveal delay-200 text-center">
+        <div class="text-3xl md:text-4xl font-semibold stat-number gradient-text-green" data-count="5">0</div>
+        <p class="text-xs text-slate-500 mt-2">Hobi Aktif</p>
+      </div>
+      <div class="reveal delay-300 text-center">
+        <div class="text-3xl md:text-4xl font-semibold stat-number gradient-text-warm" data-count="99">0</div>
+        <p class="text-xs text-slate-500 mt-2">Semangat Belajar %</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOBI & MINAT ========== -->
+  <section id="hobi" class="py-24 px-6 relative">
+    <div class="orb w-[500px] h-[500px] -bottom-40 -left-40 opacity-10" style="background: #a855f7;"></div>
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-purple-400 mb-3 block">Hobi & Minat</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text">Yang Saya Sukai</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Hobby 1 -->
+        <div class="reveal glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.05));">
+            <span class="iconify text-indigo-400 text-2xl" data-icon="lucide:code-2"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Coding</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Belajar HTML, CSS, dan Python. Sedang bikin proyek web sederhana dan game kecil-kecilan.</p>
+        </div>
+
+        <!-- Hobby 2 -->
+        <div class="reveal delay-100 glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.05));">
+            <span class="iconify text-purple-400 text-2xl" data-icon="lucide:gamepad-2"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Gaming</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Main Mobile Legends, Minecraft, dan Valorant. Rank Epic dan terus naik!</p>
+        </div>
+
+        <!-- Hobby 3 -->
+        <div class="reveal delay-200 glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05));">
+            <span class="iconify text-pink-400 text-2xl" data-icon="lucide:music"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Musik</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Belajar gitar dan piano. Suka denger pop, lofi, dan J-Pop. Lagu favorit: playlist lofi study.</p>
+        </div>
+
+        <!-- Hobby 4 -->
+        <div class="reveal glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05));">
+            <span class="iconify text-emerald-400 text-2xl" data-icon="lucide:trophy"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Olahraga</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Futsal dan badminton. Pernah juara 2 futsal antar kelas dan ikut tim sekolah.</p>
+        </div>
+
+        <!-- Hobby 5 -->
+        <div class="reveal delay-100 glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05));">
+            <span class="iconify text-amber-400 text-2xl" data-icon="lucide:camera"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Fotografi</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Hobi jepret pemandangan dan sunset pakai HP. Belajar edit di Lightroom mobile.</p>
+        </div>
+
+        <!-- Hobby 6 -->
+        <div class="reveal delay-200 glass glass-hover rounded-2xl p-8 transition-all duration-300 shine group">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(96,165,250,0.05));">
+            <span class="iconify text-blue-400 text-2xl" data-icon="lucide:tv"></span>
+          </div>
+          <h3 class="text-base font-medium mb-2">Anime & Film</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Nonton Jujutsu Kaisen, Demon Slayer, One Piece. Film fav: Your Name & Spider-Verse.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILL / KEAHLIAN ========== -->
+  <section id="skill" class="py-24 px-6 relative" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="orb w-[400px] h-[400px] top-1/3 -right-40 opacity-10" style="background: #ec4899;"></div>
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-emerald-400 mb-3 block">Keahlian</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text">Apa Yang Bisa Saya Lakukan</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
+        <!-- Skill bars -->
+        <div class="reveal space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-indigo-400" data-icon="lucide:code-2"></span> HTML & CSS
+              </span>
+              <span class="text-xs text-slate-500">75%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 75%; background: linear-gradient(to right, #6366f1, #a855f7);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-blue-400" data-icon="lucide:terminal"></span> Python
+              </span>
+              <span class="text-xs text-slate-500">50%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 50%; background: linear-gradient(to right, #3b82f6, #60a5fa);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-purple-400" data-icon="lucide:pen-tool"></span> Desain (Canva/Figma)
+              </span>
+              <span class="text-xs text-slate-500">65%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 65%; background: linear-gradient(to right, #a855f7, #ec4899);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-pink-400" data-icon="lucide:camera"></span> Fotografi & Edit
+              </span>
+              <span class="text-xs text-slate-500">60%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 60%; background: linear-gradient(to right, #ec4899, #f43f5e);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal delay-200 space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-emerald-400" data-icon="lucide:guitar"></span> Gitar
+              </span>
+              <span class="text-xs text-slate-500">55%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 55%; background: linear-gradient(to right, #10b981, #34d399);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-amber-400" data-icon="lucide:languages"></span> Bahasa Inggris
+              </span>
+              <span class="text-xs text-slate-500">70%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 70%; background: linear-gradient(to right, #f59e0b, #fbbf24);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-red-400" data-icon="lucide:presentation"></span> Public Speaking
+              </span>
+              <span class="text-xs text-slate-500">45%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 45%; background: linear-gradient(to right, #ef4444, #f87171);"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium flex items-center gap-2">
+                <span class="iconify text-cyan-400" data-icon="lucide:goal"></span> Futsal / Badminton
+              </span>
+              <span class="text-xs text-slate-500">80%</span>
+            </div>
+            <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+              <div class="skill-fill h-full rounded-full" style="--skill-level: 80%; background: linear-gradient(to right, #06b6d4, #22d3ee);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRESTASI ========== -->
+  <section class="py-24 px-6 relative" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-amber-400 mb-3 block">Prestasi</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text-warm">Pencapaian Saya</h2>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+        <!-- Line -->
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-px timeline-line md:-translate-x-px"></div>
+
+        <!-- Item 1 -->
+        <div class="reveal relative flex flex-col md:flex-row items-start mb-12 md:mb-16">
+          <div class="md:w-1/2 md:pr-12 md:text-right pl-16 md:pl-0">
+            <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold">2024</span>
+            <h4 class="text-sm font-medium mt-1">Juara 2 Futsal Antar Kelas</h4>
+            <p class="text-xs text-slate-500 mt-1">Menjadi striker andalan tim kelas 8-A</p>
+          </div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 rounded-full border-2 border-indigo-500 bg-[#030304] md:-translate-x-1/2 mt-0.5 flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+          </div>
+          <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="reveal delay-100 relative flex flex-col md:flex-row items-start mb-12 md:mb-16">
+          <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 rounded-full border-2 border-purple-500 bg-[#030304] md:-translate-x-1/2 mt-0.5 flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+          </div>
+          <div class="md:w-1/2 md:pl-12 pl-16">
+            <span class="text-[10px] uppercase tracking-widest text-purple-400 font-semibold">2024</span>
+            <h4 class="text-sm font-medium mt-1">Finalis Lomba Desain Poster</h4>
+            <p class="text-xs text-slate-500 mt-1">Tema: "Digital untuk Indonesia Maju"</p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="reveal delay-200 relative flex flex-col md:flex-row items-start mb-12 md:mb-16">
+          <div class="md:w-1/2 md:pr-12 md:text-right pl-16 md:pl-0">
+            <span class="text-[10px] uppercase tracking-widest text-pink-400 font-semibold">2023</span>
+            <h4 class="text-sm font-medium mt-1">Ranking 3 Kelas 7-B</h4>
+            <p class="text-xs text-slate-500 mt-1">Naik dari ranking 8 di semester 1</p>
+          </div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 rounded-full border-2 border-pink-500 bg-[#030304] md:-translate-x-1/2 mt-0.5 flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-pink-500"></div>
+          </div>
+          <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="reveal delay-300 relative flex flex-col md:flex-row items-start">
+          <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 rounded-full border-2 border-emerald-500 bg-[#030304] md:-translate-x-1/2 mt-0.5 flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+          </div>
+          <div class="md:w-1/2 md:pl-12 pl-16">
+            <span class="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold">2023</span>
+            <h4 class="text-sm font-medium mt-1">Juara 1 Lomba Cerdas Cermat MTs/SMP</h4>
+            <p class="text-xs text-slate-500 mt-1">Mewakili sekolah tingkat kecamatan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== GALLERY ========== -->
+  <section id="gallery" class="py-24 px-6 relative" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-pink-400 mb-3 block">Galeri</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text">Momen-Momen Saya</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="reveal gallery-item rounded-2xl overflow-hidden relative aspect-square cursor-pointer">
+          <img src="https://picsum.photos/seed/school-activity-1/600/600.jpg" alt="Galeri 1" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Kegiatan sekolah 🏫</span>
+          </div>
+        </div>
+        <div class="reveal delay-100 gallery-item rounded-2xl overflow-hidden relative aspect-[3/4] cursor-pointer row-span-2">
+          <img src="https://picsum.photos/seed/futsal-match-2/600/800.jpg" alt="Galeri 2" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Pertandingan futsal ⚽</span>
+          </div>
+        </div>
+        <div class="reveal delay-200 gallery-item rounded-2xl overflow-hidden relative aspect-square cursor-pointer">
+          <img src="https://picsum.photos/seed/coding-desk-3/600/600.jpg" alt="Galeri 3" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Coding session 💻</span>
+          </div>
+        </div>
+        <div class="reveal gallery-item rounded-2xl overflow-hidden relative aspect-square cursor-pointer">
+          <img src="https://picsum.photos/seed/sunset-photo-4/600/600.jpg" alt="Galeri 4" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Foto sunset 🌅</span>
+          </div>
+        </div>
+        <div class="reveal delay-100 gallery-item rounded-2xl overflow-hidden relative aspect-square cursor-pointer">
+          <img src="https://picsum.photos/seed/guitar-music-5/600/600.jpg" alt="Galeri 5" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Main gitar 🎸</span>
+          </div>
+        </div>
+        <div class="reveal delay-200 gallery-item rounded-2xl overflow-hidden relative aspect-square cursor-pointer">
+          <img src="https://picsum.photos/seed/friends-hangout-6/600/600.jpg" alt="Galeri 6" class="w-full h-full object-cover" />
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4">
+            <span class="text-xs font-medium">Bareng teman-teman 👫</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NOW PLAYING (fun section) ========== -->
+  <section class="py-16 px-6" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-2xl mx-auto">
+      <div class="reveal glass rounded-2xl p-6 flex items-center gap-5">
+        <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style="box-shadow: 0 8px 24px -4px rgba(99,102,241,0.3);">
+          <img src="https://picsum.photos/seed/album-cover-lofi/120/120.jpg" alt="Album" class="w-full h-full object-cover" />
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold mb-1">Now Playing</p>
+          <h4 class="text-sm font-medium truncate">Lofi Study Beats</h4>
+          <p class="text-xs text-slate-500 truncate">Chillhop Café</p>
+          <!-- Fake progress bar -->
+          <div class="mt-2 h-1 rounded-full" style="background: rgba(255,255,255,0.05);">
+            <div class="h-full rounded-full w-2/5" style="background: linear-gradient(to right, #6366f1, #a855f7); animation: progress-move 20s linear infinite;"></div>
+          </div>
+        </div>
+        <div class="flex items-end gap-[3px] h-5 flex-shrink-0">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <style>
+    @keyframes progress-move {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+  </style>
+
+  <!-- ========== KONTAK ========== -->
+  <section id="kontak" class="py-24 px-6 relative" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="orb w-[500px] h-[500px] bottom-0 right-0 opacity-10" style="background: #6366f1;"></div>
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal text-center mb-16">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-indigo-400 mb-3 block">Kontak</span>
+        <h2 class="text-2xl md:text-4xl font-medium tracking-tight gradient-text">Hubungi Saya</h2>
+        <p class="text-sm text-slate-400 mt-4 font-light">Mau ngobrol atau kerja sama? Langsung aja hubungi lewat sosial media di bawah ini!</p>
+      </div>
+
+      <!-- Social Links -->
+      <div class="reveal flex flex-wrap justify-center gap-4 mb-16">
+        <a href="#" class="social-icon glass glass-hover rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 min-w-[120px]">
+          <span class="iconify text-3xl text-green-400" data-icon="lucide:message-circle"></span>
+          <span class="text-xs font-medium">WhatsApp</span>
+        </a>
+        <a href="#" class="social-icon glass glass-hover rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 min-w-[120px]">
+          <span class="iconify text-3xl text-pink-400" data-icon="lucide:instagram"></span>
+          <span class="text-xs font-medium">Instagram</span>
+        </a>
+        <a href="#" class="social-icon glass glass-hover rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 min-w-[120px]">
+          <span class="iconify text-3xl text-blue-400" data-icon="lucide:at-sign"></span>
+          <span class="text-xs font-medium">Email</span>
+        </a>
+        <a href="#" class="social-icon glass glass-hover rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 min-w-[120px]">
+          <span class="iconify text-3xl text-red-400" data-icon="lucide:youtube"></span>
+          <span class="text-xs font-medium">YouTube</span>
+        </a>
+        <a href="#" class="social-icon glass glass-hover rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 min-w-[120px]">
+          <span class="iconify text-3xl text-indigo-400" data-icon="lucide:github"></span>
+          <span class="text-xs font-medium">GitHub</span>
+        </a>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="reveal glass rounded-2xl p-8 md:p-10 max-w-2xl mx-auto shine">
+        <h3 class="text-lg font-medium mb-6 text-center">Kirim Pesan</h3>
+        <form id="contactForm" class="space-y-5">
+          <div>
+            <label class="text-xs text-slate-400 mb-1.5 block">Nama</label>
+            <input type="text" placeholder="Nama kamu..." class="w-full px-4 py-3 rounded-xl text-sm bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all duration-200" required />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 mb-1.5 block">Pesan</label>
+            <textarea rows="4" placeholder="Tulis pesan di sini..." class="w-full px-4 py-3 rounded-xl text-sm bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all duration-200 resize-none" required></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 bg-white text-black text-sm font-semibold rounded-xl hover:bg-slate-100 transition-all duration-300 flex items-center justify-center gap-2" style="box-shadow: 0 0 20px -5px rgba(255,255,255,0.3);">
+            <span class="iconify" data-icon="lucide:send"></span>
+            Kirim Pesan
+          </button>
+        </form>
+        <div id="formSuccess" class="hidden text-center py-8">
+          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: rgba(16,185,129,0.15);">
+            <span class="iconify text-3xl text-emerald-400" data-icon="lucide:check-circle-2"></span>
+          </div>
+          <h4 class="text-base font-medium mb-1">Pesan Terkirim! 🎉</h4>
+          <p class="text-xs text-slate-400">Terima kasih sudah menghubungi saya!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="py-12 px-6" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded flex items-center justify-center" style="background: linear-gradient(to top right, #6366f1, #a855f7);">
+          <span class="iconify text-white text-xs" data-icon="lucide:sparkles"></span>
+        </div>
+        <span class="text-xs text-slate-500">© 2026 Azfar Kasep. Dibuat dengan ❤️</span>
+      </div>
+      <div class="flex items-center gap-1 text-xs text-slate-600">
+        <span>Dibuat pakai</span>
+        <span class="iconify text-indigo-400" data-icon="lucide:code-2"></span>
+        <span>HTML, CSS & JS</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    // ===== Scroll Reveal =====
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ===== Skill Bar Animation =====
+    const skillBars = document.querySelectorAll('.skill-fill');
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.5 });
+    skillBars.forEach(bar => skillObserver.observe(bar));
+
+    // ===== Counter Animation =====
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.getAttribute('data-count'));
+          let current = 0;
+          const increment = Math.max(1, Math.floor(target / 40));
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            el.textContent = current;
+          }, 30);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    statNumbers.forEach(el => counterObserver.observe(el));
+
+    // ===== Typing Effect =====
+    const phrases = [
+      "Siswa SMP yang suka belajar hal baru ✨",
+      "Aspiring Developer & Designer 🎨",
+      "Gamer sejati di waktu luang 🎮",
+      "Pecinta musik lofi & J-Pop 🎵",
+      "Mimpi besar, langkah kecil 🚀"
+    ];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingEl = document.getElementById('typingText');
+
+    function typeEffect() {
+      const currentPhrase = phrases[phraseIndex];
+      if (!isDeleting) {
+        typingEl.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          setTimeout(typeEffect, 2000);
+          return;
+        }
+      } else {
+        typingEl.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+        }
+      }
+      setTimeout(typeEffect, isDeleting ? 30 : 60);
+    }
+    typeEffect();
+
+    // ===== Mobile Menu =====
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+    mobileMenuClose.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ===== Smooth Scroll =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===== Contact Form =====
+    const contactForm = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      contactForm.style.display = 'none';
+      formSuccess.classList.remove('hidden');
+      setTimeout(() => {
+        contactForm.style.display = 'block';
+        formSuccess.classList.add('hidden');
+        contactForm.reset();
+      }, 3000);
+    });
+
+    // ===== Navbar background on scroll =====
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+      } else {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.05)';
+      }
+    });
+  </script>
 
 </body>
 </html>
